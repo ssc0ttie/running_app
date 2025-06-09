@@ -1,5 +1,9 @@
 import pandas as pd
 
+sheet_id = "1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM"
+historical_log_gid = "1508007696"
+week_lookup_gid = "336401596"
+
 
 def get_runner_data():
     """
@@ -7,7 +11,7 @@ def get_runner_data():
 
     """
     sheet_id = "1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM"
-    historical_log_gid = "1233739225"
+    historical_log_gid = "1508007696"
     week_lookup_gid = "336401596"
     prog_gid = 0
     url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv&gid="
@@ -24,26 +28,37 @@ def get_runner_data():
             "Date_of_Activity",
             "Activity",
             "Distance",
-            "  Pace (min/km)",
+            "Pace",
             "Time (moving time)",
             "HR (bpm)",
             "Cadence (steps/min)",
             "RPE (1–10 scale)",
             "Shoe",
             "Remarks",
-            "Member_Name",
-            "dummy",
+            "Member Name",
         ],
     )
 
-    # return pd.DataFrame(df)
+    df_week_lookup = pd.read_csv(f"{url}{week_lookup_gid}", header=None, skiprows=1)
 
+    # filter only first 3 columns
+    df2 = df_week_lookup[[0, 1, 2]].copy()
+    # rename columns
+    df2.columns = ["Date", "Week_Number", "Scheduled_Activity"]
 
-sheet_id = "1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM"
-historical_log_gid = "1233739225"
-week_lookup_gid = "336401596"
-prog_gid = 0
-url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv&gid="
+    # clean data columns used for calculations
+    df2["Date"] = pd.to_datetime(df2["Date"])
 
+    # cleanup main df
+    df["Date_of_Activity"] = pd.to_datetime(df["Date_of_Activity"], errors="coerce")
+    df["Pace"] = pd.to_timedelta(df["Pace"])
+    df["Distance"] = pd.to_numeric(df["Distance"])
 
-df_week_lookup = pd.read_csv(f"{url}{week_lookup_gid}", header=None)
+    # lookup of weekname
+    df = df.merge(df2, left_on="Date_of_Activity", right_on="Date", how="left")
+    # Apply to column
+
+    # CALCULATE MOVING TIME
+    df["Moving_Time"] = df["Pace"] * df["Distance"]
+
+    return pd.DataFrame(df)
