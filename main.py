@@ -123,6 +123,9 @@ with st.expander("View Training Program"):
         height=800,
     )
 
+#############PUSH DATA######
+import data.push_data as pd
+
 
 ####TEST CHART#######
 

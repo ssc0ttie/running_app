@@ -80,7 +80,7 @@ def get_runner_data():
         inplace=True,
     )
 
-    # ######DATA CLEANUP######
+    #######DATA CLEANUP######
 
     # WEEK LOOKUP
     client = get_gsheet_client()
