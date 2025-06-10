@@ -112,8 +112,11 @@ with col1:
     st.success("Done!")
     st.balloons()
 
+###############TRAINING PLAN SECTION#############################################
+st.subheader("TRAINING PLAN", divider="blue")
+
 with st.expander("View Training Program"):
-    prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1670501627&single=true"
+    prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=0&single=true"
     components.iframe(
         prog_sheet,
         width=1500,
@@ -121,7 +124,7 @@ with st.expander("View Training Program"):
     )
 
 
-####TEST CHART
+####TEST CHART#######
 
 
 import data.read_data as rd
@@ -135,13 +138,13 @@ df = pd.DataFrame(rd.get_runner_data())
 df = df[df["Distance"] > 0 & df["Distance"].notna()]
 
 ##GROUP BY
-act_date_group = df.groupby("Week_Number", as_index=False)
+act_date_group = df.groupby("Week", as_index=False)
 
 st.subheader("Distance")
 
 line_data = act_date_group["Distance"].sum()
 
-st.bar_chart(line_data, x="Week_Number", y="Distance", y_label="Distance")
+st.bar_chart(line_data, x="Week", y="Distance", y_label="Distance")
 
 
 ##FILTER BY MEMBER ##
