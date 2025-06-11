@@ -55,7 +55,7 @@ def get_runner_data():
 
     client = get_gsheet_client()
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
-    # USING for streamlit tab
+    # USING "for streamlit" tab - for historical
     worksheet = sheet.get_worksheet_by_id(1508007696)  # or use get_worksheet_by_id(gid)
     data = worksheet.get_all_values()
 
@@ -69,13 +69,12 @@ def get_runner_data():
             2: "Activity",
             3: "Distance",
             4: "Pace",
-            5: "Time (moving time)",
-            6: "HR (bpm)",
-            7: "Cadence (steps/min)",
-            8: "RPE (1–10 scale)",
-            9: "Shoe",
-            10: "Remarks",
-            11: "Member Name",
+            5: "HR (bpm)",
+            6: "Cadence (steps/min)",
+            7: "RPE (1–10 scale)",
+            8: "Shoe",
+            9: "Remarks",
+            10: "Member Name",
         },
         inplace=True,
     )
@@ -89,7 +88,14 @@ def get_runner_data():
         336401596
     )  # or use get_worksheet_by_id(gid)
     week_lookup_data = week_lookup_worksheet.get_all_records()
+
+    # streamlit_new_source - for new logs
+    newsource_worksheet = sheet.get_worksheet_by_id(1611308583)
+    new_source_data = newsource_worksheet.get_all_records()
+
+    ################################################################
     df2 = pd.DataFrame(week_lookup_data)
+    df3 = pd.DataFrame(new_source_data)
 
     # filter only first 3 columns
     df2 = df2.iloc[:, 0:3]
@@ -100,6 +106,9 @@ def get_runner_data():
     )
 
     df2["Date"] = pd.to_datetime(df2["Date"])
+
+    # CONCAT HISTORICAL AND NEWLOG
+    df = pd.concat([df, df3], ignore_index=True)
     # cleanup main df
     df["Date_of_Activity"] = pd.to_datetime(df["Date_of_Activity"], errors="coerce")
     df["Pace"] = pd.to_timedelta(df["Pace"])
