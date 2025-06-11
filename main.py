@@ -155,7 +155,7 @@ with tab2:
     )
 ######METRICS########
 with tab3:
-    st.header("                STATS                ", divider="blue")
+    st.header("STATS", divider="blue")
     import numpy as np
 
     df = pd.DataFrame(pull.get_runner_data())
