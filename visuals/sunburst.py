@@ -23,8 +23,9 @@ def generate_sunburst(data):
         color_continuous_scale="RdBu",
     )
     fig.update_layout(
-        width=800,  # Set the desired width in pixels
-        height=800,  # Set the desired height in pixels
+        width=800,
+        height=800,
+        legend=dict(orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5),
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -47,6 +48,12 @@ def generate_sunburst_member(data):
             color="Distance",
             color_continuous_scale="RdBu",
         )
+        fig.update_layout(
+            legend=dict(
+                orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5
+            )
+        )
+
         fig.show()
 
         st.subheader(member)

@@ -7,16 +7,16 @@ import data.push_data as push
 import data.read_data as pull
 
 st.set_page_config(
-    page_title="🏃‍♂️Operation SCSM 2025",
+    page_title="Operation SCSM 2025",
     page_icon="🏃‍♂️",
     layout="wide",
     initial_sidebar_state="expanded",
 )
-
-
 Welcome_msg = (
     "Celebrate progress, not perfection. You showed up — and that matters most."
 )
+st.header(":blue[🏃‍♂️Operation SCSM 2025]")
+
 st.subheader(Welcome_msg)
 st.markdown(":blue[*Use Sidebar to enter training log*] :sunglasses:")
 # # LAYOUT COLOUMNS

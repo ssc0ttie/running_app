@@ -51,6 +51,6 @@ def generate_combo(data):
     fig.update_yaxes(title_text="Pace (min/km)", secondary_y=True)
     fig.update_layout(
         width=800,  # Set the desired width in pixels
-        height=300,  # Set the desired height in pixels
+        height=500,  # Set the desired height in pixels
     )
     st.plotly_chart(fig, use_container_width=True, key="combo_chart")
