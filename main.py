@@ -193,74 +193,16 @@ with tab1:
     col3.metric(
         "Average Pace 🚄", value=metric_pace, label_visibility="visible", border=True
     )
-
-    #####################################TEST CHART#####################
-
-    # ##FILTER BY MEMBER ##
-    # filt = df["Member_Name"] == mem_selection
-
-    # df.loc[filt]
-
-    ###PLOTLY TEST###
-
-    import plotly.express as px
-    import plotly.graph_objects as go
-
-    # import plotly.io as pio
-
-    # pio.renderers.default = "browser"
-
-    from plotly._subplots import make_subplots
-
-    ##GROUP BY
-    act_date_group = df.groupby("Week", as_index=False)
-    dist_data = act_date_group["Distance"].sum()
-    pace_data = act_date_group["Pace"].mean()
-
-    # for plotting
-    pace_data["Pace_Mins"] = pace_data["Pace"].dt.total_seconds() / 60
-
-    pace_data["Pace_Str"] = pace_data["Pace"].apply(
-        lambda td: f"{int(td.total_seconds() // 60):02d}:{int(td.total_seconds() % 60):02d}"
-    )
-    # create subplot
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
-
-    # Add bar chart for Distance
-    fig.add_trace(
-        go.Bar(
-            x=dist_data["Week"],
-            y=dist_data["Distance"],
-            name="Distance (km)",
-            marker=dict(color="DarkSlateGrey"),
-        )
-    )
-
-    # Add line chart for Pace
-    fig.add_trace(
-        go.Scatter(
-            x=dist_data["Week"],
-            y=pace_data["Pace_Mins"],
-            name="Pace (min/km)",
-            yaxis="y2",
-            marker=dict(size=12, line=dict(width=2, color="DarkSlateGrey")),
-        ),
-    )
-
-    # Add second y-axis for Pace
-    fig.update_layout(title="Distance x Pace")
-    fig.update_xaxes(title_text="Week")
-    fig.update_yaxes(title_text="KMS", secondary_y=False)
-    fig.update_yaxes(title_text="Pace (min/km)", secondary_y=True)
-
-    fig.show()
-
-    st.plotly_chart(fig, use_container_width=True)
-
-    # DISPLAY TABLE OF ALL ACTIVITY##
-    st.dataframe(df, height=500)
+    #######CHARTS###########
 
 
-import visuals.sunburst as sb
+from visuals import sunburst as sb
+from visuals import combochart as cb
 
+# Combo chart
+cb.generate_combo(pull.get_runner_data())
+# sunburst
 sb.generate_sunburst(pull.get_runner_data())
+
+# TABLE OF ALL ACTIVITY
+st.dataframe(df, height=500)

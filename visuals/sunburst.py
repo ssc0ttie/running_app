@@ -10,16 +10,16 @@ import streamlit as st
 
 def generate_sunburst(data):
 
-    sunburst_data = data.groupby(["Member Name", "Activity"], as_index=False)[
+    sunburst_data = data.groupby(["Member Name", "Week", "Activity"], as_index=False)[
         "Distance"
     ].sum()
 
     fig = px.sunburst(
         sunburst_data,
-        path=["Member Name", "Activity"],
+        path=["Member Name", "Week", "Activity"],
         values="Distance",
         title="Distance per Member per Week per Activity",
-        color="Member Name",
+        color="Distance",
         color_continuous_scale="RdBu",
     )
     fig.update_layout(
@@ -32,7 +32,7 @@ def generate_sunburst(data):
 def generate_sunburst_member(data):
     # SUNBURST
 
-    sunburst_data = df.groupby(["Member Name", "Week", "Activity"], as_index=False)[
+    sunburst_data = data.groupby(["Member Name", "Week", "Activity"], as_index=False)[
         "Distance"
     ].sum()
 
