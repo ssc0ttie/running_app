@@ -27,7 +27,8 @@ def generate_combo(data):
             x=dist_data["Week"],
             y=dist_data["Distance"],
             name="Distance (km)",
-            marker=dict(color="DarkSlateGrey"),
+            text=dist_data["Distance"],
+            marker=dict(color="mediumaquamarine"),
         )
     )
 
@@ -38,7 +39,8 @@ def generate_combo(data):
             y=pace_data["Pace_Mins"],
             name="Pace (min/km)",
             yaxis="y2",
-            marker=dict(size=12, line=dict(width=2, color="DarkSlateGrey")),
+            text=pace_data["Pace_Str"],
+            marker=dict(size=12, line=dict(width=2, color="crimson")),
         ),
     )
 

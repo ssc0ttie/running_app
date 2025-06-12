@@ -6,8 +6,12 @@ from datetime import time, datetime
 import data.push_data as push
 import data.read_data as pull
 
-
-st.title("🏃‍♂️Operation SCSM 2025")
+st.set_page_config(
+    page_title="🏃‍♂️Operation SCSM 2025",
+    page_icon="🏃‍♂️",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
 
 Welcome_msg = (
@@ -25,16 +29,16 @@ with st.sidebar:
     with st.form("activity_log", clear_on_submit=True, border=True):
         time_stamp_ = datetime.now()
         time_stamp = time_stamp_.strftime("%Y-%m-%d")
-        mem_selection = st.multiselect(
+        mem_selection = st.selectbox(
             "Members",
             ["Aiza", "Chona", "Fraulein", "Lead", "Maxine", "Scott"],
-            max_selections=1,
+            index=None,
         )
         # member_name = st.markdown(f"Select Member", {mem_selection})
         date = st.date_input("Date of Activity", value=datetime.today())
 
         # Activity list
-        act_selection = st.multiselect(
+        act_selection = st.selectbox(
             "Activity",
             [
                 "5k LSD Road@ Zone 2 Pace",
@@ -85,7 +89,7 @@ with st.sidebar:
                 "9k Tempo",
                 "10k Tempo",
             ],
-            max_selections=1,
+            index=None,
         )
 
         distance = st.number_input("Distance")
