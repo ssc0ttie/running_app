@@ -7,7 +7,7 @@ import data.push_data as push
 import data.read_data as pull
 
 
-st.title("🏃‍♂️Training Log")
+st.title("🏃‍♂️Operation SCSM 2025")
 
 
 Welcome_msg = (
@@ -16,10 +16,12 @@ Welcome_msg = (
 st.subheader(Welcome_msg)
 
 # # LAYOUT COLOUMNS
-tab1, tab2, tab3 = st.tabs(["Training Log", "Program", "Stats"])
+tab1, tab2 = st.tabs(["Stats", "Program"])
 
-with tab1:
-
+element_name = "Log Your Activity Here"
+with st.sidebar:
+    st.sidebar.title("🏃‍♂️ Runner's Training Log")
+    st.sidebar.markdown("Use this panel to input your training data.")
     with st.form("activity_log", clear_on_submit=True, border=True):
         time_stamp_ = datetime.now()
         time_stamp = time_stamp_.strftime("%Y-%m-%d")
@@ -154,7 +156,7 @@ with tab2:
         height=800,
     )
 ######METRICS########
-with tab3:
+with tab1:
     st.header("STATS", divider="blue")
     import numpy as np
 
@@ -202,6 +204,8 @@ with tab3:
 
     st.bar_chart(line_data, x="Week", y="Distance", y_label="Distance")
 
+    # DISPLAY TABLE OF ALL ACTIVITY##
+    st.dataframe(df, height=500)
     # ##FILTER BY MEMBER ##
     # filt = df["Member_Name"] == mem_selection
 
