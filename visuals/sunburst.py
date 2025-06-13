@@ -23,9 +23,17 @@ def generate_sunburst(data):
         color_continuous_scale="RdBu",
     )
     fig.update_layout(
-        width=800,
+        margin=dict(t=50, l=0, r=0, b=0),
+        width=500,
         height=800,
-        legend=dict(orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5),
+        legend=dict(
+            orientation="h",  # Horizontal layout
+            yanchor="bottom",
+            y=-0.2,  # Push it further down
+            xanchor="center",
+            x=0.5,
+            font=dict(size=12),
+        ),
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -53,7 +61,7 @@ def generate_sunburst_member(data):
                 orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5
             )
         )
-
+        # orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5
         fig.show()
 
         st.subheader(member)

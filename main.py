@@ -98,7 +98,7 @@ with st.sidebar:
         cad = st.number_input("Cadence (spm)", min_value=0, max_value=200)
         rpe = st.slider("RPE", 0, 10, 1)
         rpe2 = st.feedback(options="faces", key=int)
-        shoe = st.multiselect(
+        shoe = st.selectbox(
             "Shoe",
             [
                 "Adidas Adizero SL2",
@@ -112,7 +112,7 @@ with st.sidebar:
                 "Reebok Float Ride Energy 4",
                 "Sketcher",
             ],
-            max_selections=1,
+            index=None,
         )
         remarks = st.text_area("Remarks")
 
@@ -127,17 +127,17 @@ with st.sidebar:
                 time_stamp,  # Convert datetime to ISO string
                 date.isoformat(),  # Convert date to ISO string
                 (
-                    act_selection[0] if act_selection else ""
+                    act_selection if act_selection else ""
                 ),  # Get first selected activity or empty
                 distance,
                 pace.strftime("0:%H:%M"),  # Convert time to string (e.g., "08:45")
                 hr,
                 cad,
                 rpe,
-                shoe[0] if shoe else "",  # Get first selected shoe or empty
+                shoe if shoe else "",  # Get first selected shoe or empty
                 remarks,
                 (
-                    mem_selection[0] if mem_selection else ""
+                    mem_selection if mem_selection else ""
                 ),  # Get first selected member or empty
             ]
 
@@ -164,8 +164,11 @@ with tab1:
     st.header("STATS", divider="blue")
     import numpy as np
 
-    df = pd.DataFrame(pull.get_runner_data())
+    # """revert back"""
+    # df = pd.DataFrame(pull.get_runner_data())
 
+    df = pd.DataFrame(pull.get_runner_data_dev())
+    df["Moving_Time"] = pd.to_timedelta(df["Moving_Time"])
     metric_distance = int(df["Distance"].sum())
 
     # TOTAL MOVING TIME
@@ -177,6 +180,7 @@ with tab1:
 
     # AVG PACE
     avg_pace = pd.to_timedelta(df["Pace"]).mean()
+
     metric_pace = f"{int(avg_pace.total_seconds() // 60):02d}:{int(avg_pace.total_seconds() % 60):02d}"
 
     # .sum() / df["Pace"].len()
@@ -202,11 +206,32 @@ with tab1:
 
 from visuals import sunburst as sb
 from visuals import combochart as cb
+from visuals import table as mt
+from visuals import line_polar as lp
+from visuals import stats_table as stats
+
+st.subheader("ALL-TIME STATS", divider="gray")
+# """revert back"""
+stats.generate_matrix_member(pull.get_runner_data_dev())
 
 # Combo chart
-cb.generate_combo(pull.get_runner_data())
+st.subheader("Distance x Pace", divider="gray")
+# cb.generate_combo(pull.get_runner_data())
+# """revert back"""
+
+cb.generate_combo(pull.get_runner_data_dev())
+
 # sunburst
-sb.generate_sunburst(pull.get_runner_data())
+st.subheader("Distance per Member per Week per Activity", divider="gray")
+# """revert back"""
+# sb.generate_sunburst(pull.get_runner_data())
+sb.generate_sunburst(pull.get_runner_data_dev())
+
+# LINE POLAR
+st.subheader("Activity Comparison Across Multiple Metrics (Normalized)", divider="gray")
+# sb.generate_sunburst(pull.get_runner_data())
+lp.generate_linepolar(pull.get_runner_data_dev())
 
 # TABLE OF ALL ACTIVITY
-st.dataframe(df, height=500)
+st.subheader("Activity List", divider="gray")
+mt.generate_matrix(pull.get_runner_data_dev())
