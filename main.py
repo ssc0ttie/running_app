@@ -167,7 +167,14 @@ with tab1:
     # """revert back"""
     # df = pd.DataFrame(pull.get_runner_data())
 
-    df = pd.DataFrame(pull.get_runner_data_dev())
+    df = pd.DataFrame(pull.get_runner_data())
+    # filter non running activity
+    filtered_data = df[
+        ~df["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
+    ]
+
+    df = filtered_data
+
     df["Moving_Time"] = pd.to_timedelta(df["Moving_Time"])
     metric_distance = int(df["Distance"].sum())
 
@@ -202,8 +209,6 @@ with tab1:
         "Average Pace 🚄", value=metric_pace, label_visibility="visible", border=True
     )
     #######CHARTS###########
-
-
 from visuals import sunburst as sb
 from visuals import combochart as cb
 from visuals import table as mt
@@ -212,26 +217,26 @@ from visuals import stats_table as stats
 
 st.subheader("ALL-TIME STATS", divider="gray")
 # """revert back"""
-stats.generate_matrix_member(pull.get_runner_data_dev())
+stats.generate_matrix_member(pull.get_runner_data())
 
 # Combo chart
 st.subheader("Distance x Pace", divider="gray")
 # cb.generate_combo(pull.get_runner_data())
 # """revert back"""
 
-cb.generate_combo(pull.get_runner_data_dev())
+cb.generate_combo(pull.get_runner_data())
 
 # sunburst
 st.subheader("Distance per Member per Week per Activity", divider="gray")
 # """revert back"""
 # sb.generate_sunburst(pull.get_runner_data())
-sb.generate_sunburst(pull.get_runner_data_dev())
+sb.generate_sunburst(pull.get_runner_data())
 
 # LINE POLAR
 st.subheader("Activity Comparison Across Multiple Metrics (Normalized)", divider="gray")
 # sb.generate_sunburst(pull.get_runner_data())
-lp.generate_linepolar(pull.get_runner_data_dev())
+lp.generate_linepolar(pull.get_runner_data())
 
 # TABLE OF ALL ACTIVITY
 st.subheader("Activity List", divider="gray")
-mt.generate_matrix(pull.get_runner_data_dev())
+mt.generate_matrix(pull.get_runner_data())
