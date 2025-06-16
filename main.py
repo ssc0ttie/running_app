@@ -20,10 +20,10 @@ Welcome_msg = (
     "Celebrate progress, not perfection. You showed up — and that matters most."
 )
 
-# st.markdown(
-#     '<p style="color:#206040; font-size:35px;">Celebrate progress, not perfection. You showed up — and that matters most.</p>',
-#     unsafe_allow_html=True,
-# )
+st.markdown(
+    '<p style="color:#2e8b57; font-size:25px;">Celebrate progress, not perfection. You showed up — and that matters most.</p>',
+    unsafe_allow_html=True,
+)
 
 st.header(Welcome_msg)
 st.markdown(":blue[*Use Sidebar to enter training log*] :sunglasses:")
