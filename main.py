@@ -21,11 +21,11 @@ Welcome_msg = (
 )
 
 st.markdown(
-    '<p style="color:#2e8b57; font-size:25px;">Celebrate progress, not perfection. You showed up — and that matters most.</p>',
+    '<p style="color:#3a3939; font-size:25px;">Celebrate progress, not perfection. You showed up — and that matters most.</p>',
     unsafe_allow_html=True,
 )
 
-st.header(Welcome_msg)
+# st.header(Welcome_msg)
 st.markdown(":blue[*Use Sidebar to enter training log*] :sunglasses:")
 
 element_name = "Log Your Activity Here"
@@ -182,8 +182,12 @@ with tab1:
     else:
         filtered_member_df = full_df[full_df["Member Name"] == selected_member]
 
-    st.header(f"📊 Overview & Stats : {selected_member}", divider="blue")
-
+    # st.header(f"📊 Overview & Stats : {selected_member}", divider="blue")
+    st.markdown(
+        '<p style="color:#3a3939; font-size:25px;">📊 Overview & Stats</p>',
+        unsafe_allow_html=True,
+    )
+    st.markdown("__________________________________________")
     # filter non running activity
     filtered_data = filtered_member_df[
         ~filtered_member_df["Activity"].isin(
