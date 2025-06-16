@@ -16,13 +16,16 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-
-Welcome_msg = "darkgreen:[Celebrate progress, not perfection. You showed up — and that matters most.]"
-st.markdown(
-    '<p style="color:#206040; font-size:35px;">Celebrate progress, not perfection. You showed up — and that matters most.</p>',
-    unsafe_allow_html=True,
+Welcome_msg = (
+    "Celebrate progress, not perfection. You showed up — and that matters most."
 )
 
+# st.markdown(
+#     '<p style="color:#206040; font-size:35px;">Celebrate progress, not perfection. You showed up — and that matters most.</p>',
+#     unsafe_allow_html=True,
+# )
+
+st.header(Welcome_msg)
 st.markdown(":blue[*Use Sidebar to enter training log*] :sunglasses:")
 
 element_name = "Log Your Activity Here"
