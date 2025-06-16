@@ -182,12 +182,24 @@ with tab1:
     else:
         filtered_member_df = full_df[full_df["Member Name"] == selected_member]
 
-    # st.header(f"📊 Overview & Stats : {selected_member}", divider="blue")
+    # st.subheader(f"📊 Overview & Stats : {selected_member}", divider="blue")
+
     st.markdown(
-        '<p style="color:#3a3939; font-size:25px;">📊 Overview & Stats</p>',
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+            📊 Overview & Stats
+        </div>
+    """,
         unsafe_allow_html=True,
     )
-    st.markdown("__________________________________________")
+
     # filter non running activity
     filtered_data = filtered_member_df[
         ~filtered_member_df["Activity"].isin(
@@ -248,33 +260,132 @@ with tab1:
     from visuals import stats_table as stats
 
     # -----ALL STATS TABLE-------#
-    st.subheader("🏆 All-Time Highlights", divider="gray")
+    # st.subheader("🏆 All-Time Highlights", divider="gray")
+
+    st.markdown(
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+            🏆 All-Time Highlights
+        </div>
+    """,
+        unsafe_allow_html=True,
+    )
     stats.generate_matrix_member(filtered_member_df)
 
     # -----COMBO CHART WEEKLY-------#
-    st.subheader("📅🏃‍♂️ Weekly Distance vs. Pace", divider="gray")
+    # st.subheader("📅🏃‍♂️ Weekly Distance vs. Pace", divider="gray")
+    st.markdown(
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+            📅🏃‍♂️ Weekly Distance vs. Pace</div>
+    """,
+        unsafe_allow_html=True,
+    )
     cb.generate_combo(filtered_member_df)
 
     # -----COMBO CHART DAILY-------#
-    st.subheader("📈📍 Daily Distance vs. Pace", divider="gray")
+    # st.subheader("📈📍 Daily Distance vs. Pace", divider="gray")
+    st.markdown(
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+            📈📍 Daily Distance vs. Pace</div>
+    """,
+        unsafe_allow_html=True,
+    )
     cb.generate_combo_daily(filtered_member_df)
 
     # -----SUN BURST-------#
-    st.subheader("👥📊 Weekly Activity per Member", divider="gray")
+    # st.subheader("👥📊 Weekly Activity per Member", divider="gray")
+    st.markdown(
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+            👥📊 Weekly Activity per Member</div>
+    """,
+        unsafe_allow_html=True,
+    )
     sb.generate_sunburst(filtered_member_df)
 
     # -----LINE POLAR-------#
-    st.subheader("⚖️📊 Activity Comparison (Normalized)", divider="gray")
+    # st.subheader("", divider="gray")
+    st.markdown(
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+            ⚖️📊 Activity Comparison (Normalized)</div>
+    """,
+        unsafe_allow_html=True,
+    )
     lp.generate_linepolar(filtered_member_df)
 
     # -----ALL ACTIVITY TABLE-------#
-    st.subheader("🗂️ Activity Reference", divider="gray")
+    # st.subheader("🗂️ Activity Reference", divider="gray")
+    st.markdown(
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+            🗂️ Activity Reference</div>
+    """,
+        unsafe_allow_html=True,
+    )
     mt.generate_matrix(filtered_member_df)
 
 
 with tab2:
-    st.header("🗓️💪 Your Training Plan", divider="blue")
-
+    # st.header("🗓️💪 Your Training Plan", divider="blue")
+    st.markdown(
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+            🗓️💪 Your Training Plan</div>
+    """,
+        unsafe_allow_html=True,
+    )
     # with st.expander("View Training Program"):
     prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=0&single=true"
     components.iframe(

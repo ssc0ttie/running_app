@@ -18,7 +18,7 @@ def generate_sunburst(data):
         sunburst_data,
         path=["Member Name", "Week", "Activity"],
         values="Distance",
-        title="Distance per Member per Week per Activity",
+        # title="Distance per Member per Week per Activity",
         color="Distance",
         color_continuous_scale="RdBu",
     )
