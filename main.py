@@ -15,15 +15,15 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-Welcome_msg = (
-    "Celebrate progress, not perfection. You showed up — and that matters most."
-)
-st.header(":blue[🏃‍♂️Operation SCSM 2025]")
 
-st.subheader(Welcome_msg)
+
+Welcome_msg = "darkgreen:[Celebrate progress, not perfection. You showed up — and that matters most.]"
+st.markdown(
+    '<p style="color:#206040; font-size:35px;">Celebrate progress, not perfection. You showed up — and that matters most.</p>',
+    unsafe_allow_html=True,
+)
+
 st.markdown(":blue[*Use Sidebar to enter training log*] :sunglasses:")
-# # LAYOUT COLOUMNS
-tab1, tab2 = st.tabs(["Stats", "Program"])
 
 element_name = "Log Your Activity Here"
 with st.sidebar:
@@ -157,6 +157,9 @@ with st.sidebar:
 
 
 ######METRICS########
+# # LAYOUT COLOUMNS
+tab1, tab2, tab3 = st.tabs(["📊 Stats", "🗓️ Program", "📘 Reference"])
+
 
 full_df = pd.DataFrame(pull.get_runner_data())
 
@@ -176,7 +179,7 @@ with tab1:
     else:
         filtered_member_df = full_df[full_df["Member Name"] == selected_member]
 
-    st.header("STATS", divider="blue")
+    st.header(f"📊 Overview & Stats : {selected_member}", divider="blue")
 
     # filter non running activity
     filtered_data = filtered_member_df[
@@ -204,7 +207,7 @@ with tab1:
 
     # .sum() / df["Pace"].len()
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     col1.metric(
         "Total Distance in kms 🏃‍♀️‍➡️",
         value=metric_distance,
@@ -221,9 +224,49 @@ with tab1:
         "Average Pace 🚄", value=metric_pace, label_visibility="visible", border=True
     )
 
+    metric_tillrace = (datetime(2025, 12, 7) - datetime.today()).days
+
+    col4.metric(
+        "Days Till Race Day 🏁 👏",
+        value=metric_tillrace,
+        label_visibility="visible",
+        border=True,
+    )
+
+    ###########CHARTS###########
+    from visuals import sunburst as sb
+    from visuals import combochart as cb
+    from visuals import table as mt
+    from visuals import line_polar as lp
+    from visuals import stats_table as stats
+
+    # -----ALL STATS TABLE-------#
+    st.subheader("🏆 All-Time Highlights", divider="gray")
+    stats.generate_matrix_member(filtered_member_df)
+
+    # -----COMBO CHART WEEKLY-------#
+    st.subheader("📅🏃‍♂️ Weekly Distance vs. Pace", divider="gray")
+    cb.generate_combo(filtered_member_df)
+
+    # -----COMBO CHART DAILY-------#
+    st.subheader("📈📍 Daily Distance vs. Pace", divider="gray")
+    cb.generate_combo_daily(filtered_member_df)
+
+    # -----SUN BURST-------#
+    st.subheader("👥📊 Weekly Activity per Member", divider="gray")
+    sb.generate_sunburst(filtered_member_df)
+
+    # -----LINE POLAR-------#
+    st.subheader("⚖️📊 Activity Comparison (Normalized)", divider="gray")
+    lp.generate_linepolar(filtered_member_df)
+
+    # -----ALL ACTIVITY TABLE-------#
+    st.subheader("🗂️ Activity Reference", divider="gray")
+    mt.generate_matrix(filtered_member_df)
+
 
 with tab2:
-    st.header("TRAINING PLAN", divider="blue")
+    st.header("🗓️💪 Your Training Plan", divider="blue")
 
     # with st.expander("View Training Program"):
     prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=0&single=true"
@@ -232,33 +275,8 @@ with tab2:
         width=1500,
         height=800,
     )
-###########CHARTS###########
-from visuals import sunburst as sb
-from visuals import combochart as cb
-from visuals import table as mt
-from visuals import line_polar as lp
-from visuals import stats_table as stats
 
-# -----ALL STATS TABLE-------#
-st.subheader("ALL-TIME STATS", divider="gray")
-stats.generate_matrix_member(filtered_member_df)
+with tab3:
+    from visuals import referencetab as ref
 
-# -----COMBO CHART WEEKLY-------#
-st.subheader("Weekly Distance x Pace", divider="gray")
-cb.generate_combo(filtered_member_df)
-
-# -----COMBO CHART DAILY-------#
-st.subheader("Daily Distance x Pace", divider="gray")
-cb.generate_combo_daily(filtered_member_df)
-
-# -----SUN BURST-------#
-st.subheader("Distance per Member per Week per Activity", divider="gray")
-sb.generate_sunburst(filtered_member_df)
-
-# -----LINE POLAR-------#
-st.subheader("Activity Comparison Across Multiple Metrics (Normalized)", divider="gray")
-lp.generate_linepolar(filtered_member_df)
-
-# -----ALL ACTIVITY TABLE-------#
-st.subheader("Activity List", divider="gray")
-mt.generate_matrix(filtered_member_df)
+    ref.ref_tab()

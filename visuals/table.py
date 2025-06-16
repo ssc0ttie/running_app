@@ -27,14 +27,16 @@ def generate_matrix(data):
 
         # Then apply:
 
-    data["Pace"].apply(format_timedelta)
+    data["Pace_Str"] = data["Pace"].apply(format_timedelta)
+    data["MovingTime_Str"] = data["Moving_Time"].apply(format_timedelta)
+
     # drop columns
     data.drop(["TimeStamp", "Date", "Pace", "Shoe"], axis=1, inplace=True)
     st.dataframe(
         data,
         height=350,
         column_config={
-            "Pace": st.column_config.TextColumn("Pace"),
+            "Pace_Str": st.column_config.TextColumn("Pace"),
             "Date_of_Activity": st.column_config.DateColumn(
                 "Date", format=("MMM DD, ddd")
             ),
@@ -45,7 +47,7 @@ def generate_matrix(data):
                 max_value=data["Distance"].max(),
                 format="%.1f",
             ),
-            "Time (moving time)": st.column_config.TextColumn("Moving Time"),
+            "MovingTime_Str": st.column_config.TextColumn("Moving Time"),
             "HR (bpm)": st.column_config.NumberColumn(
                 "HR",
                 format="%d",
@@ -68,8 +70,8 @@ def generate_matrix(data):
             "Date_of_Activity",
             "Activity",
             "Distance",
-            "Moving_Time",
-            "Pace",
+            "MovingTime_Str",
+            "Pace_Str",
             "HR (bpm)",
             "Cadence (steps/min)",
             "RPE (1–10 scale)",

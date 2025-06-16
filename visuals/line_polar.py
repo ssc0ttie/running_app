@@ -67,7 +67,7 @@ def generate_linepolar(data):
         color="Metric",
         line_close=True,
         markers=True,
-        text="Actual Value",
+        # text="Actual Value",
         template="plotly",
     )
 
