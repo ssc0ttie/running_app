@@ -5,11 +5,18 @@ import streamlit as st
 
 
 def generate_linepolar(data):
-    # filter, group and aggregate
+
+    # ----- hard cleanup ----#
+    data["Distance"] = pd.to_numeric(data["Distance"], errors="coerce")
+    data["RPE (1–10 scale)"] = pd.to_numeric(data["RPE (1–10 scale)"], errors="coerce")
+    data["Cadence (steps/min)"] = pd.to_numeric(
+        data["Cadence (steps/min)"], errors="coerce"
+    )
+    data["Pace"] = pd.to_timedelta(data["Pace"], errors="coerce")
+    # -------------- filter, group and aggregate
     filtered_data = data[
         ~data["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
     ]  # filter non running activity
-
     agg_df = filtered_data.groupby("Activity", as_index=False).agg(
         {
             "Distance": "mean",
@@ -72,9 +79,10 @@ def generate_linepolar(data):
     )
 
     fig.update_layout(
-        # title="Activity Comparison Across Multiple Metrics (Normalized)",
-        width=800,
-        height=800,
+        autosize=False,
+        width=380,  # for mobile
+        height=300,
+        margin=dict(l=20, r=20, t=30, b=30),
     )
 
     st.plotly_chart(fig, use_container_width=True)

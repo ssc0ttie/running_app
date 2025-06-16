@@ -8,21 +8,33 @@ import streamlit as st
 
 def generate_matrix(data):
 
-    # cleanup
-    data["Pace_Str"] = (
-        data["Pace"]
-        .apply(
-            lambda td: f"{int(td.total_seconds() // 60):02d}:{int(td.total_seconds() % 60):02d}"
-        )
-        .astype(str)
-    )
+    # -------------- cleanup
+    # data["Pace"] = pd.to_timedelta(data["Pace"])
+
+    # data["Pace_Str"] = (
+    #     data["Pace"]
+    #     .apply(
+    #         lambda td: f"{int(td.total_seconds() // 60):02d}:{int(td.total_seconds() % 60):02d}"
+    #     )
+    #     .astype(str)
+    # )
+
+    def format_timedelta(td):
+        if pd.isnull(td):
+            return "00:00"
+        seconds = td.total_seconds()
+        return f"{int(seconds // 60):02d}:{int(seconds % 60):02d}"
+
+        # Then apply:
+
+    data["Pace"].apply(format_timedelta)
     # drop columns
     data.drop(["TimeStamp", "Date", "Pace", "Shoe"], axis=1, inplace=True)
     st.dataframe(
         data,
         height=350,
         column_config={
-            "Pace_Str": st.column_config.TextColumn("Pace"),
+            "Pace": st.column_config.TextColumn("Pace"),
             "Date_of_Activity": st.column_config.DateColumn(
                 "Date", format=("MMM DD, ddd")
             ),
@@ -57,7 +69,7 @@ def generate_matrix(data):
             "Activity",
             "Distance",
             "Moving_Time",
-            "Pace_Str",
+            "Pace",
             "HR (bpm)",
             "Cadence (steps/min)",
             "RPE (1–10 scale)",
@@ -67,4 +79,3 @@ def generate_matrix(data):
         ],
         use_container_width=True,
     )
-    return generate_matrix

@@ -5,6 +5,9 @@ import time as tm
 from datetime import time, datetime
 import data.push_data as push
 import data.read_data as pull
+import data.read_data_local as local
+import numpy as np
+
 
 st.set_page_config(
     page_title="Operation SCSM 2025",
@@ -140,6 +143,7 @@ with st.sidebar:
                     mem_selection if mem_selection else ""
                 ),  # Get first selected member or empty
             ]
+            # new_log = pd.DataFrame(new_log)
 
             push.push_runner_data(new_log)
             ###Submit Notice
@@ -147,30 +151,38 @@ with st.sidebar:
                 tm.sleep(2)
             st.success("Done! Activity Recorded!")
             st.balloons()
+            st.badge("Success", icon=":material/check:", color="green")
 
 ###############TRAINING PLAN SECTION#############################################
-with tab2:
-    st.header("TRAINING PLAN", divider="blue")
 
-    # with st.expander("View Training Program"):
-    prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=0&single=true"
-    components.iframe(
-        prog_sheet,
-        width=1500,
-        height=800,
-    )
+
 ######METRICS########
+
+full_df = pd.DataFrame(pull.get_runner_data())
+
 with tab1:
+    # -------PULL DATA ONCE --------#
+
+    # MEMBER FILTER
+    members = sorted(full_df["Member Name"].dropna().unique())
+    members.insert(1, "All")  # Add 'All' option at the top
+    selected_member = st.selectbox("Select Member to Filter", sorted(members), index=1)
+
+    # Filter the DataFrame
+
+    # Apply filtering
+    if selected_member == "All":
+        filtered_member_df = full_df
+    else:
+        filtered_member_df = full_df[full_df["Member Name"] == selected_member]
+
     st.header("STATS", divider="blue")
-    import numpy as np
 
-    # """revert back"""
-    # df = pd.DataFrame(pull.get_runner_data())
-
-    df = pd.DataFrame(pull.get_runner_data())
     # filter non running activity
-    filtered_data = df[
-        ~df["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
+    filtered_data = filtered_member_df[
+        ~filtered_member_df["Activity"].isin(
+            ["Rest", "Cross Train", "Strength Training", 0]
+        )
     ]
 
     df = filtered_data
@@ -186,7 +198,7 @@ with tab1:
     metric_movingtime = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
     # AVG PACE
-    avg_pace = pd.to_timedelta(df["Pace"]).mean()
+    avg_pace = df["Pace"].mean()
 
     metric_pace = f"{int(avg_pace.total_seconds() // 60):02d}:{int(avg_pace.total_seconds() % 60):02d}"
 
@@ -208,35 +220,45 @@ with tab1:
     col3.metric(
         "Average Pace 🚄", value=metric_pace, label_visibility="visible", border=True
     )
-    #######CHARTS###########
+
+
+with tab2:
+    st.header("TRAINING PLAN", divider="blue")
+
+    # with st.expander("View Training Program"):
+    prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=0&single=true"
+    components.iframe(
+        prog_sheet,
+        width=1500,
+        height=800,
+    )
+###########CHARTS###########
 from visuals import sunburst as sb
 from visuals import combochart as cb
 from visuals import table as mt
 from visuals import line_polar as lp
 from visuals import stats_table as stats
 
+# -----ALL STATS TABLE-------#
 st.subheader("ALL-TIME STATS", divider="gray")
-# """revert back"""
-stats.generate_matrix_member(pull.get_runner_data())
+stats.generate_matrix_member(filtered_member_df)
 
-# Combo chart
-st.subheader("Distance x Pace", divider="gray")
-# cb.generate_combo(pull.get_runner_data())
-# """revert back"""
+# -----COMBO CHART WEEKLY-------#
+st.subheader("Weekly Distance x Pace", divider="gray")
+cb.generate_combo(filtered_member_df)
 
-cb.generate_combo(pull.get_runner_data())
+# -----COMBO CHART DAILY-------#
+st.subheader("Daily Distance x Pace", divider="gray")
+cb.generate_combo_daily(filtered_member_df)
 
-# sunburst
+# -----SUN BURST-------#
 st.subheader("Distance per Member per Week per Activity", divider="gray")
-# """revert back"""
-# sb.generate_sunburst(pull.get_runner_data())
-sb.generate_sunburst(pull.get_runner_data())
+sb.generate_sunburst(filtered_member_df)
 
-# LINE POLAR
+# -----LINE POLAR-------#
 st.subheader("Activity Comparison Across Multiple Metrics (Normalized)", divider="gray")
-# sb.generate_sunburst(pull.get_runner_data())
-lp.generate_linepolar(pull.get_runner_data())
+lp.generate_linepolar(filtered_member_df)
 
-# TABLE OF ALL ACTIVITY
+# -----ALL ACTIVITY TABLE-------#
 st.subheader("Activity List", divider="gray")
-mt.generate_matrix(pull.get_runner_data())
+mt.generate_matrix(filtered_member_df)

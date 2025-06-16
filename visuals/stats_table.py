@@ -36,28 +36,10 @@ def generate_matrix_member(data):
         )
         .astype(str)
     )
-    # # drop columns
-    # data.drop(
-    #     [
-    #         "TimeStamp",
-    #         "Date",
-    #         "Pace",
-    #         "Shoe",
-    #         "Activity",
-    #         "Pace_Str",
-    #         "HR (bpm)",
-    #         "Cadence (steps/min)",
-    #         "RPE (1–10 scale)",
-    #         "Shoe",
-    #         "Remarks",
-    #     ],
-    #     axis=1,
-    #     inplace=True,
-    # )
-    data
+
     st.dataframe(
         data,
-        height=350,
+        # height=350,
         column_config={
             "Pace_Str": st.column_config.TextColumn("Pace"),
             "Date_of_Activity": st.column_config.DateColumn(

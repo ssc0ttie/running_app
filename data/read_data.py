@@ -4,8 +4,10 @@ from oauth2client.service_account import ServiceAccountCredentials
 import streamlit as st
 import pandas as pd
 import datetime
+import numpy as np
 
 
+@st.cache_resource
 def get_gsheet_client():
     scope = [
         "https://spreadsheets.google.com/feeds",
@@ -18,17 +20,20 @@ def get_gsheet_client():
     return client
 
 
+### -- CACHED: Load all runner data with TTL -- ###
+@st.cache_data(ttl=600)  # refresh every 5 minutes
 def get_runner_data():
     client = get_gsheet_client()
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
-    # USING "for streamlit" tab - for historical
+
+    # ---- Load main/historical worksheet ---- #
     worksheet = sheet.get_worksheet_by_id(1508007696)  # or use get_worksheet_by_id(gid)
     data = worksheet.get_all_values()
 
-    df = pd.DataFrame(data)
+    df_hist = pd.DataFrame(data)
 
     # RENAME HEADERS#
-    df.rename(
+    df_hist.rename(
         columns={
             0: "TimeStamp",
             1: "Date_of_Activity",
@@ -47,45 +52,38 @@ def get_runner_data():
 
     #######DATA CLEANUP######
 
-    # WEEK LOOKUP
-    client = get_gsheet_client()
-    sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
-    week_lookup_worksheet = sheet.get_worksheet_by_id(
-        336401596
-    )  # or use get_worksheet_by_id(gid)
-    week_lookup_data = week_lookup_worksheet.get_all_records()
-
-    # streamlit_new_source - for new logs
-    newsource_worksheet = sheet.get_worksheet_by_id(1611308583)
-    new_source_data = newsource_worksheet.get_all_records()
-
-    ################################################################
-    df2 = pd.DataFrame(week_lookup_data)
-    df3 = pd.DataFrame(new_source_data)
-
-    # filter only first 3 columns
-    df2 = df2.iloc[:, 0:3]
-    # rename columns
-    df2.rename(
-        columns={"Dates": "Date", "WEEK": "Week", "Activity": "Scheduled_Activity"},
+    # ---- Load week lookup ---- #
+    week_lookup_data = sheet.get_worksheet_by_id(336401596).get_all_records()
+    df_week = pd.DataFrame(week_lookup_data)[["Dates", "WEEK", "Activity"]]
+    df_week.rename(
+        columns={
+            "Dates": "Date",
+            "WEEK": "Week",
+            "Activity": "Scheduled_Activity",
+        },
         inplace=True,
     )
+    df_week["Date"] = pd.to_datetime(df_week["Date"])
 
-    df2["Date"] = pd.to_datetime(df2["Date"])
+    # ---- Load week lookup ---- #
+    new_logs_data = sheet.get_worksheet_by_id(1611308583).get_all_records()
+    df_new = pd.DataFrame(new_logs_data)
 
-    # CONCAT HISTORICAL AND NEWLOG
-    df["Pace"] = pd.to_timedelta(df["Pace"])
-    df3["Pace"] = pd.to_timedelta(df3["Pace"])
+    # -----measure to fix pace having NAT-----#
+    def time_to_timedelta(t):
+        if isinstance(t, datetime.time):
+            return datetime.timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
+        return pd.NaT  # or handle differently if needed
 
-    df["Distance"] = pd.to_numeric(df["Distance"])
-    df3["Distance"] = pd.to_numeric(df3["Distance"])
+    df_new["Pace"] = df_new["Pace"].apply(time_to_timedelta)
 
-    # APPEND
-    df = pd.concat([df, df3], ignore_index=True)
+    # Convert pace to timedelta
+    for df in [df_hist, df_new]:
+        # df["Pace"] = pd.to_timedelta(df["Pace"], errors="coerce")
+        df["Distance"] = pd.to_numeric(df["Distance"], errors="coerce")
 
-    # cleanup main df
-    df["Date_of_Activity"] = pd.to_datetime(df["Date_of_Activity"], errors="coerce")
-    df["Pace"] = pd.to_timedelta(df["Pace"])
+    ## ------------------  Combine historical + new  --------------#
+    df = pd.concat([df_hist, df_new], ignore_index=True)
 
     def pace_str_to_minutes(pace_str):
         # """Convert a pace string 'MM:SS' to minutes as float."""
@@ -95,14 +93,20 @@ def get_runner_data():
         except:
             return None
 
-    df["Pace_str"] = df["Pace"].apply(pace_str_to_minutes)
-    df["Distance"] = pd.to_numeric(df["Distance"])
+    # ------------pace str for metrics -----------------#
 
+    df["Pace"] = pd.to_timedelta(df["Pace"], errors="coerce")
+    df["Distance"] = pd.to_numeric(df["Distance"])
+    # df["Pace_Str"] = df["Pace"].apply(
+    #     lambda td: f"{int(td.total_seconds() // 60):02d}:{int(td.total_seconds() % 60):02d}"
+    # )
     # lookup of weekname
-    df = df.merge(df2, left_on="Date_of_Activity", right_on="Date", how="left")
-    # Apply to column
+    # ------------clean lookup dates and merge -----------------#
+    df["Date_of_Activity"] = pd.to_datetime(df["Date_of_Activity"])
+    df_week["Date"] = pd.to_datetime(df_week["Date"])
+    df = df.merge(df_week, left_on="Date_of_Activity", right_on="Date", how="left")
 
     # CALCULATE MOVING TIME
     df["Moving_Time"] = df["Pace"] * df["Distance"]
 
-    return pd.DataFrame(df)
+    return df
