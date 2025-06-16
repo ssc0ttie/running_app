@@ -103,7 +103,7 @@ with st.sidebar:
         hr = st.number_input("HR (bmp)", min_value=0, max_value=220)
         cad = st.number_input("Cadence (spm)", min_value=0, max_value=200)
         rpe = st.slider("RPE", 0, 10, 1)
-        rpe2 = st.feedback(options="faces", key=int)
+        # rpe2 = st.feedback(options="faces", key=int)
         shoe = st.selectbox(
             "Shoe",
             [

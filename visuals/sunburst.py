@@ -26,19 +26,20 @@ def generate_sunburst(data):
         # margin=dict(t=50, l=0, r=0, b=0),
         legend=dict(
             orientation="h",  # Horizontal layout
-            yanchor="bottom",
-            y=-0.2,  # Push it further down
-            xanchor="center",
+            yanchor="top",
+            y=-0.02,  # Push it further down
+            xanchor="left",
             x=0.5,
+            font=dict(size=10),
         ),
         font=dict(size=12),
-        autosize=True,
-        width=380,  # for mobile
+        autosize=False,
+        # width=380,  # for mobile
         height=300,
         margin=dict(l=20, r=20, t=30, b=30),
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig)
 
 
 def generate_sunburst_member(data):
