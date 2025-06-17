@@ -27,11 +27,12 @@ def generate_matrix_member(data):
     # Format timedelta values
     def format_timedelta(td):
         if pd.isnull(td):
-            return "00:00"
+            return "00:00:00"
         seconds = int(td.total_seconds())
-        minutes = seconds // 60
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
         secs = seconds % 60
-        return f"{minutes}:{secs:02d}"
+        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
 
     # Add formatted columns
     grouped["Pace_Str"] = grouped["Pace"].apply(format_timedelta)
