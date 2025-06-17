@@ -170,12 +170,35 @@ with st.sidebar:
 
 ######METRICS########
 # # LAYOUT COLOUMNS
+from visuals import stats_table as stats
+
 tab1, tab2, tab3 = st.tabs(["📊 Stats", "🗓️ Program", "📘 Reference"])
 
 # -------PULL DATA ONCE --------#
 full_df = pd.DataFrame(pull.get_runner_data())
 
 with tab1:
+
+    # -----ALL STATS TABLE-------#
+    # st.subheader("🏆 All-Time Highlights", divider="gray")
+
+    st.markdown(
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+            🏆 All-Time Highlights
+        </div>
+    """,
+        unsafe_allow_html=True,
+    )
+    stats.generate_matrix_member(full_df)
+
     # -------------------MEMBER FILTER  -----------------------#
     members = sorted(full_df["Member Name"].dropna().unique())
     members.insert(0, "All")  # Add 'All' option at the top
@@ -304,29 +327,8 @@ with tab1:
     from visuals import combochart as cb
     from visuals import table as mt
     from visuals import line_polar as lp
-    from visuals import stats_table as stats
     from visuals import donut as dt
     from visuals import wordcloud as wc
-
-    # -----ALL STATS TABLE-------#
-    # st.subheader("🏆 All-Time Highlights", divider="gray")
-
-    st.markdown(
-        """
-        <div style="
-            color:#3a3939;
-            font-size: 20px;
-            font-weight: 600;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-            🏆 All-Time Highlights
-        </div>
-    """,
-        unsafe_allow_html=True,
-    )
-    stats.generate_matrix_member(full_df)
 
     # -----COMBO CHART WEEKLY-------#
     # st.subheader("📅🏃‍♂️ Weekly Distance vs. Pace", divider="gray")

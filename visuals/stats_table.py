@@ -7,90 +7,82 @@ import streamlit as st
 
 
 def generate_matrix_member(data):
-    ##GROUP BY
-    filtered_data = data[
-        ~data["Activity"].isin(
-            [
-                "Rest",
-                "Cross Train",
-                "Strength Training",
-                0,
-            ]
-        )
-    ]  # filter non running activity
+    from datetime import datetime, timedelta
 
-    data = filtered_data.groupby("Member Name", as_index=False).agg(
+    # Filter running-only activities
+    filtered_data = data[
+        ~data["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
+    ]
+
+    # Group by member
+    grouped = filtered_data.groupby("Member Name", as_index=False).agg(
         {
             "Distance": "sum",
             "Moving_Time": "sum",
             "Activity": "count",
-            "Pace": "mean",  # timedelta format
+            "Pace": "mean",  # timedelta
         }
     )
 
-    # cleanup
-    data["Pace_Str"] = (
-        data["Pace"]
-        .apply(
-            lambda td: f"{int(td.total_seconds() // 60):02d}:{int(td.total_seconds() % 60):02d}"
-        )
-        .astype(str)
-    )
-
+    # Format timedelta values
     def format_timedelta(td):
         if pd.isnull(td):
-            return "00:00:00"
+            return "00:00"
         seconds = int(td.total_seconds())
-        hours = seconds // 3600
-        minutes = (seconds % 3600) // 60
+        minutes = seconds // 60
         secs = seconds % 60
-        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+        return f"{minutes}:{secs:02d}"
 
-        # Then apply:
+    # Add formatted columns
+    grouped["Pace_Str"] = grouped["Pace"].apply(format_timedelta)
+    grouped["MovingTime_Str"] = grouped["Moving_Time"].apply(format_timedelta)
 
-    data["Pace_Str"] = data["Pace"].apply(format_timedelta)
-    data["MovingTime_Str"] = data["Moving_Time"].apply(format_timedelta)
+    # Create pace trend history (last 30 days)
+    pace_trend = (
+        filtered_data[["Member Name", "Date_of_Activity", "Pace"]].copy().dropna()
+    )
+    pace_trend["Pace_Minutes"] = pace_trend["Pace"].dt.total_seconds() / 60
 
+    recent_30_days = pd.Timestamp.now() - pd.Timedelta(days=30)
+    trend_grouped = (
+        pace_trend[pace_trend["Date_of_Activity"] >= recent_30_days]
+        .groupby("Member Name")
+        .agg({"Pace_Minutes": lambda x: list(x.tail(30))})
+        .reset_index()
+    )
+
+    # Merge trend data with main summary
+    final_df = pd.merge(grouped, trend_grouped, on="Member Name", how="left")
+
+    # Display in Streamlit
     st.dataframe(
-        data,
-        # height=350,
+        final_df,
         column_config={
-            "Pace_Str": st.column_config.TextColumn("Pace"),
-            "Date_of_Activity": st.column_config.DateColumn(
-                "Date", format=("MMM DD, ddd")
-            ),
-            "Activity": st.column_config.TextColumn("Actvities"),
+            "Pace_Str": st.column_config.TextColumn("Avg Pace"),
             "Distance": st.column_config.ProgressColumn(
                 "Distance (km)",
                 min_value=0,
-                max_value=data["Distance"].max(),
+                max_value=final_df["Distance"].max(),
                 format="%.1f",
             ),
             "MovingTime_Str": st.column_config.TextColumn("Moving Time"),
-            "HR (bpm)": st.column_config.NumberColumn(
-                "HR",
-                format="%d",
+            "Pace_Minutes": st.column_config.LineChartColumn(
+                "Pace Trend",
+                y_min=final_df["Pace_Minutes"]
+                .apply(lambda x: min(x) if isinstance(x, list) else None)
+                .min(),
+                y_max=final_df["Pace_Minutes"]
+                .apply(lambda x: max(x) if isinstance(x, list) else None)
+                .max(),
             ),
-            "Cadence (steps/min)": st.column_config.NumberColumn(
-                "Cadence (spm)",
-                format="%d",
-            ),
-            "RPE (1–10 scale)": st.column_config.NumberColumn(
-                "RPE",
-                min_value=1,
-                max_value=10,
-                step=1,
-            ),
-            "Shoe": st.column_config.TextColumn("Shoes"),
-            "Remarks": st.column_config.TextColumn("Remarks", width="large"),
             "Member Name": st.column_config.TextColumn("Runner"),
         },
         column_order=[
             "Member Name",
-            "Activity",
             "Distance",
             "MovingTime_Str",
             "Pace_Str",
+            "Pace_Minutes",
         ],
         use_container_width=True,
     )
