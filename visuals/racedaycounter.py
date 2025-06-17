@@ -6,6 +6,7 @@ def raceday_counter():
     today = datetime.today()
     days_left = (race_day - today).days
 
+    # <p style="font-size: 1rem; color: #2f3e46; margin-top: 0.25rem;">Stay consistent. Trust the process . You've got this 💪</p>
     if days_left > 1:
         st.markdown(
             f"""
@@ -13,7 +14,7 @@ def raceday_counter():
                         background-color: rgba(0, 0, 0, 0);">
                 <h4 style="color: #2e8b57; margin-bottom: 0.5rem;">🏁 Countdown to Race Day!</h4>
                 <p style="font-size: 2.5rem; color: #811331; margin: 0;"><strong>{days_left} Days</strong></p>
-                <p style="font-size: 1rem; color: #2f3e46; margin-top: 0.25rem;">Stay consistent. Trust the process . You've got this 💪</p>
+
             </div>
             """,
             unsafe_allow_html=True,
