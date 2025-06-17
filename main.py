@@ -16,12 +16,15 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+st.text("")
 
 rdc.raceday_counter()
 
 Welcome_msg = (
     "Celebrate progress, not perfection. You showed up — and that matters most."
 )
+st.text("")
+
 st.markdown(
     f"""
     <div style="text-align: center; padding: 0.75rem; border-radius: 0.5rem;
@@ -33,10 +36,11 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+st.text("")
 
 
 # st.header(Welcome_msg)
-st.markdown(":blue[*Use Sidebar to enter training log*] :sunglasses:")
+st.markdown(":blue[* *Use Sidebar to enter training log*] :sunglasses:")
 
 element_name = "Log Your Activity Here"
 with st.sidebar:
@@ -181,6 +185,8 @@ with st.sidebar:
 ######METRICS########
 # # LAYOUT COLOUMNS
 from visuals import stats_table as stats
+
+st.text("")
 
 tab1, tab2, tab3 = st.tabs(["📊 Stats", "🗓️ Program", "📘 Reference"])
 

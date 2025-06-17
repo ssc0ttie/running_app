@@ -10,10 +10,10 @@ def raceday_counter():
         st.markdown(
             f"""
             <div style="text-align: center; padding: 0.75rem; border-radius: 0.5rem;
-                        background-color: rgba(0, 0, 0, 0); border: 1px solid #2e8b57;">
+                        background-color: rgba(0, 0, 0, 0);">
                 <h4 style="color: #2e8b57; margin-bottom: 0.5rem;">🏁 Countdown to Race Day!</h4>
-                <p style="font-size: 2.5rem; color: #2f3e46; margin: 0;"><strong>{days_left} Days</strong></p>
-                <p style="font-size: 1rem; color: #2f3e46; margin-top: 0.25rem;">Stay consistent. You've got this 💪</p>
+                <p style="font-size: 2.5rem; color: #811331; margin: 0;"><strong>{days_left} Days</strong></p>
+                <p style="font-size: 1rem; color: #2f3e46; margin-top: 0.25rem;">Stay consistent. Trust the process . You've got this 💪</p>
             </div>
             """,
             unsafe_allow_html=True,
