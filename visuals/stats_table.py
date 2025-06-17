@@ -37,6 +37,20 @@ def generate_matrix_member(data):
         .astype(str)
     )
 
+    def format_timedelta(td):
+        if pd.isnull(td):
+            return "00:00:00"
+        seconds = int(td.total_seconds())
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        secs = seconds % 60
+        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+
+        # Then apply:
+
+    data["Pace_Str"] = data["Pace"].apply(format_timedelta)
+    data["MovingTime_Str"] = data["Moving_Time"].apply(format_timedelta)
+
     st.dataframe(
         data,
         # height=350,
@@ -52,7 +66,7 @@ def generate_matrix_member(data):
                 max_value=data["Distance"].max(),
                 format="%.1f",
             ),
-            "Time (moving time)": st.column_config.TextColumn("Moving Time"),
+            "MovingTime_Str": st.column_config.TextColumn("Moving Time"),
             "HR (bpm)": st.column_config.NumberColumn(
                 "HR",
                 format="%d",
@@ -75,7 +89,7 @@ def generate_matrix_member(data):
             "Member Name",
             "Activity",
             "Distance",
-            "Moving_Time",
+            "MovingTime_Str",
             "Pace_Str",
         ],
         use_container_width=True,

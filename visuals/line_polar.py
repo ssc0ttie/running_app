@@ -82,6 +82,7 @@ def generate_linepolar(data):
         autosize=False,
         width=380,  # for mobile
         height=300,
+        showlegend=False,
         margin=dict(l=20, r=20, t=30, b=30),
     )
 

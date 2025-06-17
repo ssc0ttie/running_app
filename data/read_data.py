@@ -21,12 +21,12 @@ def get_gsheet_client():
 
 
 ### -- CACHED: Load all runner data with TTL -- ###
-@st.cache_data(ttl=600)  # refresh every 5 minutes
+@st.cache_data(ttl=300)  # refresh every 5 minutes
 def get_runner_data():
     client = get_gsheet_client()
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
 
-    # ---- Load main/historical worksheet ---- #
+    # ---- Load main/historical worksheet (READS EVERYTHING AS STRING)---- #
     worksheet = sheet.get_worksheet_by_id(1508007696)  # or use get_worksheet_by_id(gid)
     data = worksheet.get_all_values()
 
@@ -69,38 +69,34 @@ def get_runner_data():
     new_logs_data = sheet.get_worksheet_by_id(1611308583).get_all_records()
     df_new = pd.DataFrame(new_logs_data)
 
-    # -----measure to fix pace having NAT-----#
-    def time_to_timedelta(t):
-        if isinstance(t, datetime.time):
-            return datetime.timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
-        return pd.NaT  # or handle differently if needed
-
-    df_new["Pace"] = df_new["Pace"].apply(time_to_timedelta)
-
     # Convert pace to timedelta
     for df in [df_hist, df_new]:
-        # df["Pace"] = pd.to_timedelta(df["Pace"], errors="coerce")
+        df["Pace"] = pd.to_timedelta(df["Pace"], errors="coerce")
         df["Distance"] = pd.to_numeric(df["Distance"], errors="coerce")
 
     ## ------------------  Combine historical + new  --------------#
     df = pd.concat([df_hist, df_new], ignore_index=True)
 
+    # Helper function to convert 'MM:SS' pace string to total minutes as float (if needed elsewhere)
     def pace_str_to_minutes(pace_str):
-        # """Convert a pace string 'MM:SS' to minutes as float."""
         try:
             minutes, seconds = map(int, pace_str.split(":"))
             return minutes + seconds / 60
-        except:
+        except Exception:
             return None
 
     # ------------pace str for metrics -----------------#
+    # Create a display-friendly pace string column 'Pace_Str' from the timedelta 'Pace'
+    def format_timedelta_to_pace_str(td):
+        if pd.isna(td):
+            return ""
+        total_seconds = int(td.total_seconds())
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+        return f"{minutes:02d}:{seconds:02d}"
 
-    df["Pace"] = pd.to_timedelta(df["Pace"], errors="coerce")
-    df["Distance"] = pd.to_numeric(df["Distance"])
-    # df["Pace_Str"] = df["Pace"].apply(
-    #     lambda td: f"{int(td.total_seconds() // 60):02d}:{int(td.total_seconds() % 60):02d}"
-    # )
-    # lookup of weekname
+    df["Pace_Str"] = df["Pace"].apply(format_timedelta_to_pace_str)
+
     # ------------clean lookup dates and merge -----------------#
     df["Date_of_Activity"] = pd.to_datetime(df["Date_of_Activity"])
     df_week["Date"] = pd.to_datetime(df_week["Date"])
@@ -108,5 +104,6 @@ def get_runner_data():
 
     # CALCULATE MOVING TIME
     df["Moving_Time"] = df["Pace"] * df["Distance"]
+    df["Moving_Time"] = pd.to_timedelta(df["Moving_Time"])
 
     return df

@@ -94,12 +94,21 @@ with st.sidebar:
                 "8k Tempo",
                 "9k Tempo",
                 "10k Tempo",
+                "Cooldown",
+                "Warm up",
             ],
             index=None,
         )
 
         distance = st.number_input("Distance")
-        pace = st.time_input("Pace (min/km)", value=time(8, 45), step=60)
+
+        # ----Generate Pace list ----#
+        # Generate paces as strings
+        pace_list = [f"{m:02}:{s:02}" for m in range(3, 16) for s in (range(1, 60))]
+
+        # Let user pick
+        pace_str = st.selectbox("Select Pace (min:sec)", pace_list)
+
         hr = st.number_input("HR (bmp)", min_value=0, max_value=220)
         cad = st.number_input("Cadence (spm)", min_value=0, max_value=200)
         rpe = st.slider("RPE", 0, 10, 1)
@@ -117,6 +126,7 @@ with st.sidebar:
                 "Adidas Pink",
                 "Reebok Float Ride Energy 4",
                 "Sketcher",
+                "Peppa Pig",
             ],
             index=None,
         )
@@ -136,7 +146,7 @@ with st.sidebar:
                     act_selection if act_selection else ""
                 ),  # Get first selected activity or empty
                 distance,
-                pace.strftime("0:%H:%M"),  # Convert time to string (e.g., "08:45")
+                pace_str,
                 hr,
                 cad,
                 rpe,
@@ -146,7 +156,6 @@ with st.sidebar:
                     mem_selection if mem_selection else ""
                 ),  # Get first selected member or empty
             ]
-            # new_log = pd.DataFrame(new_log)
 
             push.push_runner_data(new_log)
             ###Submit Notice
@@ -163,16 +172,14 @@ with st.sidebar:
 # # LAYOUT COLOUMNS
 tab1, tab2, tab3 = st.tabs(["📊 Stats", "🗓️ Program", "📘 Reference"])
 
-
+# -------PULL DATA ONCE --------#
 full_df = pd.DataFrame(pull.get_runner_data())
 
 with tab1:
-    # -------PULL DATA ONCE --------#
-
-    # MEMBER FILTER
+    # -------------------MEMBER FILTER  -----------------------#
     members = sorted(full_df["Member Name"].dropna().unique())
-    members.insert(1, "All")  # Add 'All' option at the top
-    selected_member = st.selectbox("Select Member to Filter", sorted(members), index=1)
+    members.insert(0, "All")  # Add 'All' option at the top
+    selected_member = st.selectbox("Select Member to Filter", members, index=0)
 
     # Filter the DataFrame
 
@@ -182,7 +189,18 @@ with tab1:
     else:
         filtered_member_df = full_df[full_df["Member Name"] == selected_member]
 
-    # st.subheader(f"📊 Overview & Stats : {selected_member}", divider="blue")
+    # -------------------WEEK FILTER  -----------------------#
+
+    weeks = sorted(filtered_member_df["Week"].dropna().unique())
+    weeks.insert(0, "All")
+    selected_weeks = st.multiselect("Select Week", weeks, default=["All"])
+
+    if not selected_weeks or "All" in selected_weeks:
+        filtered_df = filtered_member_df
+    else:
+        filtered_df = filtered_member_df[
+            filtered_member_df["Week"].isin(selected_weeks)
+        ]
 
     st.markdown(
         """
@@ -201,15 +219,14 @@ with tab1:
     )
 
     # filter non running activity
-    filtered_data = filtered_member_df[
-        ~filtered_member_df["Activity"].isin(
-            ["Rest", "Cross Train", "Strength Training", 0]
-        )
+    filtered_df = filtered_df[
+        ~filtered_df["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
     ]
 
-    df = filtered_data
+    df = filtered_df.copy()
 
-    df["Moving_Time"] = pd.to_timedelta(df["Moving_Time"])
+    # df["Moving_Time"] = pd.to_timedelta(df["Moving_Time"])
+    # df["Pace"] = pd.to_timedelta(df["Pace"])
     metric_distance = int(df["Distance"].sum())
 
     # TOTAL MOVING TIME
@@ -221,11 +238,15 @@ with tab1:
 
     # AVG PACE
     avg_pace = df["Pace"].mean()
+    if pd.isna(avg_pace):
+        metric_pace = "N/A"
+    else:
+        metric_pace = f"{int(avg_pace.total_seconds() // 60):02d}:{int(avg_pace.total_seconds() % 60):02d}"
 
-    metric_pace = f"{int(avg_pace.total_seconds() // 60):02d}:{int(avg_pace.total_seconds() % 60):02d}"
+    # Days till race
+    metric_tillrace = (datetime(2025, 12, 7) - datetime.today()).days
 
-    # .sum() / df["Pace"].len()
-
+    # Display metrics in columns
     col1, col2, col3, col4 = st.columns(4)
     col1.metric(
         "Total Distance in kms 🏃‍♀️‍➡️",
@@ -242,9 +263,6 @@ with tab1:
     col3.metric(
         "Average Pace 🚄", value=metric_pace, label_visibility="visible", border=True
     )
-
-    metric_tillrace = (datetime(2025, 12, 7) - datetime.today()).days
-
     col4.metric(
         "Days Till Race Day 🏁 👏",
         value=metric_tillrace,
@@ -258,6 +276,7 @@ with tab1:
     from visuals import table as mt
     from visuals import line_polar as lp
     from visuals import stats_table as stats
+    from visuals import donut as dt
 
     # -----ALL STATS TABLE-------#
     # st.subheader("🏆 All-Time Highlights", divider="gray")
@@ -277,7 +296,7 @@ with tab1:
     """,
         unsafe_allow_html=True,
     )
-    stats.generate_matrix_member(filtered_member_df)
+    stats.generate_matrix_member(full_df)
 
     # -----COMBO CHART WEEKLY-------#
     # st.subheader("📅🏃‍♂️ Weekly Distance vs. Pace", divider="gray")
@@ -295,7 +314,7 @@ with tab1:
     """,
         unsafe_allow_html=True,
     )
-    cb.generate_combo(filtered_member_df)
+    cb.generate_combo(filtered_df)
 
     # -----COMBO CHART DAILY-------#
     # st.subheader("📈📍 Daily Distance vs. Pace", divider="gray")
@@ -313,10 +332,10 @@ with tab1:
     """,
         unsafe_allow_html=True,
     )
-    cb.generate_combo_daily(filtered_member_df)
+    cb.generate_combo_daily(filtered_df)
 
     # -----SUN BURST-------#
-    # st.subheader("👥📊 Weekly Activity per Member", divider="gray")
+    # st.subheader("👥📊 Activity Intensity", divider="gray")
     st.markdown(
         """
         <div style="
@@ -327,11 +346,11 @@ with tab1:
             padding-bottom: 4px;
             margin-top: 20px;
             margin-bottom: 10px;">
-            👥📊 Weekly Activity per Member</div>
+            👥📊 Activity Intensity</div>
     """,
         unsafe_allow_html=True,
     )
-    sb.generate_sunburst(filtered_member_df)
+    sb.generate_bubble_chart(filtered_df)
 
     # -----LINE POLAR-------#
     # st.subheader("", divider="gray")
@@ -349,7 +368,25 @@ with tab1:
     """,
         unsafe_allow_html=True,
     )
-    lp.generate_linepolar(filtered_member_df)
+    lp.generate_linepolar(filtered_df)
+
+    # -----DONUT-------#
+    # st.subheader("", divider="gray")
+    st.markdown(
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+             👟📈! Shoe Mileage</div>
+    """,
+        unsafe_allow_html=True,
+    )
+    dt.generate_donut_chart(filtered_df)
 
     # -----ALL ACTIVITY TABLE-------#
     # st.subheader("🗂️ Activity Reference", divider="gray")
@@ -367,7 +404,7 @@ with tab1:
     """,
         unsafe_allow_html=True,
     )
-    mt.generate_matrix(filtered_member_df)
+    mt.generate_matrix(filtered_df)
 
 
 with tab2:

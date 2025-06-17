@@ -8,22 +8,14 @@ import streamlit as st
 
 def generate_matrix(data):
 
-    # -------------- cleanup
-    # data["Pace"] = pd.to_timedelta(data["Pace"])
-
-    # data["Pace_Str"] = (
-    #     data["Pace"]
-    #     .apply(
-    #         lambda td: f"{int(td.total_seconds() // 60):02d}:{int(td.total_seconds() % 60):02d}"
-    #     )
-    #     .astype(str)
-    # )
-
     def format_timedelta(td):
         if pd.isnull(td):
-            return "00:00"
-        seconds = td.total_seconds()
-        return f"{int(seconds // 60):02d}:{int(seconds % 60):02d}"
+            return "00:00:00"
+        seconds = int(td.total_seconds())
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        secs = seconds % 60
+        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
 
         # Then apply:
 

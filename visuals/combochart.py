@@ -8,6 +8,7 @@ import streamlit as st
 
 def generate_combo(data):
     ##GROUP BY
+    data["Pace"] = pd.to_timedelta(data["Pace"], errors="coerce")
     filtered_data = data[
         ~data["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
     ]  # filter non running activity
@@ -16,6 +17,7 @@ def generate_combo(data):
     pace_data = act_date_group["Pace"].mean()
 
     # for plotting
+    pace_data["Pace"] = pd.to_timedelta(pace_data["Pace"], errors="coerce")
     pace_data["Pace_Mins"] = pace_data["Pace"].dt.total_seconds() / 60
 
     pace_data["Pace_Str"] = pace_data["Pace"].apply(
@@ -58,6 +60,7 @@ def generate_combo(data):
         autosize=True,
         width=380,  # for mobile
         height=300,
+        showlegend=False,
         margin=dict(l=20, r=20, t=30, b=30),
     )
     st.plotly_chart(fig, use_container_width=True, key="combo_chart")
@@ -115,6 +118,7 @@ def generate_combo_daily(data):
         autosize=True,
         width=380,  # for mobile
         height=300,
+        showlegend=False,
         margin=dict(l=20, r=20, t=30, b=30),
     )
     st.plotly_chart(fig, use_container_width=True, key="combo_chart_daily")
