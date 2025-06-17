@@ -22,11 +22,18 @@ rdc.raceday_counter()
 Welcome_msg = (
     "Celebrate progress, not perfection. You showed up — and that matters most."
 )
-
 st.markdown(
-    '<p style="color:#3a3939; font-size:25px;">Celebrate progress, not perfection. You showed up — and that matters most.</p>',
+    f"""
+    <div style="text-align: center; padding: 0.75rem; border-radius: 0.5rem;
+                background-color: rgba(0, 0, 0, 0); border-left: 4px solid #2e8b57; margin-bottom: 1rem;">
+        <p style="font-size: 1.1rem; color: #2f3e46; font-style: italic; margin: 0;">
+            {Welcome_msg}
+        </p>
+    </div>
+    """,
     unsafe_allow_html=True,
 )
+
 
 # st.header(Welcome_msg)
 st.markdown(":blue[*Use Sidebar to enter training log*] :sunglasses:")
