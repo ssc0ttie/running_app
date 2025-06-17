@@ -202,6 +202,26 @@ with tab1:
             filtered_member_df["Week"].isin(selected_weeks)
         ]
 
+    with st.popover("⏱️ Open Race Predictor"):
+        from models import race_predictor as rp
+
+        st.markdown(
+            """
+            <div style="
+                color:#3a3939;
+                font-size: 20px;
+                font-weight: 600;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 4px;
+                margin-top: 20px;
+                margin-bottom: 10px;">
+                ⏱️ Predict Your Race Time</div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        rp.race_predictor(filtered_member_df)
+
     st.markdown(
         """
         <div style="
@@ -236,6 +256,8 @@ with tab1:
     seconds = total_seconds % 60
     metric_movingtime = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
+    # NUMBER OF RUNS
+    metric_number_runs = int(df["Activity"].count())
     # AVG PACE
     avg_pace = df["Pace"].mean()
     if pd.isna(avg_pace):
@@ -247,9 +269,16 @@ with tab1:
     metric_tillrace = (datetime(2025, 12, 7) - datetime.today()).days
 
     # Display metrics in columns
-    col1, col2, col3, col4 = st.columns(4)
+    col0, col1, col2, col3, col4 = st.columns(5)
+
+    col0.metric(
+        "Runs 🏃‍♀️‍➡️",
+        value=metric_number_runs,
+        label_visibility="visible",
+        border=True,
+    )
     col1.metric(
-        "Total Distance in kms 🏃‍♀️‍➡️",
+        "Total Distance 🏃💨KⓂ️",
         value=metric_distance,
         label_visibility="visible",
         border=True,
@@ -277,6 +306,7 @@ with tab1:
     from visuals import line_polar as lp
     from visuals import stats_table as stats
     from visuals import donut as dt
+    from visuals import wordcloud as wc
 
     # -----ALL STATS TABLE-------#
     # st.subheader("🏆 All-Time Highlights", divider="gray")
@@ -317,22 +347,23 @@ with tab1:
     cb.generate_combo(filtered_df)
 
     # -----COMBO CHART DAILY-------#
-    # st.subheader("📈📍 Daily Distance vs. Pace", divider="gray")
-    st.markdown(
-        """
-        <div style="
-            color:#3a3939;
-            font-size: 20px;
-            font-weight: 600;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-            📈📍 Daily Distance vs. Pace</div>
-    """,
-        unsafe_allow_html=True,
-    )
-    cb.generate_combo_daily(filtered_df)
+    with st.expander("Daily Distance vs. Pace"):
+        # st.subheader("📈📍 Daily Distance vs. Pace", divider="gray")
+        st.markdown(
+            """
+            <div style="
+                color:#3a3939;
+                font-size: 20px;
+                font-weight: 600;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 4px;
+                margin-top: 20px;
+                margin-bottom: 10px;">
+                📈📍 Daily Distance vs. Pace</div>
+        """,
+            unsafe_allow_html=True,
+        )
+        cb.generate_combo_daily(filtered_df)
 
     # -----SUN BURST-------#
     # st.subheader("👥📊 Activity Intensity", divider="gray")
@@ -387,6 +418,24 @@ with tab1:
         unsafe_allow_html=True,
     )
     dt.generate_donut_chart(filtered_df)
+
+    # -----WORDCLOUD-------#
+    # st.subheader("", divider="gray")
+    st.markdown(
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+             🏃💬 Runner's Word Cloud</div>
+    """,
+        unsafe_allow_html=True,
+    )
+    wc.generate_wordcloud(filtered_df)
 
     # -----ALL ACTIVITY TABLE-------#
     # st.subheader("🗂️ Activity Reference", divider="gray")
