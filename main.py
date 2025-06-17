@@ -7,6 +7,7 @@ import data.push_data as push
 import data.read_data as pull
 import data.read_data_local as local
 import numpy as np
+from visuals import racedaycounter as rdc
 
 
 st.set_page_config(
@@ -15,6 +16,8 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+rdc.raceday_counter()
 
 Welcome_msg = (
     "Celebrate progress, not perfection. You showed up — and that matters most."
