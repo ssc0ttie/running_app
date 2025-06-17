@@ -475,11 +475,11 @@ with tab2:
         unsafe_allow_html=True,
     )
     # with st.expander("View Training Program"):
-    prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=0&single=true"
+    prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
     components.iframe(
         prog_sheet,
-        width=1500,
-        height=800,
+        width=500,
+        height=1000,
     )
 
 with tab3:
