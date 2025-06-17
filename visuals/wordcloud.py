@@ -44,7 +44,7 @@ def generate_wordcloud(data):
     ).generate(filtered_text)
 
     # Display
-    st.subheader("📝 Word Cloud from Runner Remarks")
+    # st.subheader("📝 Word Cloud from Runner Remarks")
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.imshow(wordcloud, interpolation="bilinear")
     ax.axis("off")

@@ -82,8 +82,15 @@ def generate_linepolar(data):
         autosize=False,
         width=380,  # for mobile
         height=300,
-        showlegend=False,
-        margin=dict(l=20, r=20, t=30, b=30),
+        showlegend=True,
+        legend=dict(
+            orientation="h",  # horizontal legend
+            yanchor="bottom",  # anchor legend at the bottom
+            y=-0.3,  # move below chart (adjust if it's too low)
+            xanchor="center",
+            x=0.5,  # center horizontally
+        ),
+        margin=dict(l=20, r=20, t=30, b=60),
     )
 
     st.plotly_chart(fig, use_container_width=True)

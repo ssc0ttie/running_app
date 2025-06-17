@@ -413,7 +413,7 @@ with tab1:
             padding-bottom: 4px;
             margin-top: 20px;
             margin-bottom: 10px;">
-            ⚖️📊 Activity Comparison (Normalized)</div>
+            ⚖️📊 Activity Comparison</div>
     """,
         unsafe_allow_html=True,
     )
