@@ -2,7 +2,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import streamlit as st
 import pandas as pd
-import data.read_data as rd
+from data import read_data_uncached as rd
 
 
 def push_runner_data(data):

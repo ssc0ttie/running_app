@@ -4,8 +4,10 @@ import streamlit.components.v1 as components
 import time as tm
 from datetime import time, datetime
 import data.push_data as push
-import data.read_data as pull
-import data.read_data_local as local
+from data import read_data_cached as pullc
+from data import read_data_uncached as pulluc
+
+# import data.read_data_local as local
 import numpy as np
 from visuals import racedaycounter as rdc
 
@@ -43,6 +45,7 @@ st.text("")
 st.markdown(":blue[* *Use Sidebar to enter training log*] :sunglasses:")
 
 element_name = "Log Your Activity Here"
+
 with st.sidebar:
     st.sidebar.title("🏃‍♂️ Runner's Training Log")
     st.sidebar.markdown("Use this panel to input your training data.")
@@ -118,10 +121,22 @@ with st.sidebar:
 
         # ----Generate Pace list ----#
         # Generate paces as strings
-        pace_list = [f"{m:02}:{s:02}" for m in range(3, 16) for s in (range(1, 60))]
+        pace_list = [
+            f"{h:02}:{m:02}:{s:02}"
+            for h in range(0, 2)
+            for m in range(0, 15)
+            for s in (range(0, 60))
+        ]
+
+        pace_list = [f"{m:02}:{s:02}" for m in range(0, 15) for s in (range(0, 60))]
+
+        # display_paces = [f"{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
+        value_paces = [f"0:{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
+        pace_map = dict(zip(pace_list, value_paces))
 
         # Let user pick
-        pace_str = st.selectbox("Select Pace (min:sec)", pace_list)
+        pace_display = st.selectbox("Select Pace (min:sec)", pace_list)
+        pace_str = pace_map[pace_display]
 
         hr = st.number_input("HR (bmp)", min_value=0, max_value=220)
         cad = st.number_input("Cadence (spm)", min_value=0, max_value=200)
@@ -172,12 +187,31 @@ with st.sidebar:
             ]
 
             push.push_runner_data(new_log)
-            ###Submit Notice
-            with st.spinner("Wait lang...", show_time=True):
-                tm.sleep(2)
-            st.success("Done! Activity Recorded!")
-            st.balloons()
-            st.badge("Success", icon=":material/check:", color="green")
+            st.session_state["just_submitted"] = False
+            # st.session_state["just_notified"] = True
+
+            if st.session_state["just_submitted"] is True:
+
+                with st.spinner("Wait lang...", show_time=True):
+                    tm.sleep(2)
+                st.success("Done! Activity Recorded!")
+                st.badge("Success", icon=":material/check:", color="green")
+                st.balloons()
+                # st.rerun()  # Triggers a refresh to load fresh data
+                st.session_state["just_submitted"] = False
+
+            ##Submit Notice
+            # if (
+            #     st.session_state.get("just_submitted")
+            #     is False
+            #     # and st.session_state.get("just_notified") is True
+            # ):
+            #     with st.spinner("Wait lang...", show_time=True):
+            #         tm.sleep(2)
+            #     st.success("Done! Activity Recorded!")
+            #     st.balloons()
+            #     st.badge("Success", icon=":material/check:", color="green")
+            #     # st.session_state["just_notified"] = False  # prevent repeated message
 
 ###############TRAINING PLAN SECTION#############################################
 
@@ -191,7 +225,18 @@ st.text("")
 tab1, tab2, tab3 = st.tabs(["📊 Stats", "🗓️ Program", "📘 Reference"])
 
 # -------PULL DATA ONCE --------#
-full_df = pd.DataFrame(pull.get_runner_data())
+# -----load un cached when not submitting
+if "just_submitted" not in st.session_state:
+    st.session_state["just_submitted"] = False
+
+
+if st.session_state["just_submitted"] == False:
+    df = pulluc.get_runner_data()
+    st.session_state["just_submitted"] = False
+else:
+    df = pullc.get_runner_data()
+
+full_df = pd.DataFrame(df)
 
 with tab1:
 
@@ -308,7 +353,7 @@ with tab1:
     metric_tillrace = (datetime(2025, 12, 7) - datetime.today()).days
 
     # Display metrics in columns
-    col0, col1, col2, col3, col4 = st.columns(5)
+    col0, col1, col2, col3 = st.columns(4)
 
     col0.metric(
         "Runs 🏃‍♀️‍➡️",
@@ -330,12 +375,6 @@ with tab1:
     )
     col3.metric(
         "Average Pace 🚄", value=metric_pace, label_visibility="visible", border=True
-    )
-    col4.metric(
-        "Days Till Race Day 🏁 👏",
-        value=metric_tillrace,
-        label_visibility="visible",
-        border=True,
     )
 
     ###########CHARTS###########
@@ -471,7 +510,7 @@ with tab1:
     """,
         unsafe_allow_html=True,
     )
-    mt.generate_matrix(filtered_df)
+    mt.generate_matrix(full_df)
 
 
 with tab2:

@@ -51,11 +51,16 @@ def generate_matrix_member(data):
         .agg({"Pace_Minutes": lambda x: list(x.tail(30))})
         .reset_index()
     )
+    # Add inverted pace values for visual y-axis flip
+    trend_grouped["Inverted_Pace_Minutes"] = trend_grouped["Pace_Minutes"].apply(
+        lambda lst: [-x for x in lst] if isinstance(lst, list) else None
+    )
 
     # Merge trend data with main summary
     final_df = pd.merge(grouped, trend_grouped, on="Member Name", how="left")
 
     # Display in Streamlit
+
     st.dataframe(
         final_df,
         column_config={
@@ -68,7 +73,7 @@ def generate_matrix_member(data):
             ),
             "MovingTime_Str": st.column_config.TextColumn("Moving Time"),
             "Pace_Minutes": st.column_config.LineChartColumn(
-                "Pace Trend",
+                "Pace Trend (lower is better)",
                 y_min=final_df["Pace_Minutes"]
                 .apply(lambda x: min(x) if isinstance(x, list) else None)
                 .min(),
