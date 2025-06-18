@@ -46,9 +46,36 @@ st.markdown(":blue[* *Use Sidebar to enter training log*] :sunglasses:")
 
 element_name = "Log Your Activity Here"
 
+
+# ----------------- Confirmation Dialog -----------------
+@st.dialog("Confirm Entry?")
+def confirm_submission(new_log):
+    st.write("Are you sure you want to submit this entry?")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("✅ Yes, Submit"):
+            # Simulate push to backend
+            st.session_state["submitted_data"] = new_log
+            # st.success("✅ Activity Recorded!")
+            st.session_state["submitted"] = True
+            st.session_state["pending_log"] = None
+            # st.balloons()
+            st.rerun()
+
+    with col2:
+        if st.button("❌ Cancel"):
+            st.warning("Submission cancelled.")
+            st.session_state.submitted = False
+            st.session_state["pending_log"] = None
+            st.rerun()
+
+
 with st.sidebar:
     st.sidebar.title("🏃‍♂️ Runner's Training Log")
     st.sidebar.markdown("Use this panel to input your training data.")
+
+    ####----- FORM --------------######
     with st.form("activity_log", clear_on_submit=True, border=True):
         time_stamp_ = datetime.now()
         time_stamp = time_stamp_.strftime("%Y-%m-%d")
@@ -159,12 +186,13 @@ with st.sidebar:
             ],
             index=None,
         )
-        remarks = st.text_area("Remarks")
+        remarks = st.text_area(
+            "Remarks", placeholder="How did the session feel?", key="remarks_input"
+        )
 
         # Every form must have a submit button.
-        submitted = st.form_submit_button("Submit Log")
 
-        #############PUSH DATA####################
+        submitted = st.form_submit_button("Submit Log", type="primary")
 
         if submitted:
 
@@ -185,33 +213,24 @@ with st.sidebar:
                     mem_selection if mem_selection else ""
                 ),  # Get first selected member or empty
             ]
+            st.session_state.pending_log = new_log
+            confirm_submission(new_log)
 
-            push.push_runner_data(new_log)
-            st.session_state["just_submitted"] = False
-            # st.session_state["just_notified"] = True
+    ####----- AFTER DIALOG --------------######
+    if "submitted" not in st.session_state:
+        st.session_state["submitted"] = False
+    if "pending_log" not in st.session_state:
+        st.session_state["pending_log"] = None
 
-            if st.session_state["just_submitted"] is True:
+    if st.session_state.get("submitted") and st.session_state.get("submitted_data"):
+        push.push_runner_data(st.session_state["submitted_data"])
+        st.success("✅ Your activity log was successfully recorded! Latest entry:")
+        st.write(st.session_state["submitted_data"])
+        st.balloons()
+        # Reset state so it doesn't rerun again
+        st.session_state["submitted"] = False
+        st.session_state["submitted_data"] = None
 
-                with st.spinner("Wait lang...", show_time=True):
-                    tm.sleep(2)
-                st.success("Done! Activity Recorded!")
-                st.badge("Success", icon=":material/check:", color="green")
-                st.balloons()
-                # st.rerun()  # Triggers a refresh to load fresh data
-                st.session_state["just_submitted"] = False
-
-            ##Submit Notice
-            # if (
-            #     st.session_state.get("just_submitted")
-            #     is False
-            #     # and st.session_state.get("just_notified") is True
-            # ):
-            #     with st.spinner("Wait lang...", show_time=True):
-            #         tm.sleep(2)
-            #     st.success("Done! Activity Recorded!")
-            #     st.balloons()
-            #     st.badge("Success", icon=":material/check:", color="green")
-            #     # st.session_state["just_notified"] = False  # prevent repeated message
 
 ###############TRAINING PLAN SECTION#############################################
 
