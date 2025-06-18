@@ -52,7 +52,11 @@ def generate_combo(data):
             x=dist_data["Week"],
             y=dist_data["Distance"],
             name="Distance (km)",
-            text=dist_data["Distance"].astype(int),
+            text=(
+                dist_data["Distance"].astype(int).astype(str)
+                + "<br>"
+                + dist_data["Distance_Pct_Change_Label"].astype(str)
+            ),
             marker=dict(color="mediumaquamarine"),
         )
     )
@@ -69,21 +73,6 @@ def generate_combo(data):
             mode="lines+markers+text",
             marker=dict(size=5, line=dict(width=2, color="crimson")),
         ),
-    )
-
-    # Add line chart for Pace % change (secondary y axis)
-    fig.add_trace(
-        go.Scatter(
-            x=dist_data["Week"],
-            y=dist_data["Distance"]
-            + dist_data["Distance"] * 0.4,  # position slightly above bar
-            mode="text",
-            text=dist_data["Distance_Pct_Change_Label"],
-            textposition="bottom center",
-            showlegend=False,
-            yaxis="y1",
-            hoverinfo="skip",
-        )
     )
 
     # Add second y-axis for Pace
