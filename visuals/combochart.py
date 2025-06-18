@@ -23,6 +23,26 @@ def generate_combo(data):
     pace_data["Pace_Str"] = pace_data["Pace"].apply(
         lambda td: f"{int(td.total_seconds() // 60):02d}:{int(td.total_seconds() % 60):02d}"
     )
+
+    # Calculate week-over-week percent change for Distance and Pace
+    dist_data["Distance_Pct_Change"] = dist_data["Distance"].pct_change() * 100
+    pace_data["Pace_Pct_Change"] = pace_data["Pace_Mins"].pct_change() * 100
+
+    # Create delta labels with colored arrows (Unicode) and % with 1 decimal
+    def format_delta(val):
+        if pd.isna(val):
+            return ""
+        arrow = "<span style='color:green'>&#9650;</span>" if val > 0 else "🔻"
+        color = "green" if val > 0 else "red"
+        return f"<span style='color:{color}'>{arrow} {abs(val):.1f}%</span>"
+
+    dist_data["Distance_Pct_Change_Label"] = dist_data["Distance_Pct_Change"].apply(
+        format_delta
+    )
+    pace_data["Pace_Pct_Change_Label"] = pace_data["Pace_Pct_Change"].apply(
+        format_delta
+    )
+
     # create subplot
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
@@ -49,6 +69,20 @@ def generate_combo(data):
             mode="lines+markers+text",
             marker=dict(size=5, line=dict(width=2, color="crimson")),
         ),
+    )
+
+    # Add line chart for Pace % change (secondary y axis)
+    fig.add_trace(
+        go.Scatter(
+            x=dist_data["Week"],
+            y=pace_data["Pace_Mins"] + 0.5,  # position slightly above pace points
+            mode="text",
+            text=dist_data["Distance_Pct_Change_Label"],
+            textposition="bottom center",
+            showlegend=False,
+            yaxis="y2",
+            hoverinfo="skip",
+        )
     )
 
     # Add second y-axis for Pace

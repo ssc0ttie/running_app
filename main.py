@@ -510,7 +510,7 @@ with tab1:
     """,
         unsafe_allow_html=True,
     )
-    mt.generate_matrix(full_df)
+    mt.generate_matrix(filtered_member_df)
 
 
 with tab2:
