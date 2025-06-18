@@ -30,7 +30,7 @@ def generate_linepolar(data):
         lambda td: f"{int(td.total_seconds() // 60):02d}:{int(td.total_seconds() % 60):02d}"
     )
 
-    agg_df["Pace"] = agg_df["Pace"].dt.total_seconds().astype(float)
+    agg_df["Pace"] = agg_df["Pace"].dt.total_seconds().astype(float) / 60
 
     # Normalize the measures
     measures = ["Distance", "Cadence (steps/min)", "RPE (1–10 scale)", "Pace"]
@@ -55,8 +55,11 @@ def generate_linepolar(data):
     )
     # Add actual values
     melted["Metric"] = melted["Metric"].str.replace("_norm", "")
-    melted["Actual Value"] = pd.concat(
-        [df_normalized[m + "_actual"] for m in measures], ignore_index=True
+    melted["Actual Value"] = round(
+        pd.concat(
+            [df_normalized[m + "_actual"] for m in measures], ignore_index=True
+        ).astype(float),
+        1,
     )
 
     # Plot
@@ -67,14 +70,15 @@ def generate_linepolar(data):
         color="Metric",
         line_close=True,
         markers=True,
-        # text="Actual Value",
+        text="Actual Value",
+        # text_color="rgba(0, 0, 0, 0)",
         template="plotly",
     )
 
     fig.update_traces(
         fill="toself",
         textposition="top center",
-        textfont=dict(color="blue"),
+        textfont=dict(color="rgba(0, 0, 0, 0)"),
         hovertemplate="Metric: %{theta}<br>Actual: %{text}<extra></extra>",
     )
 
