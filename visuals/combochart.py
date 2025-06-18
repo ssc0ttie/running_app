@@ -75,10 +75,10 @@ def generate_combo(data):
     fig.add_trace(
         go.Scatter(
             x=dist_data["Week"],
-            y=pace_data["Pace_Mins"] + 0.5,  # position slightly above pace points
+            y=dist_data["Distance"] + 30,  # position slightly above pace points
             mode="text",
             text=dist_data["Distance_Pct_Change_Label"],
-            textposition="bottom center",
+            textposition="top center",
             showlegend=False,
             yaxis="y2",
             hoverinfo="skip",
