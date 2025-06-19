@@ -60,6 +60,22 @@ with st.popover("💡 How to Use This Page"):
         unsafe_allow_html=True,
     )
 
+with st.popover("💡 How to Use This Page"):
+    st.markdown(
+        """
+        <ul>
+            <li>📋 <strong>Logs</strong>: Log your training.</li>
+            <li>📊 <strong>Stats</strong>: Track your progress.</li>
+            <li>🏃 <strong>Program</strong>: Follow your plan.</li>
+            <li>🏋️ <strong>Strength</strong>: Browse strength workouts.</li>
+        </ul>
+        <p><em>Tip:</em> If switching apps (Strava, Garmin, etc.),the app will try to rerun, wait for the app to load and continue with your log.</p>
+        <p><strong>PS:</strong> If it lags, don't worry — it's just *thinking really hard*. 🧠💻</p>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 # element_name = "Log Your Activity Here"
 
 
