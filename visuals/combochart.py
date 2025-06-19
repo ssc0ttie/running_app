@@ -9,6 +9,10 @@ import streamlit as st
 def generate_combo(data):
     ##GROUP BY
     data["Pace"] = pd.to_timedelta(data["Pace"], errors="coerce")
+    data["Cadence (steps/min)"] = pd.to_numeric(
+        data["Cadence (steps/min)"], errors="coerce"
+    )
+
     filtered_data = data[
         ~data["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
     ]  # filter non running activity
@@ -154,6 +158,9 @@ def generate_combo(data):
 def generate_combo_daily(data):
     ##GROUP BY
     data["Pace"] = pd.to_timedelta(data["Pace"], errors="coerce")
+    data["Cadence (steps/min)"] = pd.to_numeric(
+        data["Cadence (steps/min)"], errors="coerce"
+    )
     filtered_data = data[
         ~data["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
     ]  # filter non running activity
