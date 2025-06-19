@@ -41,11 +41,18 @@ def generate_combo(data):
         color = "green" if val > 0 else "red"
         return f"<span style='color:{color}'>{arrow} {abs(val):.1f}%</span>"
 
+    def format_delta_rev(val):
+        if pd.isna(val):
+            return ""
+        arrow = "🔻" if val > 0 else "<span style='color:green'>&#9650;</span>"
+        color = "red" if val > 0 else "green"
+        return f"<span style='color:{color}'>{arrow} {abs(val):.1f}%</span>"
+
     dist_data["Distance_Pct_Change_Label"] = dist_data["Distance_Pct_Change"].apply(
         format_delta
     )
     pace_data["Pace_Pct_Change_Label"] = pace_data["Pace_Pct_Change"].apply(
-        format_delta
+        format_delta_rev
     )
     cadence_data["Cadence_Pct_Change_Label"] = cadence_data["Cadence_Pct_Change"].apply(
         format_delta
@@ -84,7 +91,7 @@ def generate_combo(data):
         title="Weekly Distance (km)",
         yaxis_title="KM",
         xaxis_title="Week",
-        height=300,
+        height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
     )
@@ -109,10 +116,12 @@ def generate_combo(data):
         title="Weekly Average Pace (min/km)",
         yaxis_title="Pace (min/km)",
         xaxis_title="Week",
-        height=300,
+        height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
     )
+
+    fig_line.update_yaxes(autorange="reversed")
 
     st.plotly_chart(fig_line, use_container_width=True, key="pace_chart")
 
@@ -135,7 +144,7 @@ def generate_combo(data):
         title="Weekly Average Cadence (spm)",
         yaxis_title="Steps per Minute",
         xaxis_title="Week",
-        height=300,
+        height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
     )
@@ -177,11 +186,18 @@ def generate_combo_daily(data):
         color = "green" if val > 0 else "red"
         return f"<span style='color:{color}'>{arrow} {abs(val):.1f}%</span>"
 
+    def format_delta_rev(val):
+        if pd.isna(val):
+            return ""
+        arrow = "🔻" if val > 0 else "<span style='color:green'>&#9650;</span>"
+        color = "red" if val > 0 else "green"
+        return f"<span style='color:{color}'>{arrow} {abs(val):.1f}%</span>"
+
     dist_data["Distance_Pct_Change_Label"] = dist_data["Distance_Pct_Change"].apply(
         format_delta
     )
     pace_data["Pace_Pct_Change_Label"] = pace_data["Pace_Pct_Change"].apply(
-        format_delta
+        format_delta_rev
     )
     cadence_data["Cadence_Pct_Change_Label"] = cadence_data["Cadence_Pct_Change"].apply(
         format_delta
@@ -220,7 +236,7 @@ def generate_combo_daily(data):
         title="Daily Distance (km)",
         yaxis_title="KM",
         xaxis_title="Date",
-        height=300,
+        height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
     )
@@ -245,10 +261,11 @@ def generate_combo_daily(data):
         title="Daily Average Pace (min/km)",
         yaxis_title="Pace (min/km)",
         xaxis_title="Date",
-        height=300,
+        height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
     )
+    fig_line.update_yaxes(autorange="reversed")
 
     st.plotly_chart(fig_line, use_container_width=True, key="pace_chart_daily")
 
@@ -271,7 +288,7 @@ def generate_combo_daily(data):
         title="Daily Average Cadence (spm)",
         yaxis_title="Steps per Minute",
         xaxis_title="Date",
-        height=300,
+        height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
     )
