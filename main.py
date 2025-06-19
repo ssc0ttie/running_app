@@ -45,7 +45,7 @@ st.text("")
 # st.markdown(":blue[* *Navigate through the tabs here ⬇️*] :sunglasses:")
 st.markdown(
     """
-    <h2>💡 How to Use This Page</h2>
+    <h5>💡 How to Use This Page</h5>
     <p>Use tabs below to explore your training logs, stats, programs, and strength workouts. 💪</p>
     """,
     unsafe_allow_html=True,
