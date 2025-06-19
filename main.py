@@ -42,7 +42,15 @@ st.text("")
 
 
 # # st.header(Welcome_msg)
-st.markdown(":blue[* *Navigate through the tabs here ⬇️*] :sunglasses:")
+# st.markdown(":blue[* *Navigate through the tabs here ⬇️*] :sunglasses:")
+st.markdown(
+    """
+    <h3>💡 How to Use This Page</h3>
+    <p>Use the tabs above to explore your training logs, stats, programs, and strength workouts. 💪</p>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 # element_name = "Log Your Activity Here"
 
@@ -71,167 +79,6 @@ def confirm_submission(new_log):
             st.rerun()
 
 
-# with st.sidebar:
-#     st.sidebar.title("🏃‍♂️ Runner's Training Log")
-#     st.sidebar.markdown("Use this panel to input your training data.")
-
-#     ####----- FORM --------------######
-#     with st.form("activity_log", clear_on_submit=True, border=True):
-#         time_stamp_ = datetime.now()
-#         time_stamp = time_stamp_.strftime("%Y-%m-%d")
-#         mem_selection = st.selectbox(
-#             "Members",
-#             ["Aiza", "Chona", "Fraulein", "Lead", "Maxine", "Scott"],
-#             index=None,
-#         )
-#         # member_name = st.markdown(f"Select Member", {mem_selection})
-#         date = st.date_input("Date of Activity", value=datetime.today())
-
-#         # Activity list
-#         act_selection = st.selectbox(
-#             "Activity",
-#             [
-#                 "5k LSD Road@ Zone 2 Pace",
-#                 "6k LSD Road@ Zone 2 Pace",
-#                 "8k LSD Road@ Zone 2 Pace",
-#                 "10k LSD Road@ Zone 2 Pace",
-#                 "10k LSD Trail@ Zone 2 Pace",
-#                 "11k LSD Road@ Zone 2 Pace",
-#                 "12k LSD Road@ Zone 2 Pace",
-#                 "14k LSD Road@ Zone 2 Pace",
-#                 "15k LSD Road@ Zone 2 Pace",
-#                 "15k LSD Trail@ Zone 2 Pace",
-#                 "17k LSD Road@ Zone 2 Pace",
-#                 "18k LSD Road@ Zone 2 Pace",
-#                 "19k LSD Road@ Zone 2 Pace",
-#                 "20k LSD Road@ Zone 2 Pace",
-#                 "20k LSD Trail@ Zone 2 Pace",
-#                 "21k LSD Trail@ Zone 2 Pace",
-#                 "24k LSD Trail@ Zone 2 Pace",
-#                 "26k LSD Road@ Zone 2 Pace",
-#                 "27k LSD Trail@ Zone 2 Pace",
-#                 "28k LSD Road@ Zone 2 Pace",
-#                 "31k LSD Road@ Zone 2 Pace",
-#                 "20 Mins Easy Run",
-#                 "30 Mins Easy Run",
-#                 "35 Mins Easy Run",
-#                 "40 Mins Easy Run",
-#                 "45 Mins Easy Run",
-#                 "50 Mins Easy Run",
-#                 "55 Mins Easy Run",
-#                 "60 Mins Easy Run",
-#                 "RACE DAY",
-#                 "Rest",
-#                 "Speed Work (Zone 4 : 3x400M)",
-#                 "Speed Work (Zone 4 : 4x400M)",
-#                 "Speed Work (Zone 4 : 5x400M)",
-#                 "Speed Work (Zone 4 : 6x400M)",
-#                 "Strength Training",
-#                 "Cross Train",
-#                 "1k Tempo",
-#                 "2k Tempo",
-#                 "3k Tempo",
-#                 "4k Tempo",
-#                 "5k Tempo",
-#                 "6k Tempo",
-#                 "7k Tempo",
-#                 "8k Tempo",
-#                 "9k Tempo",
-#                 "10k Tempo",
-#                 "Cooldown",
-#                 "Warm up",
-#             ],
-#             index=None,
-#         )
-
-#         distance = st.number_input("Distance")
-
-#         # ----Generate Pace list ----#
-#         # Generate paces as strings
-#         pace_list = [
-#             f"{h:02}:{m:02}:{s:02}"
-#             for h in range(0, 2)
-#             for m in range(0, 15)
-#             for s in (range(0, 60))
-#         ]
-
-#         pace_list = [f"{m:02}:{s:02}" for m in range(0, 15) for s in (range(0, 60))]
-
-#         # display_paces = [f"{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
-#         value_paces = [f"0:{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
-#         pace_map = dict(zip(pace_list, value_paces))
-
-#         # Let user pick
-#         pace_display = st.selectbox("Select Pace (min:sec)", pace_list)
-#         pace_str = pace_map[pace_display]
-
-#         hr = st.number_input("HR (bmp)", min_value=0, max_value=220)
-#         cad = st.number_input("Cadence (spm)", min_value=0, max_value=200)
-#         rpe = st.slider("RPE", 0, 10, 1)
-#         # rpe2 = st.feedback(options="faces", key=int)
-#         shoe = st.selectbox(
-#             "Shoe",
-#             [
-#                 "Adidas Adizero SL2",
-#                 "Asics Purple",
-#                 "Boston 12",
-#                 "NB Rebel v3",
-#                 "Nike",
-#                 "Nike Winflo 10",
-#                 "Novablast 3",
-#                 "Adidas Pink",
-#                 "Reebok Float Ride Energy 4",
-#                 "Sketcher",
-#                 "Peppa Pig",
-#             ],
-#             index=None,
-#         )
-#         remarks = st.text_area(
-#             "Remarks", placeholder="How did the session feel?", key="remarks_input"
-#         )
-
-#         # Every form must have a submit button.
-
-#         submitted = st.form_submit_button("Submit Log", type="primary")
-
-#         if submitted:
-
-#             new_log = [
-#                 time_stamp,  # Convert datetime to ISO string
-#                 date.isoformat(),  # Convert date to ISO string
-#                 (
-#                     act_selection if act_selection else ""
-#                 ),  # Get first selected activity or empty
-#                 distance,
-#                 pace_str,
-#                 hr,
-#                 cad,
-#                 rpe,
-#                 shoe if shoe else "",  # Get first selected shoe or empty
-#                 remarks,
-#                 (
-#                     mem_selection if mem_selection else ""
-#                 ),  # Get first selected member or empty
-#             ]
-#             st.session_state.pending_log = new_log
-#             confirm_submission(new_log)
-
-#     ####----- AFTER DIALOG --------------######
-#     if "submitted" not in st.session_state:
-#         st.session_state["submitted"] = False
-#     if "pending_log" not in st.session_state:
-#         st.session_state["pending_log"] = None
-
-#     if st.session_state.get("submitted") and st.session_state.get("submitted_data"):
-#         push.push_runner_data(st.session_state["submitted_data"])
-#         st.success("✅ Your activity log was successfully recorded! Latest entry:")
-#         st.write(st.session_state["submitted_data"])
-#         st.balloons()
-#         # Reset state so it doesn't rerun again
-#         st.session_state["submitted"] = False
-#         st.session_state["submitted_data"] = None
-
-
 # ###############TRAINING PLAN SECTION#############################################
 
 
@@ -241,8 +88,14 @@ from visuals import stats_table as stats
 
 st.text("")
 
-tab0, tab1, tab2, tab3 = st.tabs(
-    ["✎📓Log Training", "📊 Stats", "🗓️ Program", "📘 Reference"]
+tab0, tab1, tab2, tab3, tab4 = st.tabs(
+    [
+        "✎📓Log Training",
+        "📊 Stats",
+        "🗓️ Program",
+        "📘 Reference",
+        "🏋🏻‍♂️ Strength Training",
+    ]
 )
 
 # -------PULL DATA ONCE --------#
@@ -742,3 +595,8 @@ with tab3:
     from visuals import referencetab as ref
 
     ref.ref_tab()
+
+with tab4:
+    from visuals import strength_ref as sref
+
+    sref.general_str_ref()
