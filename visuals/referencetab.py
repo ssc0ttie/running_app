@@ -42,7 +42,7 @@ def ref_tab():
 
     # Create tab layout
 
-    st.header("📘 Training Activity Reference")
+    st.header("📘 Types of Activity")
 
     for ref in reference_data:
         with st.container():

@@ -37,10 +37,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-st.text("")
-st.text("")
-
-
 # # st.header(Welcome_msg)
 # st.markdown(":blue[* *Navigate through the tabs here ⬇️*] :sunglasses:")
 
@@ -65,10 +61,11 @@ with st.popover("💡 How to Use This Page"):
         """
         <p>Welcome! Here's how to navigate this page:</p>
         <ul>
-            <li>📋 <strong>Logs</strong>: Log your training.</li>
+            <li>📓 <strong>Logs</strong>: Log your training.</li>
             <li>📊 <strong>Stats</strong>: Track your progress.</li>
-            <li>🏃 <strong>Program</strong>: Follow your plan.</li>
-            <li>🏋️ <strong>Strength</strong>: Browse strength workouts.</li>
+            <li>🗓️ <strong>Program</strong>: Follow your marathon plan.</li>
+            <li>📘 <strong>Types of Activity</strong>: Learn about activity categories.</li>
+            <li>🏋🏻‍♂️ <strong>Strength</strong>: Browse strength workouts.</li>
         </ul>
         <p><em>Tip:</em> If switching apps (Strava, Garmin, etc.),the app will try to rerun, wait for the app to load and continue with your log.</p>
         <p><strong>PS:</strong> If it lags, don't worry — it's just *thinking really hard*. 🧠💻</p>
@@ -115,11 +112,11 @@ st.text("")
 
 tab0, tab1, tab2, tab3, tab4 = st.tabs(
     [
-        "✎📓Log Training",
+        "📓Log",
         "📊 Stats",
         "🗓️ Program",
-        "📘 Reference",
-        "🏋🏻‍♂️ Strength Training",
+        "📘 Activities",
+        "🏋🏻‍♂️ Str Training",
     ]
 )
 
