@@ -12,7 +12,7 @@ def raceday_counter():
             f"""
             <div style="text-align: center; padding: 0.75rem; border-radius: 0.5rem;
                         background-color: rgba(0, 0, 0, 0);">
-                <h4 style="color: #2e8b57; margin-bottom: 0.5rem;">🏁 Countdown to Race Day!</h4>
+                <h4 style="color: #2e8b57; margin-bottom: 0.5rem;">🏁 Countdown to Race Day! 🏁</h4>
                 <p style="font-size: 2.5rem; color: #811331; margin: 0;"><strong>{days_left} Days</strong></p>
 
             </div>
