@@ -598,7 +598,7 @@ with tab1:
             padding-bottom: 4px;
             margin-top: 20px;
             margin-bottom: 10px;">
-            📅🏃‍♂️ Weekly Distance vs. Pace</div>
+            📅🏃‍♂️ Weekly Key Metrics</div>
     """,
         unsafe_allow_html=True,
     )
