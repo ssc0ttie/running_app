@@ -110,7 +110,7 @@ def generate_combo(data):
             y=pace_data["Pace_Mins"],
             mode="lines+markers+text",
             text=pace_labels,
-            textposition="top center",
+            textposition="auto",
             name="Pace",
             line=dict(color="#986868", width=2),
             marker=dict(size=5, line=dict(width=2, color="crimson")),
@@ -138,7 +138,7 @@ def generate_combo(data):
             mode="lines+markers+text",
             fill="tozeroy",
             text=cadence_labels,
-            textposition="top center",
+            textposition="auto",
             name="Cadence",
             line=dict(color="royalblue", width=2),
             marker=dict(size=6),
@@ -152,6 +152,8 @@ def generate_combo(data):
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
     )
+
+    fig_area.update_yaxes(range=[120, cadence_data["Cadence (steps/min)"].max() + 30])
     st.plotly_chart(fig_area, use_container_width=True, key="cadence_chart")
 
 
@@ -258,7 +260,7 @@ def generate_combo_daily(data):
             y=pace_data["Pace_Mins"],
             mode="lines+markers+text",
             text=pace_labels,
-            textposition="top center",
+            textposition="auto",
             name="Pace",
             line=dict(color="#986868", width=2),
             marker=dict(size=5, line=dict(width=2, color="crimson")),
@@ -285,7 +287,7 @@ def generate_combo_daily(data):
             mode="lines+markers+text",
             fill="tozeroy",
             text=cadence_labels,
-            textposition="top center",
+            textposition="auto",
             name="Cadence",
             line=dict(color="royalblue", width=2),
             marker=dict(size=6),
@@ -299,4 +301,5 @@ def generate_combo_daily(data):
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
     )
+    fig_area.update_yaxes(range=[120, cadence_data["Cadence (steps/min)"].max() + 30])
     st.plotly_chart(fig_area, use_container_width=True, key="cadence_chart_daily")
