@@ -43,14 +43,22 @@ st.text("")
 
 # # st.header(Welcome_msg)
 # st.markdown(":blue[* *Navigate through the tabs here ⬇️*] :sunglasses:")
-st.markdown(
-    """
-    <h5>💡 How to Use This Page</h5>
-    <p>Use tabs below to explore your training logs, stats, programs, and strength workouts. 💪</p>
-    """,
-    unsafe_allow_html=True,
-)
 
+with st.popover("💡 How to Use This Page"):
+    st.markdown(
+        """
+        <p>Welcome! Here's how to navigate this page:</p>
+        <ul>
+            <li><strong>📋 Logs:</strong> View and record your training sessions.</li>
+            <li><strong>📊 Stats:</strong> See trends in your weekly mileage, pace, and more.</li>
+            <li><strong>🏃 Program:</strong> Follow your marathon training calendar.</li>
+            <li><strong>🏋️ Strength:</strong> Browse and log strength workouts.</li>
+        </ul>
+        <p><em>Tip:</em> If you're switching between apps (like Strava, Garmin, Apple Health) for too long, the app might start to rerun and your entry might be lost — wait for the app to reload and continue with your log.</p>
+        <p><strong>PS:</strong> There's a lot going on behind the scenes... if it lags for a second, it's not broken — it's just *thinking really hard*. 🧠💻</p>
+        """,
+        unsafe_allow_html=True,
+    )
 
 # element_name = "Log Your Activity Here"
 
