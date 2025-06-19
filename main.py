@@ -18,7 +18,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-st.text("")
 
 rdc.raceday_counter()
 
@@ -39,14 +38,15 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.text("")
+st.text("")
 
 
 # # st.header(Welcome_msg)
 # st.markdown(":blue[* *Navigate through the tabs here ⬇️*] :sunglasses:")
 st.markdown(
     """
-    <h3>💡 How to Use This Page</h3>
-    <p>Use the tabs above to explore your training logs, stats, programs, and strength workouts. 💪</p>
+    <h2>💡 How to Use This Page</h2>
+    <p>Use tabs below to explore your training logs, stats, programs, and strength workouts. 💪</p>
     """,
     unsafe_allow_html=True,
 )
@@ -128,26 +128,26 @@ with tab0:
             padding-bottom: 4px;
             margin-top: 20px;
             margin-bottom: 10px;">
-            🏃‍♂️ Runner's Training Log
+            ✎ᝰ.📓 Runner's Training Log 🏃‍♂️
         </div>
     """,
         unsafe_allow_html=True,
     )
-    st.markdown(
-        """
-        <div style="
-            color:#3a3939;
-            font-size: 16px;
-            font-weight: 600;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-            ✎ᝰ.📓🗒 ˎˊ˗Use this panel to input your training data.
-        </div>
-    """,
-        unsafe_allow_html=True,
-    )
+    # st.markdown(
+    #     """
+    #     <div style="
+    #         color:#3a3939;
+    #         font-size: 16px;
+    #         font-weight: 600;
+    #         border-bottom: 1px solid #ccc;
+    #         padding-bottom: 4px;
+    #         margin-top: 20px;
+    #         margin-bottom: 10px;">
+    #         ✎ᝰ.📓Use this panel to input your training data.
+    #     </div>
+    # """,
+    #     unsafe_allow_html=True,
+    # )
     # st.sidebar.title("🏃‍♂️ Runner's Training Log")
     # st.sidebar.markdown("Use this panel to input your training data.")
 

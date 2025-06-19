@@ -11,7 +11,7 @@ def raceday_counter():
         st.markdown(
             f"""
             <div style="text-align: center; padding: 0.75rem; border-radius: 0.5rem;
-                        background-color: rgba(0, 0, 0, 0);">
+                        background-color: rgba(1, 0, 0, 0);">
                 <h4 style="color: #2e8b57; margin-bottom: 0.5rem;">🏁 Countdown to Race Day! 🏁</h4>
                 <p style="font-size: 2.5rem; color: #811331; margin: 0;"><strong>{days_left} Days</strong></p>
 
@@ -19,6 +19,7 @@ def raceday_counter():
             """,
             unsafe_allow_html=True,
         )
+
     elif days_left == 1:
         st.markdown(
             """
