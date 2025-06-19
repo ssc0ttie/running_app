@@ -63,6 +63,7 @@ with st.popover("💡 How to Use This Page"):
 with st.popover("💡 How to Use This Page"):
     st.markdown(
         """
+        <p>Welcome! Here's how to navigate this page:</p>
         <ul>
             <li>📋 <strong>Logs</strong>: Log your training.</li>
             <li>📊 <strong>Stats</strong>: Track your progress.</li>
