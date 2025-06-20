@@ -63,9 +63,9 @@ with st.popover("💡 How to Use This Page"):
         <ul>
             <li>📓 <strong>Logs</strong>: Log your training.</li>
             <li>📊 <strong>Stats</strong>: Track your progress.</li>
-            <li>🗓️ <strong>Program</strong>: Follow your marathon plan.</li>
-            <li>📘 <strong>Types of Activity</strong>: Learn about activity categories.</li>
-            <li>🏋🏻‍♂️ <strong>Strength</strong>: Browse strength workouts.</li>
+            <li>🗓️ <strong>Program</strong>: Your marathon plan.</li>
+            <li>📘 <strong>Types of Activity</strong>: Learn about your activities.</li>
+            <li>🏋🏻‍♂️ <strong>Strength</strong>: Your strength workouts.</li>
         </ul>
         <p><em>Tip:</em> If switching apps (Strava, Garmin, etc.),the app will try to rerun, wait for the app to load and continue with your log.</p>
         <p><strong>PS:</strong> If it lags, don't worry — it's just *thinking really hard*. 🧠💻</p>
@@ -174,7 +174,7 @@ with tab0:
     # st.sidebar.markdown("Use this panel to input your training data.")
 
     ####----- FORM --------------######
-    with st.form("activity_log", clear_on_submit=True, border=True):
+    with st.form("activity_log", clear_on_submit=False, border=True):
         time_stamp_ = datetime.now()
         time_stamp = time_stamp_.strftime("%Y-%m-%d")
         mem_selection = st.selectbox(
@@ -251,6 +251,7 @@ with tab0:
                     "Peppa Pig",
                     "Others (Inform Scott)",
                     "On Cloud ni Frau",
+                    "Pink Nimbus 27",
                 ]
             ),
             index=None,
@@ -340,7 +341,7 @@ with tab1:
 
     weeks = sorted(filtered_member_df["Week"].dropna().unique())
     weeks.insert(0, "All")
-    selected_weeks = st.multiselect("Select Week", weeks, default=["All"])
+    selected_weeks = st.multiselect("Select Week(s) to Compare", weeks, default=["All"])
 
     if not selected_weeks or "All" in selected_weeks:
         filtered_df = filtered_member_df
@@ -480,7 +481,7 @@ with tab1:
     cb.generate_combo(filtered_df)
 
     # -----COMBO CHART DAILY-------#
-    with st.expander("Daily Distance vs. Pace"):
+    with st.expander("View Daily Key Metrics"):
         # st.subheader("📈📍 Daily Distance vs. Pace", divider="gray")
         st.markdown(
             """
@@ -492,7 +493,7 @@ with tab1:
                 padding-bottom: 4px;
                 margin-top: 20px;
                 margin-bottom: 10px;">
-                📈📍 Daily Distance vs. Pace</div>
+                📈📍 Daily Key Metrics</div>
         """,
             unsafe_allow_html=True,
         )
