@@ -110,13 +110,14 @@ from visuals import stats_table as stats
 
 st.text("")
 
-tab0, tab1, tab2, tab3, tab4 = st.tabs(
+tab0, tab1, tab2, tab3, tab4, tab5 = st.tabs(
     [
         "📓Log",
         "📊 Stats",
         "🗓️ Program",
         "📘 Activities",
         "🏋🏻‍♂️ Str Training",
+        "🎯 Coach",
     ]
 )
 
@@ -173,7 +174,7 @@ with tab0:
     # st.sidebar.title("🏃‍♂️ Runner's Training Log")
     # st.sidebar.markdown("Use this panel to input your training data.")
 
-    ####----- FORM --------------######
+    ###----- FORM --------------######
     with st.form("activity_log", clear_on_submit=False, border=True):
         time_stamp_ = datetime.now()
         time_stamp = time_stamp_.strftime("%Y-%m-%d")
@@ -204,27 +205,38 @@ with tab0:
                 ]
             ),
             index=None,
+            placeholder="Select an activity",
         )
 
-        distance = st.number_input("Distance")
+        distance = st.number_input("Distance", placeholder="Enter distance")
 
         # ----Generate Pace list ----#
         # Generate paces as strings
         pace_list = [
             f"{h:02}:{m:02}:{s:02}"
             for h in range(0, 2)
-            for m in range(0, 15)
+            for m in range(3, 15)
             for s in (range(0, 60))
         ]
+        # Add default value at the beginning
+        default_pace = "00:00:00"
 
-        pace_list = [f"{m:02}:{s:02}" for m in range(0, 15) for s in (range(0, 60))]
+        pace_list = [f"{m:02}:{s:02}" for m in range(3, 15) for s in (range(0, 60))]
 
         # display_paces = [f"{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
-        value_paces = [f"0:{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
+        value_paces = [f"0:{m:02}:{s:02}" for m in range(3, 15) for s in range(0, 60)]
         pace_map = dict(zip(pace_list, value_paces))
+        pace_display = st.selectbox("Select Pace (min:sec)", pace_list, index=100)
 
-        # Let user pick
-        pace_display = st.selectbox("Select Pace (min:sec)", pace_list)
+        # # Handle pace selection logic
+        # if act_selection in ["Cooldown", "Warm up", "Rest", None]:
+        #     pace_display = st.selectbox("Select Pace (min:sec)", options=[default_pace])
+        # else:
+        #     pace_display = st.selectbox(
+        #         "Select Pace (min:sec)", options=[default_pace] + pace_list, index=0
+        #     )
+        # pace_map["00:00:00"] = "0:00:00"
+
         pace_str = pace_map[pace_display]
 
         hr = st.number_input("HR (bmp)", min_value=0, max_value=220)
@@ -587,7 +599,7 @@ with tab1:
     """,
         unsafe_allow_html=True,
     )
-    mt.generate_matrix(filtered_member_df)
+    mt.generate_matrix(filtered_df)
 
 
 with tab2:
@@ -623,3 +635,30 @@ with tab4:
     from visuals import strength_ref as sref
 
     sref.general_str_ref()
+
+with tab5:
+    from visuals import weekly_remarks as wr
+
+    # -----ALL STATS TABLE-------#
+    # st.subheader("🏆 All-Time Highlights", divider="gray")
+
+    st.markdown(
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+            🎯 Weekly Remarks
+        </div>
+    """,
+        unsafe_allow_html=True,
+    )
+
+    coach_df = full_df[full_df["Week"].isin(selected_weeks)]
+    stats.generate_matrix_coach(coach_df)
+
+    wr.weekly_remarks()
