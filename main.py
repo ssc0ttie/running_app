@@ -66,6 +66,8 @@ with st.popover("💡 How to Use This Page"):
             <li>🗓️ <strong>Program</strong>: Your marathon plan.</li>
             <li>📘 <strong>Types of Activity</strong>: Learn about your activities.</li>
             <li>🏋🏻‍♂️ <strong>Strength</strong>: Your strength workouts.</li>
+            <li>🎯 <strong>Coach</strong>: Your Weekly Remarks.</li>
+            
         </ul>
         <p><em>Tip:</em> If switching apps (Strava, Garmin, etc.),the app will try to rerun, wait for the app to load and continue with your log.</p>
         <p><strong>PS:</strong> If it lags, don't worry — it's just *thinking really hard*. 🧠💻</p>
@@ -638,9 +640,6 @@ with tab4:
 
 with tab5:
     from visuals import weekly_remarks as wr
-
-    # -----ALL STATS TABLE-------#
-    # st.subheader("🏆 All-Time Highlights", divider="gray")
 
     st.markdown(
         """
