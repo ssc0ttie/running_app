@@ -638,6 +638,9 @@ with tab4:
 
     sref.general_str_ref()
 
+
+# --------filter df
+
 with tab5:
     from visuals import weekly_remarks as wr
 
@@ -656,8 +659,15 @@ with tab5:
     """,
         unsafe_allow_html=True,
     )
+    #     coach_df = (
+    #     full_df
+    #     if selected_weeks == "All"
+    #     else full_df[full_df["Week"].isin(selected_weeks)]
+    # )
 
-    coach_df = full_df[full_df["Week"].isin(selected_weeks)]
-    stats.generate_matrix_coach(coach_df)
+    #####----WEEKLY SUMMARY TABLE --- ###
+
+    # coach_df = full_df[full_df["Week"].isin(selected_weeks)]
+    # stats.generate_matrix_coach(coach_df)
 
     wr.weekly_remarks()

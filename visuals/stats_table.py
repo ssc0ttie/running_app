@@ -156,6 +156,7 @@ def generate_matrix_coach(data):
     grouped["Target"] = grouped["Member Name"].apply(
         lambda name: mileage_goal["Scott"] if name == "Scott" else mileage_goal["All"]
     )
+
     st.dataframe(
         grouped,
         column_config={
