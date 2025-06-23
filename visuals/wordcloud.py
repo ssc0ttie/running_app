@@ -31,6 +31,8 @@ def generate_wordcloud(data):
             "talaga",
             "tlaga",
             "mejo",
+            "kaso",
+            "baka",
         ]
     )  # Tagalog-specific common filler words
 
@@ -45,7 +47,7 @@ def generate_wordcloud(data):
 
     # Display
     # st.subheader("📝 Word Cloud from Runner Remarks")
-    fig, ax = plt.subplots(figsize=(7, 7))
+    fig, ax = plt.subplots(figsize=(5, 5))
     ax.imshow(wordcloud, interpolation="bilinear")
     ax.axis("off")
     st.pyplot(fig)

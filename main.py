@@ -478,21 +478,22 @@ with tab1:
 
     # -----COMBO CHART WEEKLY-------#
     # st.subheader("📅🏃‍♂️ Weekly Distance vs. Pace", divider="gray")
-    st.markdown(
-        """
-        <div style="
-            color:#3a3939;
-            font-size: 20px;
-            font-weight: 600;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-            📅🏃‍♂️ Weekly Key Metrics</div>
-    """,
-        unsafe_allow_html=True,
-    )
-    cb.generate_combo(filtered_df)
+    with st.expander("View Weekly Key Metrics"):
+        st.markdown(
+            """
+            <div style="
+                color:#3a3939;
+                font-size: 20px;
+                font-weight: 600;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 4px;
+                margin-top: 20px;
+                margin-bottom: 10px;">
+                📅🏃‍♂️ Weekly Key Metrics</div>
+        """,
+            unsafe_allow_html=True,
+        )
+        cb.generate_combo(filtered_df)
 
     # -----COMBO CHART DAILY-------#
     with st.expander("View Daily Key Metrics"):
@@ -531,23 +532,23 @@ with tab1:
     )
     sb.generate_bubble_chart(filtered_df)
 
-    # -----LINE POLAR-------#
-    # st.subheader("", divider="gray")
-    st.markdown(
-        """
-        <div style="
-            color:#3a3939;
-            font-size: 20px;
-            font-weight: 600;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-            ⚖️📊 Activity Comparison</div>
-    """,
-        unsafe_allow_html=True,
-    )
-    lp.generate_linepolar(filtered_df)
+    # # -----LINE POLAR-------#
+    # # st.subheader("", divider="gray")
+    # st.markdown(
+    #     """
+    #     <div style="
+    #         color:#3a3939;
+    #         font-size: 20px;
+    #         font-weight: 600;
+    #         border-bottom: 1px solid #ccc;
+    #         padding-bottom: 4px;
+    #         margin-top: 20px;
+    #         margin-bottom: 10px;">
+    #         ⚖️📊 Activity Comparison</div>
+    # """,
+    #     unsafe_allow_html=True,
+    # )
+    # lp.generate_linepolar(filtered_df)
 
     # -----DONUT-------#
     # st.subheader("", divider="gray")
