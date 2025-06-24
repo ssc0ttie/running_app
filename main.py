@@ -217,16 +217,16 @@ with tab0:
         pace_list = [
             f"{h:02}:{m:02}:{s:02}"
             for h in range(0, 2)
-            for m in range(3, 15)
+            for m in range(0, 15)
             for s in (range(0, 60))
         ]
         # Add default value at the beginning
         default_pace = "00:00:00"
 
-        pace_list = [f"{m:02}:{s:02}" for m in range(3, 15) for s in (range(0, 60))]
+        pace_list = [f"{m:02}:{s:02}" for m in range(0, 15) for s in (range(0, 60))]
 
         # display_paces = [f"{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
-        value_paces = [f"0:{m:02}:{s:02}" for m in range(3, 15) for s in range(0, 60)]
+        value_paces = [f"0:{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
         pace_map = dict(zip(pace_list, value_paces))
         pace_display = st.selectbox("Select Pace (min:sec)", pace_list, index=100)
 
