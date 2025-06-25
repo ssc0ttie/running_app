@@ -629,8 +629,8 @@ with tab2:
     prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
     components.iframe(
         prog_sheet,
-        width=500,
-        height=1000,
+        width=400,
+        height=400,
     )
 
 with tab3:
