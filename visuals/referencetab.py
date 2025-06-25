@@ -55,3 +55,55 @@ def ref_tab():
             """,
                 unsafe_allow_html=True,
             )
+    st.header("🧭 Activity Priority")
+    st.markdown(
+        """
+            ### 🏃‍♀️ Run Types – Priority & Importance
+
+            ---
+
+            #### 🥇 **Must-Do (Core Runs)**  
+            - 🟢 **LSD @ Zone 2 (Road)**  
+            ⭐⭐⭐⭐⭐ – *Most important*. Builds endurance and aerobic base. Don’t skip.  
+            - 🟢 **LSD Trail @ Zone 2**  
+            ⭐⭐⭐⭐☆ – Adds variety and time-on-feet with less impact. Helpful especially for trail races.  
+
+            ---
+
+            #### 🥈 **Should-Do (Performance Boosters)**  
+            - 🔵 **Tempo Run**  
+            ⭐⭐⭐⭐☆ – Improves lactate threshold and race pace. Do if energy allows.  
+            - 🔵 **Easy Run**  
+            ⭐⭐⭐⭐☆ – Helps recovery and builds volume. Can be skipped *sometimes* if needed.  
+
+            ---
+
+            #### 🥉 **Optional (Complementary)**  
+            - 🟡 **Speed Work (6x400m @ Zone 5)**  
+            ⭐⭐⭐☆ – Good for sharpness and running form. Skip if feeling tired or still building base.  
+            - 🟡 **Strength Training**  
+            ⭐⭐⭐☆ – Injury prevention & muscle balance. 2x/week is ideal. Bodyweight okay.  
+
+            ---
+
+            #### 🌀 **Substitutes & Support**  
+            - ⚪ **Cross Training**  
+            ⭐⭐☆☆☆ – Useful substitute for recovery or injury. Non-essential but helpful.  
+            - 🔴 **Rest**  
+            ⭐⭐⭐⭐⭐ – *Absolutely critical*. One full day weekly. No compromise.  
+
+            ---
+
+            ### ✅ If Busy, You Can Skip:
+            - Cross Train  
+            - 1 Easy Run  
+            - Speed Work (if tired)  
+            - 1 Strength Session
+
+            ### ❌ But NEVER Skip:
+            - Long Run (LSD)  
+            - Rest Day  
+            - Taper Weeks  
+            """,
+        unsafe_allow_html=True,
+    )
