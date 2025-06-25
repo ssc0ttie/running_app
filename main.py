@@ -188,8 +188,9 @@ with tab0:
         )
         # member_name = st.markdown(f"Select Member", {mem_selection})
         sg_now = datetime.now(ZoneInfo("Asia/Singapore"))
+        now_ = datetime.now()
 
-        date = st.date_input("Date of Activity", value=sg_now.date())
+        date = st.date_input("Date of Activity", value=now_.date())
 
         # Activity list
         act_selection = st.selectbox(

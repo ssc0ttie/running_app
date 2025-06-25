@@ -8,7 +8,8 @@ def raceday_counter():
     race_day = race_day.date()
 
     today = sg_now.date()
-    days_left = (race_day - today).days
+    now_ = datetime.now()
+    days_left = (race_day - now_.date()).days
 
     # <p style="font-size: 1rem; color: #2f3e46; margin-top: 0.25rem;">Stay consistent. Trust the process . You've got this 💪</p>
     if days_left > 1:
