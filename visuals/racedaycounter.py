@@ -1,9 +1,13 @@
 def raceday_counter():
     import streamlit as st
     from datetime import datetime
+    from zoneinfo import ZoneInfo
 
+    sg_now = datetime.now(ZoneInfo("Asia/Singapore"))
     race_day = datetime(2025, 12, 7)
-    today = datetime.today()
+    race_day = race_day.date()
+
+    today = sg_now.date()
     days_left = (race_day - today).days
 
     # <p style="font-size: 1rem; color: #2f3e46; margin-top: 0.25rem;">Stay consistent. Trust the process . You've got this 💪</p>

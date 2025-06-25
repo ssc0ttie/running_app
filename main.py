@@ -6,6 +6,7 @@ from datetime import time, datetime
 import data.push_data as push
 from data import read_data_cached as pullc
 from data import read_data_uncached as pulluc
+from zoneinfo import ZoneInfo
 
 # import data.read_data_local as local
 import numpy as np
@@ -186,7 +187,9 @@ with tab0:
             index=None,
         )
         # member_name = st.markdown(f"Select Member", {mem_selection})
-        date = st.date_input("Date of Activity", value=datetime.today())
+        sg_now = datetime.now(ZoneInfo("Asia/Singapore"))
+
+        date = st.date_input("Date of Activity", value=sg_now.date())
 
         # Activity list
         act_selection = st.selectbox(
@@ -228,7 +231,7 @@ with tab0:
         # display_paces = [f"{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
         value_paces = [f"0:{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
         pace_map = dict(zip(pace_list, value_paces))
-        pace_display = st.selectbox("Select Pace (min:sec)", pace_list, index=100)
+        pace_display = st.selectbox("Select Pace (min:sec)", pace_list, index=360)
 
         # # Handle pace selection logic
         # if act_selection in ["Cooldown", "Warm up", "Rest", None]:
@@ -243,7 +246,7 @@ with tab0:
 
         hr = st.number_input("HR (bmp)", min_value=0, max_value=220)
         cad = st.number_input("Cadence (spm)", min_value=0, max_value=200)
-        rpe = st.slider("RPE", 0, 10, 1)
+        rpe = st.slider("RPE", 0, 10, 0)
         # rpe2 = st.feedback(options="faces", key=int)
         shoe = st.selectbox(
             "Shoe",
