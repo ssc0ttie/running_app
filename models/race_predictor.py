@@ -67,6 +67,8 @@ def race_predictor(data):
     )
     predicted_time_min = model.predict(input_df)[0]
 
+    r2_score = model.score(X, y)
+
     # --- Format time --- #
     hours = int(predicted_time_min // 60)
     minutes = int(predicted_time_min % 60)
@@ -82,6 +84,7 @@ def race_predictor(data):
     # --- Display --- #
     st.success(f"🏁 Predicted Time for {distance}km: **{formatted_time}**")
     st.info(f"🔥 Estimated Pace: **{formatted_pace}**")
+    st.info(f"✨ Prediction Score: **{r2_score:.0%}**")
 
     ## -------------------RIEGEL METHOD COMPARISON -------------------##
 

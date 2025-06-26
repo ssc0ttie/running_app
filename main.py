@@ -142,23 +142,6 @@ with tab0:
     """,
         unsafe_allow_html=True,
     )
-    # st.markdown(
-    #     """
-    #     <div style="
-    #         color:#3a3939;
-    #         font-size: 16px;
-    #         font-weight: 600;
-    #         border-bottom: 1px solid #ccc;
-    #         padding-bottom: 4px;
-    #         margin-top: 20px;
-    #         margin-bottom: 10px;">
-    #         ✎ᝰ.📓Use this panel to input your training data.
-    #     </div>
-    # """,
-    #     unsafe_allow_html=True,
-    # )
-    # st.sidebar.title("🏃‍♂️ Runner's Training Log")
-    # st.sidebar.markdown("Use this panel to input your training data.")
 
     ###----- FORM --------------######
     with st.form("activity_log", clear_on_submit=False, border=True):
@@ -351,19 +334,6 @@ with tab1:
         filtered_df = filtered_member_df[
             filtered_member_df["Week"].isin(selected_weeks)
         ]
-
-    # # st.subheader(" ", divider="darkgreen")
-    # # st.subheader(selected_member, divider="darkgreen")
-    # ##--- MEMBER NAME HEADER ---- ##
-
-    # st.markdown(
-    #     f"""
-    #     <div style="display: flex; justify-content: left; padding: 0.75rem;">
-    #         <h3 style="color: #986868; margin: 0; text-decoration: underline;">👤 {selected_member}</h3>
-    #     </div>
-    #     """,
-    #     unsafe_allow_html=True,
-    # )
 
     with st.popover("⏱️ Open Race Predictor"):
         from models import race_predictor as rp
