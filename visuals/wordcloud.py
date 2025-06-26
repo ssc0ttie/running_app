@@ -33,6 +33,10 @@ def generate_wordcloud(data):
             "mejo",
             "kaso",
             "baka",
+            "yung",
+            "tska",
+            "nalang",
+            "nung",
         ]
     )  # Tagalog-specific common filler words
 

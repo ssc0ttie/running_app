@@ -67,13 +67,18 @@ def generate_bubble_chart(data):
             "HR (bpm)": "mean",
             "Distance": "mean",
             "Pace": "mean",
+            "RPE (1–10 scale)": "count",
         }
     )
+
+    bubble_data["Count"] = clean_data.groupby("Activity").size().values
     # ---label ---#
     bubble_data["Label"] = (
         bubble_data["Activity"]
-        + "<br>HR: "
+        + "<br>Avg HR: "
         + bubble_data["HR (bpm)"].round(0).astype(str)
+        + "<br> Freq: "
+        + bubble_data["Count"].round(0).astype(str)
     )
 
     bubble_data["Pace (min)"] = bubble_data["Pace"].dt.total_seconds() / 60
@@ -82,13 +87,13 @@ def generate_bubble_chart(data):
         bubble_data,
         x="Distance",
         y="Pace (min)",
-        size="RPE (1–10 scale)",
+        size="Count",
         color="HR (bpm)",
-        hover_name="HR (bpm)",
+        # hover_name="HR (bpm)",
         text="Label",
         size_max=40,
         color_continuous_scale="Bluered",
-        title="Intensity: HR (color), Pace (Y-axis), RPE (size)",
+        title="Intensity: HR (color), Pace (Y-axis), Frequency (size)",
     )
 
     fig.update_traces(
