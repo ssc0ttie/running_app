@@ -19,6 +19,10 @@ def generate_combo(data):
         data = data[data["Activity"].isin(selected_activity)]
 
     ##GROUP BY
+    data["Week"] = [
+        week[:1] + week[-2:] for week in data["Week"]
+    ]  # shorten weekname before groupby
+
     data = data[data["Distance"].notnull() & (data["Distance"] > 0)]
 
     data["Pace"] = pd.to_timedelta(data["Pace"], errors="coerce")
@@ -316,9 +320,16 @@ def generate_combo_daily(data):
     ]  # filter non running activity
     act_date_group = filtered_data.groupby("Date", as_index=False)
     dist_data = act_date_group["Distance"].sum()
+    dist_data["Date_Label"] = dist_data["Date"].dt.strftime("%d %b %a")
+
     pace_data = act_date_group["Pace"].mean()
+    pace_data["Date_Label"] = pace_data["Date"].dt.strftime("%d %b %a")
+
     cadence_data = act_date_group["Cadence (steps/min)"].mean()
+    cadence_data["Date_Label"] = cadence_data["Date"].dt.strftime("%d %b %a")
+
     hr_data = act_date_group["HR (bpm)"].mean()
+    hr_data["Date_Label"] = hr_data["Date"].dt.strftime("%d %b %a")
 
     # Convert pace to minutes
     pace_data["Pace"] = pd.to_timedelta(pace_data["Pace"], errors="coerce")
@@ -404,7 +415,13 @@ def generate_combo_daily(data):
             showgrid=False,
             title="",  # Removes Y-axis title
         ),
-        xaxis_title="Date",
+        # xaxis_title="Date",
+        xaxis=dict(
+            title="",
+            tickmode="array",
+            tickvals=dist_data["Date"],
+            ticktext=dist_data["Date_Label"],
+        ),
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
@@ -435,6 +452,12 @@ def generate_combo_daily(data):
             title="",  # Removes Y-axis title
         ),
         xaxis_title="Date",
+        xaxis=dict(
+            title="",
+            tickmode="array",
+            tickvals=pace_data["Date"],
+            ticktext=pace_data["Date_Label"],
+        ),
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
@@ -468,6 +491,12 @@ def generate_combo_daily(data):
             title="",  # Removes Y-axis title
         ),
         xaxis_title="Date",
+        xaxis=dict(
+            title="",
+            tickmode="array",
+            tickvals=cadence_data["Date"],
+            ticktext=cadence_data["Date_Label"],
+        ),
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
@@ -560,6 +589,12 @@ def generate_combo_daily(data):
             showgrid=False,
             title="",
             range=[110, 190],  # Removes Y-axis title
+        ),
+        xaxis=dict(
+            title="",
+            tickmode="array",
+            tickvals=hr_data["Date"],
+            ticktext=hr_data["Date_Label"],
         ),
         height=450,
         showlegend=False,
