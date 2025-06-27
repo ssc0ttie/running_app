@@ -114,7 +114,12 @@ def generate_combo(data):
 
     fig_bar.update_layout(
         title="Weekly Distance (km)",
-        yaxis_title="KM",
+        yaxis=dict(
+            showticklabels=False,
+            ticks="",
+            showgrid=False,
+            title="",  # Removes Y-axis title
+        ),
         xaxis_title="Week",
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
@@ -139,7 +144,12 @@ def generate_combo(data):
     )
     fig_line.update_layout(
         title="Weekly Average Pace (min/km)",
-        yaxis_title="Pace (min/km)",
+        yaxis=dict(
+            showticklabels=False,
+            ticks="",
+            showgrid=False,
+            title="",  # Removes Y-axis title
+        ),
         xaxis_title="Week",
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
@@ -167,7 +177,12 @@ def generate_combo(data):
     )
     fig_area.update_layout(
         title="Weekly Average Cadence (spm)",
-        yaxis_title="Steps per Minute",
+        yaxis=dict(
+            showticklabels=False,
+            ticks="",
+            showgrid=False,
+            title="",  # Removes Y-axis title
+        ),
         xaxis_title="Week",
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
@@ -254,7 +269,13 @@ def generate_combo(data):
         title="Weekly Avg Heart Rate vs HR Zones",
         xaxis_title="Week",
         yaxis_title="Heart Rate (bpm)",
-        yaxis=dict(range=[110, 190]),  # 👈 Set axis limits
+        yaxis=dict(
+            showticklabels=False,
+            ticks="",
+            showgrid=False,
+            title="",
+            range=[110, 190],  # Removes Y-axis title
+        ),
         height=450,
         showlegend=False,
         margin=dict(l=20, r=20, t=40, b=20),
@@ -377,7 +398,12 @@ def generate_combo_daily(data):
 
     fig_bar.update_layout(
         title="Daily Distance (km)",
-        yaxis_title="KM",
+        yaxis=dict(
+            showticklabels=False,
+            ticks="",
+            showgrid=False,
+            title="",  # Removes Y-axis title
+        ),
         xaxis_title="Date",
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
@@ -402,7 +428,12 @@ def generate_combo_daily(data):
     )
     fig_line.update_layout(
         title="Daily Average Pace (min/km)",
-        yaxis_title="Pace (min/km)",
+        yaxis=dict(
+            showticklabels=False,
+            ticks="",
+            showgrid=False,
+            title="",  # Removes Y-axis title
+        ),
         xaxis_title="Date",
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
@@ -430,7 +461,12 @@ def generate_combo_daily(data):
     )
     fig_area.update_layout(
         title="Daily Average Cadence (spm)",
-        yaxis_title="Steps per Minute",
+        yaxis=dict(
+            showticklabels=False,
+            ticks="",
+            showgrid=False,
+            title="",  # Removes Y-axis title
+        ),
         xaxis_title="Date",
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
@@ -518,7 +554,13 @@ def generate_combo_daily(data):
         title="Daily Avg Heart Rate vs HR Zones",
         xaxis_title="Date",
         yaxis_title="Heart Rate (bpm)",
-        yaxis=dict(range=[110, 190]),  # 👈 Set axis limits
+        yaxis=dict(
+            showticklabels=False,
+            ticks="",
+            showgrid=False,
+            title="",
+            range=[110, 190],  # Removes Y-axis title
+        ),
         height=450,
         showlegend=False,
         margin=dict(l=20, r=20, t=40, b=20),
