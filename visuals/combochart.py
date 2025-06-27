@@ -7,6 +7,17 @@ import streamlit as st
 
 
 def generate_combo(data):
+    # ----Activity Filter ---#
+
+    activity = sorted(data["Activity"].dropna().unique())
+    activity.insert(0, "All")
+    selected_activity = st.multiselect("Select Activity(s)", activity, default=["All"])
+
+    if not selected_activity or "All" in selected_activity:
+        data = data
+    else:
+        data = data[data["Activity"].isin(selected_activity)]
+
     ##GROUP BY
     data = data[data["Distance"].notnull() & (data["Distance"] > 0)]
 
@@ -254,6 +265,20 @@ def generate_combo(data):
 
 
 def generate_combo_daily(data):
+
+    # ----Activity Filter ---#
+
+    activity = sorted(data["Activity"].dropna().unique())
+    activity.insert(0, "All")
+    selected_activity = st.multiselect(
+        "Select Activity(s)", activity, default=["All"], key="user_selector_daily"
+    )
+
+    if not selected_activity or "All" in selected_activity:
+        data = data
+    else:
+        data = data[data["Activity"].isin(selected_activity)]
+
     ##GROUP BY
     data = data[
         data["Distance"].notnull() & (data["Distance"] > 0) & data["Date"].notnull()
