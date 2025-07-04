@@ -144,7 +144,7 @@ with tab0:
     )
 
     ###----- FORM --------------######
-    with st.form("activity_log", clear_on_submit=False, border=True):
+    with st.form("activity_log", clear_on_submit=True, border=True):
         time_stamp_ = datetime.now()
         time_stamp = time_stamp_.strftime("%Y-%m-%d")
         mem_selection = st.selectbox(
@@ -199,7 +199,9 @@ with tab0:
         # display_paces = [f"{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
         value_paces = [f"0:{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
         pace_map = dict(zip(pace_list, value_paces))
-        pace_display = st.selectbox("Select Pace (min:sec)", pace_list, index=360)
+        pace_display = st.selectbox(
+            "Select Pace (min:sec) *type in your pace and select", pace_list, index=0
+        )
 
         # # Handle pace selection logic
         # if act_selection in ["Cooldown", "Warm up", "Rest", None]:
@@ -371,6 +373,7 @@ with tab1:
         unsafe_allow_html=True,
     )
 
+    filtered_df_with_non_running = filtered_df
     # filter non running activity
     filtered_df = filtered_df[
         ~filtered_df["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
@@ -560,7 +563,7 @@ with tab1:
     """,
         unsafe_allow_html=True,
     )
-    mt.generate_matrix(filtered_df)
+    mt.generate_matrix(filtered_df_with_non_running)
 
 
 with tab2:
@@ -618,15 +621,20 @@ with tab5:
     """,
         unsafe_allow_html=True,
     )
-    #     coach_df = (
+
+    #### --- ACTIVATE ONLY DURING WEEKLY REVIEWS -----###
+    ##-- WEEKLY  CHART -- ##
+    # coach_df = (
     #     full_df
     #     if selected_weeks == "All"
     #     else full_df[full_df["Week"].isin(selected_weeks)]
     # )
+    #
+    # list_weeks = sorted(full_df["Week"].dropna().unique())
+    # latest_week = list_weeks[-1]
+    # coach_df = full_df[full_df["Week"] == (latest_week)]
 
-    #####----WEEKLY SUMMARY TABLE --- ###
-
-    # coach_df = full_df[full_df["Week"].isin(selected_weeks)]
+    # ####----WEEKLY SUMMARY TABLE --- ###
     # stats.generate_matrix_coach(coach_df)
 
     wr.weekly_remarks()

@@ -9,6 +9,8 @@ import streamlit as st
 def generate_matrix_member(data):
     from datetime import datetime, timedelta
 
+    filtered_data = data
+
     # Filter running-only activities
     filtered_data = data[
         ~data["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
@@ -150,7 +152,7 @@ def generate_matrix_coach(data):
     # Display in Streamlit
 
     # -----GOAL HARDCODE -------#
-    mileage_goal = {"All": "22-23k", "Scott": "38k"}
+    mileage_goal = {"All": "22-26k", "Scott": "36k"}
 
     ##--Lookup Target ------#
     grouped["Target"] = grouped["Member Name"].apply(

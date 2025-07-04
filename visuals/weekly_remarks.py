@@ -300,3 +300,78 @@ Rest today, **recover hard**, then grind ulit next week! 🔥
             """,
             unsafe_allow_html=True,
         )
+
+    with st.expander("📣 Coach's Notes – Week 8"):
+        st.markdown(
+            """
+            # 🏁 Transition Week 8 Recap
+
+            **Congrats on pushing through Transition Week 8!**  
+            This week is a **pull-back week** — LSD is just **12km** to allow for recovery and a mental reset.
+
+            Our goal for the final weeks of transition is to **build your baseline fitness**.  
+            Before we begin the 18-week marathon program, we’ll **calibrate your individual training plans**:
+            - 🎯 Marathon Goal
+            - ❤️ Max Heart Rate
+            - 🏃‍♀️ Tempo Pace
+            - 🐢 Easy Pace
+            - 🏁 Marathon Pace
+
+            ⚠️ **Don’t increase pace or intensity** until after Week 12. Stick with your current training rhythm. *Trust the process.*
+
+            ---
+
+            ## ⚕️ About Injuries
+
+            Feeling discomfort or fatigue? That’s **normal** — mahirap talaga ‘tong pinasok natin!  
+            Most of the time, all you need is:
+            - A good night's sleep
+            - Proper warm-up
+            - Flexibility drills
+
+            💥 **DO NOT RUN IF:**
+            1. You feel sharp, stabbing pain  
+            2. The pain worsens as you run  
+            3. You're changing your form just to keep running  
+
+            📓 This journey is also about **knowing your body**. Stay mindful, log your workouts, and be patient.  
+            **We will get there.**
+
+            ---
+
+            ## 👥 Individual Notes
+
+            **@Aiza**  
+            Wala ka log ng LSD mo? 😅 Don’t be afraid of a little pain — *the body is resilient*.  
+            I also run with pain all the time.  
+            📝 **Assignment**: Determine your **max HR**.  
+            Don’t panic if your HR hits **180+** — it’s usually safe. **Stop** if:
+            - You feel like collapsing  
+            - You've rested for 5+ mins and your HR is still 180+
+
+            ---
+
+            **@Chona**  
+            Stay patient and consistent. We’re still aiming to lower your HR.  
+            You probably already know your **optimal pace** — just keep working from there.
+
+            ---
+
+            **@Frau**  
+            Monitor your **fatigue and stress levels** — baka ito yung reason for your elevated HR.  
+            📝 Same assignment as Aiza: **Find your max HR**.  
+            Have fun running LSD in Korea! 🇰🇷
+
+            ---
+
+            **@Lead & @Maxine**  
+            Bawi lang sa runs this week.  
+            🏗️ *Brick by brick lang tayo* — keep showing up!  
+            Don’t overdo your activities just yet — iwas burnout.
+
+            ---
+
+            ✅ Great work everyone. Keep logging, keep listening to your body, and let’s stay on track! 💪
+            """,
+            unsafe_allow_html=True,
+        )
