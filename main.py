@@ -122,8 +122,7 @@ else:
 full_df = pd.DataFrame(df)
 
 
-####----LOG TAB ------ ######
-
+#################################----LOG TAB ------ ################################
 
 with tab0:
 
@@ -357,6 +356,7 @@ with tab1:
         ### --- race predictor ----##
         rp.race_predictor(filtered_member_df)
 
+    #########################--- ALL TIME STATS TABLE ----#######################
     st.markdown(
         """
         <div style="
@@ -605,6 +605,7 @@ with tab4:
 
 with tab5:
     from visuals import weekly_remarks as wr
+    from visuals import stats_table as stats
 
     st.markdown(
         """
@@ -630,11 +631,19 @@ with tab5:
     #     else full_df[full_df["Week"].isin(selected_weeks)]
     # )
     #
+    list_weeks = sorted(
+        filtered_df["Week"].dropna().unique(),
+        key=lambda x: int("".join(filter(str.isdigit, x))),
+    )
     # list_weeks = sorted(full_df["Week"].dropna().unique())
-    # latest_week = list_weeks[-1]
-    # coach_df = full_df[full_df["Week"] == (latest_week)]
+    latest_week = list_weeks[-1]
+    coach_df = filtered_df[filtered_df["Week"] == (latest_week)]
+
+    st.markdown(f"""## 🏁 Week: {latest_week}""")
+
+    # st.write(filtered_df.columns)
 
     # ####----WEEKLY SUMMARY TABLE --- ###
-    # stats.generate_matrix_coach(coach_df)
+    stats.generate_matrix_coach(coach_df)
 
     wr.weekly_remarks()

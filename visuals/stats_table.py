@@ -99,6 +99,8 @@ def generate_matrix_member(data):
 def generate_matrix_coach(data):
     from datetime import datetime, timedelta
 
+    # data["Pace"] = pd.to_timedelta(data["Pace"], errors="coerce")
+
     # Filter running-only activities
     filtered_data = data[
         ~data["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
@@ -152,7 +154,7 @@ def generate_matrix_coach(data):
     # Display in Streamlit
 
     # -----GOAL HARDCODE -------#
-    mileage_goal = {"All": "22-26k", "Scott": "36k"}
+    mileage_goal = {"All": "20-24k", "Scott": "34k"}
 
     ##--Lookup Target ------#
     grouped["Target"] = grouped["Member Name"].apply(

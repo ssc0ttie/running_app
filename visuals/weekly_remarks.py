@@ -375,3 +375,81 @@ Rest today, **recover hard**, then grind ulit next week! 🔥
             """,
             unsafe_allow_html=True,
         )
+
+    with st.expander("📣 Coach's Notes – Week 9"):
+        st.markdown(
+            """
+        ## 📝 Week 9 Notes
+
+        Sorry ang tipid ko mag remarks last week — grabe stress sa work at sa pamilya.  
+        **BUT I'M BACK!!!! LET'S GO!!!!** 💥💪
+
+        ---
+
+        ### 🏃‍♀️ Aiza  
+        Ang bilis ng respond ng fitness level mo! Yung **tempo runs mo almost easy run mo na** — kaya mo pa dagdagan yan. Else, just consider it as easy run.  
+        We are already seeing the **rewards of smart and consistent training**.  
+        As long as you keep it at **80% easy, 20% fast** (yung maayos na tempo ah).
+
+        🔁 Also, can you double-check yung **cadence mo?** Parang sobra taas sa 179?
+
+        📌 **Starting this week, you have to do strength training twice a week** — sorry pahirapan pa kita.  
+        We need to give attention to your **structural adaptation**, masyado mabilis adaptation ng aerobic fitness mo — which is a good thing!
+
+        ---
+
+        ### 🧑‍💼 Lead  
+        Good job sa **cadence mo** — nakikita na na tumataas na sya.  
+        Pati mga **tempo mo bumibilis na rin** while maintaining the same effort level at HR.
+
+        🧠 Monitor mo yung **recovery mo sa tempo runs**, kasi kung pumapalo ka ng **169 HR**, threshold runs na yan.  
+        🎯 I-shoot mo lang sa **155–160 bpm** yang tempo pace mo.
+
+        📅 Then you can **alternate weekly** yung threshold run (169+ HR), basta check mo lang recovery mo, kung saan ka mas okay.
+
+        ---
+
+        ### 🧘‍♀️ Maxine  
+        Pag feeling mo ready ka na, **bilisan mo pa konti** yung tempo mo.
+
+        ✅ **Perfection na yang easy runs mo**, pace is steadily increasing — **wag mo muna baguhin**. Balikan natin sa Week 12.
+
+        🏃‍♀️ Sa **LSD mo very good na — enjoy mo na!**  
+        So pwede mo dagdagan konti kahit **140+ bpm**, Zone 2 pa din yan, para **di ka mabore**.  
+        Mukhang ready ka naman na — which is I think ginagawa mo na rin.
+
+        ---
+
+        ### 🧕 Chona  
+        Pababa yung **cadence mo**, saka na natin balikan yang tempo runs mo.  
+        Baguhin natin approach sayo — **don’t look at HR numbers too much muna** (pero wag lalagpas 170+).
+
+        🎯 Let’s go for **Perceived Effort (RPE) 3–4**:  
+        > “Easy but not trivial”  
+        > “Can speak in full sentences”
+
+        Then **hold that effort**, we need to see data.  
+        Pero you're way better now compared to your last marathon — **proud of you!!**
+
+        ---
+
+        ### 👩 Frau  
+        Di pa din ako masaya dyan sa **HR mo**.  
+        Bumibilis yung pace mo — **wala muna tempo run for you**, para wala ka muna masyado iniisip.
+
+        🚫 Kahit wag mo na muna ibigay yung **max HR mo** — mukhang di ka pa ready.  
+        ✅ **Kunin mo muna yung confidence mo sa easy runs** mo.
+
+        Ang gulo din ng **pace, cadence at RPE mo eh**, wala akong makitang trend sayo hahahaha 😅  
+        Or magulo kayo mag-log ng runs — tinatawag nyong tempo yung mga easy runs nyo hahaha.
+
+        📌 Same kayo ni Chona:  
+        As long as you can speak, effort level 3–4 yan — **gamitin natin na baseline** nyo.
+
+        Pero ayun nga — **easy runs ka muna okay?**  
+        **Keep it up — I'm proud of you!** 🫶
+
+        ---
+        """,
+            unsafe_allow_html=True,
+        )
