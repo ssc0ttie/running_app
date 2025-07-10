@@ -74,6 +74,7 @@ def get_runner_data():
     for df in [df_hist, df_new]:
         df["Pace"] = pd.to_timedelta(df["Pace"], errors="coerce")
         df["Distance"] = pd.to_numeric(df["Distance"], errors="coerce")
+        # df["RPE (1–10 scale)"] = pd.to_numeric(df["RPE (1–10 scale)"], errors="coerce")
 
     ## ------------------  Combine historical + new  --------------#
     df = pd.concat([df_hist, df_new], ignore_index=True)

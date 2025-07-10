@@ -21,9 +21,10 @@ def generate_matrix(data):
 
     data["Pace_Str"] = data["Pace"].apply(format_timedelta)
     data["MovingTime_Str"] = data["Moving_Time"].apply(format_timedelta)
-
+    data = data.sort_values(by="Date", ascending=False)
     # drop columns
     data.drop(["TimeStamp", "Date", "Pace", "Shoe"], axis=1, inplace=True)
+
     st.dataframe(
         data,
         height=350,

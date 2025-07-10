@@ -173,6 +173,7 @@ with tab0:
                     "Tempo Run",
                     "Cooldown",
                     "Warm up",
+                    "Yoga",
                     "RACE DAY",
                 ]
             ),
@@ -182,14 +183,6 @@ with tab0:
 
         distance = st.number_input("Distance", placeholder="Enter distance")
 
-        # ----Generate Pace list ----#
-        # Generate paces as strings
-        pace_list = [
-            f"{h:02}:{m:02}:{s:02}"
-            for h in range(0, 2)
-            for m in range(0, 15)
-            for s in (range(0, 60))
-        ]
         # Add default value at the beginning
         default_pace = "00:00:00"
 
@@ -201,15 +194,6 @@ with tab0:
         pace_display = st.selectbox(
             "Select Pace (min:sec) *type in your pace and select", pace_list, index=0
         )
-
-        # # Handle pace selection logic
-        # if act_selection in ["Cooldown", "Warm up", "Rest", None]:
-        #     pace_display = st.selectbox("Select Pace (min:sec)", options=[default_pace])
-        # else:
-        #     pace_display = st.selectbox(
-        #         "Select Pace (min:sec)", options=[default_pace] + pace_list, index=0
-        #     )
-        # pace_map["00:00:00"] = "0:00:00"
 
         pace_str = pace_map[pace_display]
 
@@ -376,7 +360,9 @@ with tab1:
     filtered_df_with_non_running = filtered_df
     # filter non running activity
     filtered_df = filtered_df[
-        ~filtered_df["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
+        ~filtered_df["Activity"].isin(
+            ["Rest", "Cross Train", "Strength Training", "Yoga", 0]
+        )
     ]
 
     df = filtered_df.copy()
@@ -564,6 +550,29 @@ with tab1:
         unsafe_allow_html=True,
     )
     mt.generate_matrix(filtered_df_with_non_running)
+
+    # #####---------------EDIT ENTRY ---------------####
+    # # st.markdown("## 📋 Your Logs")
+    # with st.popover(" 📋 Your Logs"):
+    #     if "log_data" not in st.session_state:
+    #         st.session_state["log_data"] = []
+
+    #     for i, entry in enumerate(st.session_state["log_data"]):
+    #         with st.expander(f"Log {i+1}: {entry[1]} - {entry[2]} by {entry[10]}"):
+    #             st.write(f"**Date:** {entry[1]}")
+    #             st.write(f"**Activity:** {entry[2]}")
+    #             st.write(f"**Distance:** {entry[3]}")
+    #             st.write(f"**Pace:** {entry[4]}")
+    #             st.write(f"**HR:** {entry[5]}")
+    #             st.write(f"**Cadence:** {entry[6]}")
+    #             st.write(f"**RPE:** {entry[7]}")
+    #             st.write(f"**Shoe:** {entry[8]}")
+    #             st.write(f"**Remarks:** {entry[9]}")
+    #             st.write(f"**Member:** {entry[10]}")
+
+    #             # Button for editing this specific entry
+    #             if st.button(f"✏️ Edit Entry {i+1}", key=f"edit_btn_{i}"):
+    #                 st.session_state["edit_index"] = i
 
 
 with tab2:

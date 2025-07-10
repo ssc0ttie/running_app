@@ -13,7 +13,7 @@ def generate_matrix_member(data):
 
     # Filter running-only activities
     filtered_data = data[
-        ~data["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
+        ~data["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0, "Yoga"])
     ]
 
     # Group by member
@@ -23,6 +23,7 @@ def generate_matrix_member(data):
             "Moving_Time": "sum",
             "Activity": "count",
             "Pace": "mean",  # timedelta
+            # "RPE (1–10 scale)": "mean",
         }
     )
 
@@ -40,7 +41,7 @@ def generate_matrix_member(data):
     grouped["Pace_Str"] = grouped["Pace"].apply(format_timedelta)
     grouped["MovingTime_Str"] = grouped["Moving_Time"].apply(format_timedelta)
 
-    # Create pace trend history (last 30 days)
+    # # Create pace trend history (last 30 days)
     pace_trend = (
         filtered_data[["Member Name", "Date_of_Activity", "Pace"]].copy().dropna()
     )
@@ -62,6 +63,7 @@ def generate_matrix_member(data):
     final_df = pd.merge(grouped, trend_grouped, on="Member Name", how="left")
 
     # Display in Streamlit
+    final_df = final_df.sort_values(by="Distance", ascending=False)
 
     st.dataframe(
         final_df,
@@ -74,23 +76,27 @@ def generate_matrix_member(data):
                 format="%.1f",
             ),
             "MovingTime_Str": st.column_config.TextColumn("Moving Time"),
-            "Pace_Minutes": st.column_config.LineChartColumn(
-                "Pace Trend (lower is better)",
-                y_min=final_df["Pace_Minutes"]
-                .apply(lambda x: min(x) if isinstance(x, list) else None)
-                .min(),
-                y_max=final_df["Pace_Minutes"]
-                .apply(lambda x: max(x) if isinstance(x, list) else None)
-                .max(),
-            ),
+            # "Pace_Minutes": st.column_config.LineChartColumn(
+            #     "Pace Trend (lower is better)",
+            #     y_min=final_df["Pace_Minutes"]
+            #     .apply(lambda x: min(x) if isinstance(x, list) else None)
+            #     .min(),
+            #     y_max=final_df["Pace_Minutes"]
+            #     .apply(lambda x: max(x) if isinstance(x, list) else None)
+            #     .max(),
+            # ),
             "Member Name": st.column_config.TextColumn("Runner"),
+            "Activity": st.column_config.TextColumn("Runs"),
+            # "RPE (1–10 scale)": st.column_config.TextColumn("Avg RPE"),
         },
         column_order=[
             "Member Name",
+            "Activity",
             "Distance",
             "MovingTime_Str",
             "Pace_Str",
-            "Pace_Minutes",
+            # "RPE (1–10 scale)",
+            # "Pace_Minutes",
         ],
         use_container_width=True,
     )
