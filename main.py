@@ -50,7 +50,8 @@ with st.popover("💡 How to Use This Page"):
             <li>🗓️ <strong>Program</strong>: Your marathon plan.</li>
             <li>📘 <strong>Activities</strong>: Learn about your activities.</li>
             <li>🏋🏻‍♂️ <strong>Strength</strong>: Your strength workouts.</li>
-            <li>🎯 <strong>Coach</strong>: Your Weekly Remarks.</li>
+            <li>🎯 <strong>Remarks</strong>: Your Weekly Remarks.</li>
+            <li>💗 <strong>Scott</strong>: Scott's Corner.</li>
             
         </ul>
         <p><em>Tip:</em> If switching apps (Strava, Garmin, etc.),the app will try to rerun, wait for the app to load and continue with your log.</p>
@@ -96,14 +97,15 @@ from visuals import stats_table as stats
 
 st.text("")
 
-tab0, tab1, tab2, tab3, tab4, tab5 = st.tabs(
+tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
     [
         "📓Log",
         "📊 Stats",
         "🗓️ Program",
         "📘 Activities",
         "🏋🏻‍♂️ Str Training",
-        "🎯 Coach",
+        "🎯 Remarks",
+        "💗 Scott's Corner",
     ]
 )
 
@@ -161,22 +163,23 @@ with tab0:
         # Activity list
         act_selection = st.selectbox(
             "Activity",
-            sorted(
-                [
-                    "LSD Road@ Zone 2 Pace",
-                    "LSD Trail@ Zone 2 Pace",
-                    "Easy Run",
-                    "Rest",
-                    "Speed Work (Zone 4-5 x400M)",
-                    "Strength Training",
-                    "Cross Train",
-                    "Tempo Run",
-                    "Cooldown",
-                    "Warm up",
-                    "Yoga",
-                    "RACE DAY",
-                ]
-            ),
+            # sorted(
+            [
+                "Easy Run",
+                "Aerobic Run",
+                "Tempo Run",
+                "Cooldown",
+                "Warm up",
+                "Speed Work (Zone 4-5 x400M)",
+                "Strength Training",
+                "LSD Road@ Zone 2 Pace",
+                "LSD Trail@ Zone 2 Pace",
+                "Yoga",
+                "Cross Train",
+                "Rest",
+                "RACE DAY",
+            ],
+            # ),
             index=None,
             placeholder="Select an activity",
         )
@@ -599,6 +602,7 @@ with tab2:
         height=400,
     )
 
+
 with tab3:
     from visuals import referencetab as ref
 
@@ -656,3 +660,92 @@ with tab5:
     stats.generate_matrix_coach(coach_df)
 
     wr.weekly_remarks()
+
+
+with tab6:
+    st.markdown(
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 450;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+            🗓️ Training Plan</div>
+    """,
+        unsafe_allow_html=True,
+    )
+    # with st.expander("View Training Program"):
+    prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
+    components.iframe(
+        prog_sheet,
+        height=500,
+        width=600,
+    )
+
+    st.markdown(
+        """
+        ### 🏃‍♂️ Pfitzinger Heart Rate Training Zones
+
+        Your Resting HR: **55 bpm**  
+        Your Max HR: **192 bpm**  
+        Heart Rate Reserve (HRR): **137 bpm**
+
+        **🏷️ Zone Colors**
+        - 🟢 Zone 2: Recovery / Easy
+        - 🔵 Zone 2.5–3: Aerobic / General
+        - 🟡 Zone 3: Long Run
+        - 🔶 Zone 4: Marathon Pace
+        - 🔴 Zone 4+: Threshold / Tempo
+        - 🟣 Zone 5: VO₂ Max
+
+        ---
+
+        #### 🟢 **Recovery Runs**  
+        - **Purpose**: Easy running to promote recovery  
+        - **HRR %**: 65–70%  
+        - **Target HR**: 144–151 bpm  
+        - **Zone**: Zone 2  
+        ---
+        #### 🔵 **General Aerobic Runs**  
+        - **Purpose**: Aerobic base development  
+        - **HRR %**: 70–75%  
+        - **Target HR**: 151–158 bpm  
+        - **Zone**: High Zone 2 to Low Zone 3  
+        ---
+        #### 🟡 **Long Runs**  
+        - **Purpose**: Build muscular and aerobic endurance  
+        - **HRR %**: 70–80%  
+        - **Target HR**: 151–165 bpm  
+        - **Zone**: Zone 3  
+        ---
+        #### 🔶 **Marathon Pace Runs**  
+        - **Purpose**: Practice marathon effort and fuel strategies  
+        - **HRR %**: 80–88%  
+        - **Target HR**: 165–176 bpm  
+        - **Zone**: Zone 4  
+
+        ---
+        #### 🔴 **Lactate Threshold Runs / Tempo**  
+        - **Purpose**: Improve speed endurance & delay fatigue  
+        - **HRR %**: 88–92%  
+        - **Target HR**: 176–181 bpm  
+        - **Zone**: High Zone 4  
+
+        ---
+
+        #### 🟣 **VO₂ Max Intervals**  
+        - **Purpose**: Boost top-end aerobic power  
+        - **HRR %**: 95–100%  
+        - **Target HR**: 185–192 bpm  
+        - **Zone**: Zone 5  
+        ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
+
+        ---
+
+        > ✅ **Pro Tip:** Match your run type to the *right zone*, not the other way around. Let purpose guide pace.
+        """,
+        unsafe_allow_html=True,
+    )
