@@ -703,42 +703,30 @@ with tab6:
 
         ---
 
-        #### 🟢 **Recovery Runs**  
-        - **Purpose**: Easy running to promote recovery  
-        - **HRR %**: 65–70%  
+        #### 🟢 **Recovery / Easy Runs** : **HRR %**: 65–70%  
         - **Target HR**: 144–151 bpm  
         - **Zone**: Zone 2  
         ---
-        #### 🔵 **General Aerobic Runs**  
-        - **Purpose**: Aerobic base development  
-        - **HRR %**: 70–75%  
+        #### 🔵 **General Aerobic Runs** : **HRR %**: 70–75%  
         - **Target HR**: 151–158 bpm  
         - **Zone**: High Zone 2 to Low Zone 3  
         ---
-        #### 🟡 **Long Runs**  
-        - **Purpose**: Build muscular and aerobic endurance  
-        - **HRR %**: 70–80%  
+        #### 🟡 **Long Runs** : **HRR %**: 70–80%  
         - **Target HR**: 151–165 bpm  
         - **Zone**: Zone 3  
         ---
-        #### 🔶 **Marathon Pace Runs**  
-        - **Purpose**: Practice marathon effort and fuel strategies  
-        - **HRR %**: 80–88%  
+        #### 🔶 **Marathon Pace Runs** : **HRR %**: 80–88%  
         - **Target HR**: 165–176 bpm  
         - **Zone**: Zone 4  
 
         ---
-        #### 🔴 **Lactate Threshold Runs / Tempo**  
-        - **Purpose**: Improve speed endurance & delay fatigue  
-        - **HRR %**: 88–92%  
+        #### 🔴 **Lactate Threshold Runs / Tempo** : **HRR %**: 88–92%  
         - **Target HR**: 176–181 bpm  
         - **Zone**: High Zone 4  
 
         ---
 
-        #### 🟣 **VO₂ Max Intervals**  
-        - **Purpose**: Boost top-end aerobic power  
-        - **HRR %**: 95–100%  
+        #### 🟣 **VO₂ Max Intervals** : **HRR %**: 95–100%  
         - **Target HR**: 185–192 bpm  
         - **Zone**: Zone 5  
         ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
