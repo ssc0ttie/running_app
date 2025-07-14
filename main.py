@@ -691,52 +691,19 @@ with tab6:  ##SCOTTS CORNER
             st.markdown(
                 """
                 ### 🏃‍♂️ Pfitzinger Heart Rate Training Zones
+                ### As of July 14, 2025 : Transition Week 11
 
                 Your Resting HR: **55 bpm**  
                 Your Max HR: **192 bpm**  
                 Heart Rate Reserve (HRR): **137 bpm**
 
-                **🏷️ Zone Colors**
-                - 🟢 Zone 2: Recovery / Easy
-                - 🔵 Zone 2.5–3: Aerobic / General
-                - 🟡 Zone 3: Long Run
-                - 🔶 Zone 4: Marathon Pace
-                - 🔴 Zone 4+: Threshold / Tempo
-                - 🟣 Zone 5: VO₂ Max
-
-                ---
-                ### As of July 14, 2025 : Transition Week 11
-                #### 🟢 **Recovery / Easy Runs** : **HRR %**: 65–70%  
-                - **Target HR**: 118–130 bpm  
-                - **Zone**: Zone 2  
-                ---
-                #### 🔵 **General Aerobic Runs** : **HRR %**: 70–75%  
-                - **Target HR**: 130–140 bpm  
-                - **Zone**: High Zone 2 to Low Zone 3  
-                ---
-                #### 🟡 **Long Runs** : **HRR %**: 70–80%  
-                - **Target HR**: 134–144 bpm  
-                - **Zone**: Zone 3  
-                ---
-                #### 🔶 **Marathon Pace Runs** : **HRR %**: 80–88%  
-                - **Target HR**: 145–155 bpm  
-                - **Zone**: Zone 4  
-
-                ---
-                #### 🔴 **Lactate Threshold Runs / Tempo** : **HRR %**: 88–92%  
-                - **Target HR**: 156–170 bpm  
-                - **Zone**: High Zone 4  
-
-                ---
-
-                #### 🟣 **VO₂ Max Intervals** : **HRR %**: 95–100%  
-                - **Target HR**: 171–184 bpm  
-                - **Zone**: Zone 5  
-                ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
-
-                ---
-
-                > ✅ **Pro Tip:** Match your run type to the *right zone*, not the other way around. Let purpose guide pace.
+                **🏷️ Zones**
+                - 🟢 Zone 2: Recovery / Easy ➡️**Target HR: 118-130 bpm**  🔥RPE : **2-4**
+                - 🔵 Zone 2.5–3: Aerobic / General ➡️ **Target HR: 130-140 bpm**  🔥RPE : **3-5**
+                - 🟡 Zone 3: Long Run ➡️ **Target HR: 134-144 bpm**  🔥RPE : **3-6**
+                - 🔶 Zone 4: Marathon Pace ➡️ **Target HR: 145-155**  🔥RPE : **5-7**
+                - 🔴 Zone 4+: Threshold / Tempo ➡️ **Target HR: 156-170 bpm**  🔥RPE : **7-8**
+                - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 171-184 bpm**   🔥RPE : **8-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
                 """,
                 unsafe_allow_html=True,
             )
@@ -746,48 +713,19 @@ with tab6:  ##SCOTTS CORNER
             st.markdown(
                 """
                     ### 🏃‍♂️ Effort-Based Zones
+                    ### As of July 14, 2025 : Transition Week 11
 
                     Your Resting HR: **56 bpm**  
                     Your Max HR: **184 bpm**  
                     Heart Rate Reserve (HRR): **128 bpm**
 
-                    **🏷️ Zone Colors**
-                    - 🟢 Zone 2: Recovery / Easy
-                    - 🔵 Zone 2.5–3: Aerobic / General
-                    - 🟡 Zone 3: Long Run
-                    - 🔶 Zone 4: Marathon Pace
-                    - 🔴 Zone 4+: Threshold / Tempo
-                    - 🟣 Zone 5: VO₂ Max
-
-                    ---
-                    ### As of July 14, 2025 : Transition Week 11
-                    #### 🟢 **Recovery / Easy Runs** : **HRR %**: 65–70%  
-                    - **Target HR**: 140-150 bpm  
-                    - **Zone**: Zone 2  
-                    ---
-                    #### 🔵 **General Aerobic Runs** : **HRR %**: 70–75%  
-                    - **Target HR**: 150–160 bpm  
-                    - **Zone**: High Zone 2 to Low Zone 3  
-                    ---
-                    #### 🟡 **Long Runs** : **HRR %**: 70–80%  
-                    - **Target HR**: 145–165 bpm  
-                    - **Zone**: Zone 3  
-                    ---
-                    #### 🔶 **Marathon Pace Runs** : **HRR %**: 80–88%  
-                    - **Target HR**:  TBD  
-                    - **Zone**: Zone 4  
-
-                    ---
-                    #### 🔴 **Lactate Threshold Runs / Tempo** : **HRR %**: 88–92%  
-                    - **Target HR**: 160–170 bpm  
-                    - **Zone**: High Zone 4  
-
-                    ---
-
-                    #### 🟣 **VO₂ Max Intervals** : **HRR %**: 95–100%  
-                    - **Target HR**: 177–184 bpm  
-                    - **Zone**: Zone 5  
-                    ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
+                    **🏷️ Zones**
+                    - 🟢 Zone 2: Recovery / Easy ➡️**Target HR: 140-150 bpm**  🔥RPE : **2-4**
+                    - 🔵 Zone 2.5–3: Aerobic / General ➡️ **Target HR: 150-160 bpm**  🔥RPE : **3-5**
+                    - 🟡 Zone 3: Long Run ➡️ **Target HR: 145-165 bpm**  🔥RPE : **3-6**
+                    - 🔶 Zone 4: Marathon Pace ➡️ **Target HR: TBD**  🔥RPE : **5-7**
+                    - 🔴 Zone 4+: Threshold / Tempo ➡️ **Target HR: 160-170 bpm**  🔥RPE : **7-8**
+                    - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 177-184 bpm**   🔥RPE : **8-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
 
                     ---
                     """,
