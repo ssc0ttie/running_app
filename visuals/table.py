@@ -58,6 +58,7 @@ def generate_matrix(data):
             "Shoe": st.column_config.TextColumn("Shoes"),
             "Remarks": st.column_config.TextColumn("Remarks", width="large"),
             "Member Name": st.column_config.TextColumn("Runner"),
+            "Duration_Other": st.column_config.TextColumn("Duration (H:M:S)"),
         },
         column_order=[
             "Date_of_Activity",
@@ -65,6 +66,7 @@ def generate_matrix(data):
             "Distance",
             "MovingTime_Str",
             "Pace_Str",
+            "Duration_Other",
             "HR (bpm)",
             "Cadence (steps/min)",
             "RPE (1–10 scale)",

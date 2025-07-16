@@ -47,6 +47,7 @@ def get_runner_data():
             9: "Remarks",
             10: "Member Name",
             11: "Activity_ref",
+            12: "Duration_Other",
         },
         inplace=True,
     )
@@ -105,6 +106,7 @@ def get_runner_data():
     df = df.merge(df_week, left_on="Date_of_Activity", right_on="Date", how="left")
 
     # CALCULATE MOVING TIME
+
     df["Moving_Time"] = df["Pace"] * df["Distance"]
     df["Moving_Time"] = pd.to_timedelta(df["Moving_Time"])
 

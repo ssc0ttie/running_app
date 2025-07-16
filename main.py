@@ -144,10 +144,24 @@ with tab0:  ##LOG
     """,
         unsafe_allow_html=True,
     )
-
+    st.markdown(
+        """
+        <div style="
+            color:#f15950;
+            font-size: 15px;
+            font-weight: 800;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+            *Click Box Below to enter Log
+        </div>
+    """,
+        unsafe_allow_html=True,
+    )
     ###----- FORM RUN--------------######
-    with st.expander("Log A Run"):
-        with st.form("activity_log", clear_on_submit=True, border=True):
+    with st.expander("Log Run"):
+        with st.form("activity_log", clear_on_submit=False, border=True):
             time_stamp_ = datetime.now()
             time_stamp = time_stamp_.strftime("%Y-%m-%d")
             mem_selection = st.selectbox(
@@ -187,11 +201,11 @@ with tab0:  ##LOG
             # Add default value at the beginning
             default_pace = "00:00:00"
 
-            pace_list = [f"{m:02}:{s:02}" for m in range(0, 15) for s in (range(0, 60))]
+            pace_list = [f"{m:02}:{s:02}" for m in range(0, 15) for s in (range(0, 59))]
 
             # display_paces = [f"{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
             value_paces = [
-                f"0:{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)
+                f"0:{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 59)
             ]
             pace_map = dict(zip(pace_list, value_paces))
             pace_display = st.selectbox(
@@ -279,7 +293,7 @@ with tab0:  ##LOG
                 st.session_state["submitted_data"] = None
 
     with st.expander("Log Other Activity"):
-        with st.form("activity_log_other", clear_on_submit=True, border=True):
+        with st.form("activity_log_other", clear_on_submit=False, border=True):
             time_stamp_ = datetime.now()
             time_stamp = time_stamp_.strftime("%Y-%m-%d")
             mem_selection = st.selectbox(
@@ -311,6 +325,30 @@ with tab0:  ##LOG
             )
 
             hr = st.number_input("HR (bmp)", min_value=0, max_value=220)
+
+            duration_list = [
+                f"{h:02}:{m:02}:{s:02}"
+                for h in range(0, 10)
+                for m in (range(0, 59))
+                for s in (range(0, 59))
+            ]
+
+            # display_duration = [f"{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
+            value_duration = [
+                f"{h:02}:{m:02}:{s:02}"
+                for h in range(0, 10)
+                for m in range(0, 59)
+                for s in (range(0, 59))
+            ]
+            duration_map = dict(zip(duration_list, value_duration))
+            duration_display = st.selectbox(
+                "Select duration (hour:min:sec) *type in your pace and select",
+                duration_list,
+                index=0,
+            )
+
+            duration_str = duration_map[duration_display]
+
             rpe = st.slider("RPE", 0, 10, 0)
             # rpe2 = st.feedback(options="faces", key=int)
             remarks = st.text_area(
@@ -341,6 +379,7 @@ with tab0:  ##LOG
                     (
                         mem_selection if mem_selection else ""
                     ),  # Get first selected member or empty
+                    duration_str,
                 ]
                 st.session_state.pending_log = new_log_other
                 confirm_submission(new_log_other)
@@ -751,45 +790,45 @@ with tab6:  ##SCOTTS CORNER
     col1, col2 = st.columns(2)
     with col1:  ###SCOTT ZONES####
         with st.expander("Your Zones : Scott"):
-            st.subheader("Scott")
+            st.subheader(":blue[Scott]", divider=True)
             st.markdown(
                 """
                 ### 🏃‍♂️ Pfitzinger Heart Rate Training Zones
                 ### As of July 14, 2025 : Transition Week 11
 
                 Your Resting HR: **55 bpm**  
-                Your Max HR: **192 bpm**  
-                Heart Rate Reserve (HRR): **137 bpm**
+                Your Max HR: **187 bpm** as of 16-Jul-2025  
+                Heart Rate Reserve (HRR): **132 bpm**
 
                 **🏷️ Zones**
                 - 🟢 Zone 2: Recovery / Easy ➡️**Target HR: 118-130 bpm**  🔥RPE : **2-4**
                 - 🔵 Zone 2.5–3: Aerobic / General ➡️ **Target HR: 130-140 bpm**  🔥RPE : **3-5**
-                - 🟡 Zone 3: Long Run ➡️ **Target HR: 134-144 bpm**  🔥RPE : **3-6**
+                - 🟡 Zone 3: Long Run ➡️ **Target HR: 135-145 bpm**  🔥RPE : **3-6**
                 - 🔶 Zone 4: Marathon Pace ➡️ **Target HR: 145-155**  🔥RPE : **5-7**
                 - 🔴 Zone 4+: Threshold / Tempo ➡️ **Target HR: 156-170 bpm**  🔥RPE : **7-8**
-                - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 171-184 bpm**   🔥RPE : **8-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
+                - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 171-187 bpm**   🔥RPE : **9-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
                 """,
                 unsafe_allow_html=True,
             )
     with col2:  ###CHONA ZONES ####
         with st.expander("Your Zones : Chona"):
-            st.subheader("Chona")
+            st.subheader(":green[Chona]", divider=True)
             st.markdown(
                 """
                     ### 🏃‍♂️ Effort-Based Zones
                     ### As of July 14, 2025 : Transition Week 11
 
                     Your Resting HR: **56 bpm**  
-                    Your Max HR: **184 bpm**  
-                    Heart Rate Reserve (HRR): **128 bpm**
+                    Your Max HR: **190 bpm** as of 16-Jul-2025  
+                    Heart Rate Reserve (HRR): **134 bpm**
 
                     **🏷️ Zones**
                     - 🟢 Zone 2: Recovery / Easy ➡️**Target HR: 140-150 bpm**  🔥RPE : **2-4**
                     - 🔵 Zone 2.5–3: Aerobic / General ➡️ **Target HR: 150-160 bpm**  🔥RPE : **3-5**
                     - 🟡 Zone 3: Long Run ➡️ **Target HR: 145-165 bpm**  🔥RPE : **3-6**
                     - 🔶 Zone 4: Marathon Pace ➡️ **Target HR: TBD**  🔥RPE : **5-7**
-                    - 🔴 Zone 4+: Threshold / Tempo ➡️ **Target HR: 160-170 bpm**  🔥RPE : **7-8**
-                    - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 177-184 bpm**   🔥RPE : **8-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
+                    - 🔴 Zone 4+: Threshold / Tempo ➡️ **Target HR: 165-175 bpm**  🔥RPE : **7-8**
+                    - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 178-190 bpm**   🔥RPE : **8-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
 
                     ---
                     """,
