@@ -9,14 +9,14 @@ from data import push_data as push
 
 # ----------------- Confirmation Dialog -----------------
 @st.dialog("Confirm Entry?")
-def confirm_submission(new_log):
+def confirm_submission(new_log_2):
     st.write("Are you sure you want to submit this entry?")
     col1, col2 = st.columns(2)
 
     with col1:
         if st.button("✅ Yes, Submit"):
             # Simulate push to backend
-            st.session_state["submitted_data"] = new_log
+            st.session_state["submitted_data"] = new_log_2
             # st.success("✅ Activity Recorded!")
             st.session_state["submitted"] = True
             st.session_state["pending_log"] = None
@@ -31,35 +31,35 @@ def confirm_submission(new_log):
             st.rerun()
 
 
-def edit_log(data):
-    logindex = int(
-        st.number_input("LogIndex", placeholder="Enter Log ID", step=1, format="%d")
-    )
+# def edit_log(data):
+#     logindex = int(
+#         st.number_input("LogIndex", placeholder="Enter Log ID", step=1, format="%d")
+#     )
 
-    # -------PULL DATA ONCE --------#
-    # -----load un cached when not submitting
-    if "just_submitted" not in st.session_state:
-        st.session_state["just_submitted"] = False
+#     # -------PULL DATA ONCE --------#
+#     # -----load un cached when not submitting
+#     if "just_submitted" not in st.session_state:
+#         st.session_state["just_submitted"] = False
 
-    if st.session_state["just_submitted"] == False:
-        df = pulluc.get_runner_data()
-        st.session_state["just_submitted"] = False
-    else:
-        df = pullc.get_runner_data()
+#     if st.session_state["just_submitted"] == False:
+#         df = pulluc.get_runner_data()
+#         st.session_state["just_submitted"] = False
+#     else:
+#         df = pullc.get_runner_data()
 
-    full_df = pd.DataFrame(data)
+#     full_df = pd.DataFrame(data)
 
-    ##RETRIEVE RECORD
-    if logindex in full_df.index:
-        filtered_df = full_df.loc[[logindex]]
-        st.write("Filtered Row:", filtered_df)
-    else:
-        st.warning("LogIndex not found in data.")
+#     ##RETRIEVE RECORD
+#     if logindex in full_df.index:
+#         filtered_df = full_df.loc[[logindex]]
+#         st.write("Filtered Row:", filtered_df)
+#     else:
+#         st.warning("LogIndex not found in data.")
 
 
 def new_log_2(record_to_edit=None):
 
-    with st.form("activity_log", clear_on_submit=True, border=True):
+    with st.form("activity_log_edit", clear_on_submit=True, border=True):
         time_stamp_ = datetime.now()
         time_stamp = time_stamp_.strftime("%Y-%m-%d")
         now_ = datetime.now()
@@ -78,13 +78,13 @@ def new_log_2(record_to_edit=None):
 
         if record_to_edit is not None:
             default_date = pd.to_datetime(record_to_edit["Date"]).date()
-            default_member = record_to_edit["Member"]
+            default_member = record_to_edit["Member Name"]
             default_activity = record_to_edit["Activity"]
             default_distance = float(record_to_edit["Distance"])
             default_pace_str = record_to_edit["Pace"]
-            default_hr = int(record_to_edit["HR"])
-            default_cad = int(record_to_edit["Cadence"])
-            default_rpe = int(record_to_edit["RPE"])
+            default_hr = int(record_to_edit["HR (bpm)"])
+            default_cad = int(record_to_edit["Cadence (steps/min)"])
+            default_rpe = int(record_to_edit["RPE (1–10 scale)"])
             default_shoe = record_to_edit["Shoe"]
             default_remarks = record_to_edit["Remarks"]
 
@@ -193,10 +193,10 @@ def new_log_2(record_to_edit=None):
             key="remarks_input",
         )
 
-        submitted = st.form_submit_button("Submit Log", type="primary")
+        submitted_edit = st.form_submit_button("Edit:Submit Log", type="primary")
 
-        if submitted:
-            new_log = [
+        if submitted_edit:
+            new_log_2 = [
                 time_stamp,
                 date.isoformat(),
                 act_selection or "",
@@ -209,39 +209,48 @@ def new_log_2(record_to_edit=None):
                 remarks,
                 mem_selection or "",
             ]
-            st.session_state.pending_log = new_log
-            confirm_submission(new_log)
+            st.session_state.pending_log = new_log_2
+            confirm_submission(new_log_2)
 
 
-def replace_log_row(full_df, logindex):
-    if (
-        "pending_log" in st.session_state
-        and st.session_state.pending_log
-        and logindex in full_df.index
-    ):
-        updated_row = st.session_state.pending_log
+def replace_log_row(full_df, logindex, updated_data):
+    try:
+        # Update the specific row
+        full_df.loc[logindex] = updated_data
 
-        # Replace row values
-        full_df.iloc[logindex] = updated_row
+        # Push changes
+        push.push_runner_data(full_df.to_dict(orient="records"))
 
-        # Optional: convert to dict or list of records if your push function needs it
-        updated_data = full_df.to_dict(orient="records")
+        # Clear edit state
+        del st.session_state.record_to_edit
+        st.session_state.editing = False
 
-        # Push updated data
-        push.push_runner_data(updated_data)
-
-        # Store the updated row for display confirmation
-        st.session_state["submitted_data"] = updated_row
-        st.session_state["submitted"] = True
-
-        st.success(f"✅ Log index {logindex} has been successfully updated.")
-        st.write(updated_row)
+        st.success("Log updated successfully!")
         st.balloons()
-    else:
-        st.warning("⚠️ Could not update log. Make sure a valid index is selected.")
+        st.rerun()
+    except Exception as e:
+        st.error(f"Error updating log: {e}")
 
 
 def start_edit():
-    with st.expander("edit_log"):
+    with st.expander("Edit Log"):
         df = pulluc.get_runner_data()
-        edit_log(df)
+        logindex = st.number_input("Enter Log ID to edit", step=1, format="%d")
+
+        if st.button("Load Log for Editing"):
+            if logindex in df.index:
+                record_to_edit = df.loc[logindex].to_dict()
+                st.session_state.record_to_edit = record_to_edit
+                st.session_state.editing = True
+                st.rerun()
+            else:
+                st.warning("LogIndex not found")
+
+    # If we're in edit mode, show the form with the record
+    if st.session_state.get("editing"):
+        if st.button("Cancel Editing"):
+            del st.session_state.record_to_edit
+            st.session_state.editing = False
+            st.rerun()
+
+        new_log_2(record_to_edit=st.session_state.record_to_edit)

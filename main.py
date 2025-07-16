@@ -684,6 +684,8 @@ with tab1:  # STATS
 
     from data import editlog as elog
 
+    # elog.start_edit()
+
 with tab2:  ##TRAINING PLAN ##
     # st.header("🗓️💪 Your Training Plan", divider="blue")
     st.markdown(
@@ -797,8 +799,8 @@ with tab6:  ##SCOTTS CORNER
                 ### As of July 14, 2025 : Transition Week 11
 
                 Your Resting HR: **55 bpm**  
-                Your Max HR: **187 bpm** as of 16-Jul-2025  
-                Heart Rate Reserve (HRR): **132 bpm**
+                Your Max HR: **192 bpm** as of 16-Jul-2025  
+                Heart Rate Reserve (HRR): **136 bpm**
 
                 **🏷️ Zones**
                 - 🟢 Zone 2: Recovery / Easy ➡️**Target HR: 118-130 bpm**  🔥RPE : **2-4**
