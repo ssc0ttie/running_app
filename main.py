@@ -662,7 +662,7 @@ with tab1:  # STATS
     """,
         unsafe_allow_html=True,
     )
-    wc.generate_wordcloud(filtered_df)
+    wc.generate_wordcloud(filtered_df_with_non_running)
 
     # -----ALL ACTIVITY TABLE-------#
     # st.subheader("🗂️ Activity Reference", divider="gray")
