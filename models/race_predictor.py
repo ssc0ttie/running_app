@@ -33,7 +33,9 @@ def race_predictor(data):
     df_predict = load_data(df)
     df_predict = df_predict[
         ~df_predict["Activity"].str.contains("tempo", case=False, na=False)
-        & ~df_predict["Activity"].isin(["Warm up", "Cooldown", 0])
+        & ~df_predict["Activity"].isin(
+            ["Warm up", "Cooldown", 0, "Speed Work (Zone 4-5 x400M)", "Tempo Run"]
+        )
     ]
 
     # --- Train model --- #
