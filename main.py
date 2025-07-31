@@ -237,6 +237,7 @@ with tab0:  ##LOG
                         "Adidas Pink",
                         "Reebok Float Ride Energy 4",
                         "Sketcher",
+                        "Peak Cushy",
                         "Peppa Pig",
                         "Others (Inform Scott)",
                         "On Cloud ni Frau",
@@ -756,6 +757,8 @@ with tab5:  # REMARKS
     )
     # list_weeks = sorted(full_df["Week"].dropna().unique())
     latest_week = list_weeks[-1]
+
+    latest_week = "W 1"
     coach_df = filtered_df[filtered_df["Week"] == (latest_week)]
 
     st.markdown(f"""## 🏁 Week: {latest_week}""")

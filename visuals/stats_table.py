@@ -160,7 +160,7 @@ def generate_matrix_coach(data):
     # Display in Streamlit
 
     # -----GOAL HARDCODE -------#
-    mileage_goal = {"All": "22-26k", "Scott": "39k"}
+    mileage_goal = {"All": "27-28k", "Scott": "42k"}
 
     ##--Lookup Target ------#
     grouped["Target"] = grouped["Member Name"].apply(
