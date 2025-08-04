@@ -237,6 +237,7 @@ with tab0:  ##LOG
                         "Adidas Pink",
                         "Reebok Float Ride Energy 4",
                         "Sketcher",
+                        "Superblast 2",
                         "Peak Cushy",
                         "Peppa Pig",
                         "Others (Inform Scott)",
