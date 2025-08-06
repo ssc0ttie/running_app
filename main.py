@@ -759,7 +759,7 @@ with tab5:  # REMARKS
     # list_weeks = sorted(full_df["Week"].dropna().unique())
     latest_week = list_weeks[-1]
 
-    latest_week = "W 1"
+    latest_week = "W 2"
     coach_df = filtered_df[filtered_df["Week"] == (latest_week)]
 
     st.markdown(f"""## 🏁 Week: {latest_week}""")
