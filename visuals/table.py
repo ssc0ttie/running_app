@@ -35,7 +35,7 @@ def generate_matrix(data):
             ),
             "Activity": st.column_config.TextColumn("Actvity"),
             "Distance": st.column_config.ProgressColumn(
-                "Distance (km)",
+                "Distance",
                 min_value=0,
                 max_value=data["Distance"].max(),
                 format="%.1f",
@@ -58,7 +58,8 @@ def generate_matrix(data):
             "Shoe": st.column_config.TextColumn("Shoes"),
             "Remarks": st.column_config.TextColumn("Remarks", width="large"),
             "Member Name": st.column_config.TextColumn("Runner"),
-            "Duration_Other": st.column_config.TextColumn("Duration (H:M:S)"),
+            "Duration_Other": st.column_config.TextColumn("Duration"),
+            "Week": st.column_config.TextColumn("Week"),
         },
         column_order=[
             "Date_of_Activity",
@@ -73,6 +74,7 @@ def generate_matrix(data):
             "Shoe",
             "Remarks",
             "Member Name",
+            "Week",
         ],
         use_container_width=True,
     )
