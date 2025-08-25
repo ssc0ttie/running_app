@@ -161,7 +161,7 @@ with tab0:  ##LOG
     )
     ###----- FORM RUN--------------######
     with st.expander("Log Run"):
-        with st.form("activity_log", clear_on_submit=False, border=True):
+        with st.form("activity_log", clear_on_submit=True, border=True):
             time_stamp_ = datetime.now()
             time_stamp = time_stamp_.strftime("%Y-%m-%d")
             mem_selection = st.selectbox(

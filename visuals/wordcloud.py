@@ -45,8 +45,8 @@ def generate_wordcloud(data):
 
     # Generate word cloud
     wordcloud = WordCloud(
-        width=500,
-        height=300,
+        width=350,
+        height=250,
         background_color="white",
         stopwords=stopwords,
         colormap="viridis",
@@ -54,7 +54,7 @@ def generate_wordcloud(data):
 
     # Display
     # st.subheader("📝 Word Cloud from Runner Remarks")
-    fig, ax = plt.subplots(figsize=(3.5, 3.5))
+    fig, ax = plt.subplots(figsize=(2.5, 2.5))
     ax.imshow(wordcloud, interpolation="bilinear")
     ax.axis("off")
     st.pyplot(fig)
