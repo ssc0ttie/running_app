@@ -752,24 +752,24 @@ with tab5:  # REMARKS
     #     else full_df[full_df["Week"].isin(selected_weeks)]
     # )
     #
-    list_weeks = sorted(
-        filtered_df["Week"].dropna().unique(),
-        key=lambda x: int("".join(filter(str.isdigit, x))),
-    )
-    # list_weeks = sorted(full_df["Week"].dropna().unique())
-    latest_week = list_weeks[-1]
+    # list_weeks = sorted(
+    #     filtered_df["Week"].dropna().unique(),
+    #     key=lambda x: int("".join(filter(str.isdigit, x))),
+    # )
+    # # list_weeks = sorted(full_df["Week"].dropna().unique())
+    # latest_week = list_weeks[-1]
 
-    latest_week = "W 2"
-    coach_df = filtered_df[filtered_df["Week"] == (latest_week)]
+    # latest_week = "W 3"
+    # coach_df = filtered_df[filtered_df["Week"] == (latest_week)]
 
-    st.markdown(f"""## 🏁 Week: {latest_week}""")
+    # st.markdown(f"""## 🏁 Week: {latest_week}""")
 
-    # st.write(filtered_df.columns)
+    # # st.write(filtered_df.columns)
 
-    # ####----WEEKLY SUMMARY TABLE --- ###
-    stats.generate_matrix_coach(coach_df)
+    # # ####----WEEKLY SUMMARY TABLE --- ###
+    # stats.generate_matrix_coach(coach_df)
 
-    wr.weekly_remarks()
+    # wr.weekly_remarks()
 
 with tab6:  ##SCOTTS CORNER
     st.markdown(
