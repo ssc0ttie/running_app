@@ -18,6 +18,9 @@ def generate_combo(data):
     else:
         data = data[data["Activity"].isin(selected_activity)]
 
+    nonrun_data = data
+    nonrun_data["Week"] = [week[:1] + week[-2:] for week in data["Week"]]
+
     ##GROUP BY
     data["Week"] = [
         week[:1] + week[-2:] for week in data["Week"]
@@ -31,14 +34,48 @@ def generate_combo(data):
     )
     data["HR (bpm)"] = pd.to_numeric(data["HR (bpm)"], errors="coerce")
 
+    nonrun_data["Duration_Other"] = pd.to_timedelta(
+        nonrun_data["Duration_Other"], errors="coerce"
+    )
     filtered_data = data[
         ~data["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
     ]  # filter non running activity
+
+    ##NON- RUNNING ACITIVY###
+
+    # data_others["Week"] = data_others["Week"].str.extract(r"(\d+)").astype(int)
+    # data_others["Week"] = "Week " + data_others["Week"].astype(str).str.zfill(2)
+
+    nonrun_filtered_data = nonrun_data[
+        nonrun_data["Activity"].isin(
+            ["Rest", "Cross Train", "Strength Training", "Yoga", "Pilates"]
+        )
+    ]  # filter non running activity
+
+    nonrun_data = nonrun_filtered_data.groupby(["Week", "Activity"], as_index=False)[
+        "Duration_Other"
+    ].sum()
+
     act_date_group = filtered_data.groupby("Week", as_index=False)
     dist_data = act_date_group["Distance"].sum()
     pace_data = act_date_group["Pace"].mean()
     cadence_data = act_date_group["Cadence (steps/min)"].mean()
     hr_data = act_date_group["HR (bpm)"].mean()
+
+    # nonrun_data = nonrun_act_date_group["Duration_Other"].sum()
+
+    # Convert Duration_Other to minutes
+    nonrun_data["Duration_Other"] = pd.to_timedelta(
+        nonrun_data["Duration_Other"], errors="coerce"
+    )
+    nonrun_data["Duration_Other_Mins"] = (
+        nonrun_data["Duration_Other"].dt.total_seconds() / 60
+    )
+
+    # Format duration as mm:ss
+    nonrun_data["Duration_Other_Str"] = nonrun_data["Duration_Other"].apply(
+        lambda td: f"{int(td.total_seconds() // 60):02d}:{int(td.total_seconds() % 60):02d}"
+    )
 
     # Convert pace to minutes
     pace_data["Pace"] = pd.to_timedelta(pace_data["Pace"], errors="coerce")
@@ -56,6 +93,9 @@ def generate_combo(data):
         cadence_data["Cadence (steps/min)"].pct_change() * 100
     )
     hr_data["HR_Pct_Change"] = hr_data["HR (bpm)"].pct_change() * 100
+    nonrun_data["Duration_Pct_Change"] = (
+        nonrun_data["Duration_Other"].pct_change() * 100
+    )
 
     #  Create delta labels
     def format_delta(val):
@@ -83,6 +123,10 @@ def generate_combo(data):
     )
     hr_data["HR_Pct_Change_Label"] = hr_data["HR_Pct_Change"].apply(format_delta)
 
+    nonrun_data["Duration_Pct_Change_Label"] = nonrun_data["Duration_Pct_Change"].apply(
+        format_delta
+    )
+
     # Combine labels
     dist_labels = (
         dist_data["Distance"].round(1).astype(str)
@@ -99,6 +143,12 @@ def generate_combo(data):
         hr_data["HR (bpm)"].round(1).astype(str)
         + " bpm<br>"
         + hr_data["HR_Pct_Change_Label"]
+    )
+
+    nonrun_labels = (
+        nonrun_data["Duration_Other"].round(1).astype(str)
+        + " spm<br>"
+        + nonrun_data["Duration_Pct_Change_Label"]
     )
     # Create combo plot
     fig = make_subplots(specs=[[{"secondary_y": True}]])
@@ -287,6 +337,38 @@ def generate_combo(data):
     )
 
     st.plotly_chart(fig_bullet, use_container_width=True, key="hr_chart")
+
+    # Add stack bar chart for nonrun activity
+    # nonrun_grouped = (
+    #     nonrun_data.groupby(["Week", "Activity"])["Duration_Other"].sum().reset_index()
+    # )
+    # nonrun_grouped = nonrun_data
+    fig_bar = go.Figure()
+    # Loop through each activity and add a trace
+    for activity in nonrun_data["Activity"].unique():
+        subset = nonrun_data[nonrun_data["Activity"] == activity]
+        fig_bar.add_trace(
+            go.Bar(
+                x=subset["Week"],
+                y=subset["Duration_Other_Mins"],
+                name=activity,
+                text=subset["Duration_Other_Str"],
+                textposition="auto",
+            )
+        )
+
+    fig_bar.update_layout(
+        title="Weekly Duration by Supplimentary Activity",
+        xaxis_title="Week",
+        yaxis_title="Duration (Mins)",
+        barmode="stack",  # key for stacking
+        height=400,
+        margin=dict(l=20, r=20, t=40, b=20),
+        showlegend=True,  # show legend for activity breakdown
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+
+    st.plotly_chart(fig_bar, use_container_width=True, key="nonrun_chart")
 
 
 def generate_combo_daily(data):

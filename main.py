@@ -295,7 +295,7 @@ with tab0:  ##LOG
                 st.session_state["submitted_data"] = None
 
     with st.expander("Log Other Activity"):
-        with st.form("activity_log_other", clear_on_submit=False, border=True):
+        with st.form("activity_log_other", clear_on_submit=True, border=True):
             time_stamp_ = datetime.now()
             time_stamp = time_stamp_.strftime("%Y-%m-%d")
             mem_selection = st.selectbox(
@@ -573,7 +573,7 @@ with tab1:  # STATS
         """,
             unsafe_allow_html=True,
         )
-        cb.generate_combo(filtered_df)
+        cb.generate_combo(filtered_df_with_non_running)
 
     # -----COMBO CHART DAILY-------#
     with st.expander("View Daily Key Metrics"):
