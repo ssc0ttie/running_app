@@ -19,8 +19,40 @@ def generate_matrix(data):
 
         # Then apply:
 
+    def get_combined_duration(row):
+        # First, define what constitutes running vs non-running activities
+        running_activities = [
+            "Easy Run",
+            "Aerobic Run",
+            "Tempo Run",
+            "Cooldown",
+            "Warm up",
+            "Speed Work (Zone 4-5 x400M)",
+            "LSD Road@ Zone 2 Pace",
+            "LSD Trail@ Zone 2 Pace",
+            "RACE DAY",
+        ]
+        non_running_activities = [
+            "Strength Training",
+            "Yoga",
+            "Cross Train",
+            "Rest",
+            "Pilates",
+        ]
+        if row["Activity"] in running_activities:
+            return row["Moving_Time"]
+        elif row["Activity"] in non_running_activities:
+            return row["Duration_Other"]
+        else:
+            return pd.NaT
+
     data["Pace_Str"] = data["Pace"].apply(format_timedelta)
     data["MovingTime_Str"] = data["Moving_Time"].apply(format_timedelta)
+    data["Duration_Str"] = data["Duration_Other"].apply(format_timedelta)
+
+    data["Combined_Duration"] = data.apply(get_combined_duration, axis=1)
+    data["Combined_Duration_Str"] = data["Combined_Duration"].apply(format_timedelta)
+
     data = data.sort_values(by="Date", ascending=False)
     # drop columns
     data.drop(["TimeStamp", "Date", "Pace", "Shoe"], axis=1, inplace=True)
@@ -58,16 +90,16 @@ def generate_matrix(data):
             "Shoe": st.column_config.TextColumn("Shoes"),
             "Remarks": st.column_config.TextColumn("Remarks", width="large"),
             "Member Name": st.column_config.TextColumn("Runner"),
-            "Duration_Other": st.column_config.TextColumn("Duration"),
+            "Combined_Duration_Str": st.column_config.TextColumn("Duration"),
             "Week": st.column_config.TextColumn("Week"),
         },
         column_order=[
             "Date_of_Activity",
             "Activity",
             "Distance",
-            "MovingTime_Str",
+            "Combined_Duration_Str",
             "Pace_Str",
-            "Duration_Other",
+            # "Duration_Str",
             "HR (bpm)",
             "Cadence (steps/min)",
             "RPE (1–10 scale)",
