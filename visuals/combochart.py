@@ -339,10 +339,6 @@ def generate_combo(data):
     st.plotly_chart(fig_bullet, use_container_width=True, key="hr_chart")
 
     # Add stack bar chart for nonrun activity
-    # nonrun_grouped = (
-    #     nonrun_data.groupby(["Week", "Activity"])["Duration_Other"].sum().reset_index()
-    # )
-    # nonrun_grouped = nonrun_data
     fig_bar = go.Figure()
     # Loop through each activity and add a trace
     for activity in nonrun_data["Activity"].unique():
@@ -356,6 +352,10 @@ def generate_combo(data):
                 textposition="auto",
             )
         )
+
+    fig_bar.update_xaxes(
+        categoryorder="array", categoryarray=sorted(nonrun_data["Week"].unique())
+    )
 
     fig_bar.update_layout(
         title="Weekly Duration by Supplimentary Activity",
