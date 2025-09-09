@@ -66,7 +66,7 @@ with st.popover("💡 How to Use This Page"):
 
 
 # ----------------- Confirmation Dialog -----------------
-@st.dialog("Confirm Entry?")
+@st.dialog("Confirm Run Entry?")
 def confirm_submission(new_log):
     st.write("Are you sure you want to submit this entry?")
     col1, col2 = st.columns(2)
@@ -74,9 +74,34 @@ def confirm_submission(new_log):
     with col1:
         if st.button("✅ Yes, Submit"):
             # Simulate push to backend
-            st.session_state["submitted_data"] = new_log
+            st.session_state["submitted_data_run"] = new_log
+            st.session_state["submitted_data_other"] = new_log_other
             # st.success("✅ Activity Recorded!")
-            st.session_state["submitted"] = True
+            st.session_state["submitted_run"] = True
+            st.session_state["submitted_other"] = True
+            st.session_state["pending_log"] = None
+            # st.balloons()
+            st.rerun()
+
+    with col2:
+        if st.button("❌ Cancel"):
+            st.warning("Submission cancelled.")
+            st.session_state.submitted = False
+            st.session_state["pending_log"] = None
+            st.rerun()
+
+
+@st.dialog("Confirm Other Activity Entry?")
+def confirm_submission_other(new_log_other):
+    st.write("Are you sure you want to submit this entry?")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("✅ Yes, Submit"):
+            # Simulate push to backend
+            st.session_state["submitted_data_other"] = new_log_other
+            # st.success("✅ Activity Recorded!")
+            st.session_state["submitted_other"] = True
             st.session_state["pending_log"] = None
             # st.balloons()
             st.rerun()
@@ -159,25 +184,25 @@ with tab0:  ##LOG
     """,
         unsafe_allow_html=True,
     )
+    mem_selection = st.selectbox(
+        "Members",
+        ["Aiza", "Chona", "Fraulein", "Lead", "Maxine", "Scott"],
+        index=None,
+        placeholder="Select Member",
+        key="shared_member",
+    )
+    # member_name = st.markdown(f"Select Member", {mem_selection})
+    sg_now = datetime.now(ZoneInfo("Asia/Singapore"))
+    now_ = datetime.now()
+
+    date = st.date_input("Date of Activity", value=now_.date(), key="shared_date")
+
     ###----- FORM RUN--------------######
     with st.expander("Log Run"):
         with st.form("activity_log", clear_on_submit=True, border=True):
-            time_stamp_ = datetime.now()
-            time_stamp = time_stamp_.strftime("%Y-%m-%d")
-            mem_selection = st.selectbox(
-                "Members",
-                ["Aiza", "Chona", "Fraulein", "Lead", "Maxine", "Scott"],
-                index=None,
-                placeholder="Select Member",
-            )
-            # member_name = st.markdown(f"Select Member", {mem_selection})
-            sg_now = datetime.now(ZoneInfo("Asia/Singapore"))
-            now_ = datetime.now()
-
-            date = st.date_input("Date of Activity", value=now_.date())
 
             # Activity list
-            act_selection = st.selectbox(
+            act_selection_run = st.selectbox(
                 "Activity",
                 # sorted(
                 [
@@ -194,9 +219,12 @@ with tab0:  ##LOG
                 # ),
                 index=None,
                 placeholder="Select an activity",
+                key="activity_run",
             )
 
-            distance = st.number_input("Distance", placeholder="Enter distance")
+            distance_run = st.number_input(
+                "Distance", placeholder="Enter distance", key="distance_run"
+            )
 
             # Add default value at the beginning
             default_pace = "00:00:00"
@@ -212,19 +240,25 @@ with tab0:  ##LOG
                 "Select Pace (min:sec) *type in your pace and select",
                 pace_list,
                 index=0,
+                key="pace_run",
             )
 
-            pace_str = pace_map[pace_display]
+            pace_str_run = pace_map[pace_display]
 
-            hr = st.number_input("HR (bmp)", min_value=0, max_value=220)
-            cad = st.number_input("Cadence (spm)", min_value=0, max_value=200)
-            rpe = st.slider("RPE", 0, 10, 0)
+            hr_run = st.number_input(
+                "HR (bmp)", min_value=0, max_value=220, key="hr_run"
+            )
+            cad_run = st.number_input(
+                "Cadence (spm)", min_value=0, max_value=200, key="cad_run"
+            )
+            rpe_run = st.slider("RPE", 0, 10, 0, key="rpe_run")
             # rpe2 = st.feedback(options="faces", key=int)
-            shoe = st.selectbox(
+            shoe_run = st.selectbox(
                 "Shoe",
                 sorted(
                     [
                         "Adidas Adizero SL2",
+                        "Adidas Adizero SL",
                         "Asics Purple",
                         "Boston 12",
                         "NB Rebel v3",
@@ -246,72 +280,64 @@ with tab0:  ##LOG
                     ]
                 ),
                 index=None,
+                key="shoe_run",
             )
-            remarks = st.text_area(
-                "Remarks", placeholder="How did the session feel?", key="remarks_input"
+            remarks_run = st.text_area(
+                "Remarks", placeholder="How did the session feel?", key="remarks_run"
             )
 
             submitted_run = st.form_submit_button("Run: Submit Log", type="primary")
 
             if submitted_run:
+                time_stamp_ = datetime.now()
+                time_stamp = time_stamp_.strftime("%Y-%m-%d")
 
                 new_log = [
                     time_stamp,  # Convert datetime to ISO string
                     date.isoformat(),  # Convert date to ISO string
                     (
-                        act_selection if act_selection else ""
+                        act_selection_run if act_selection_run else ""
                     ),  # Get first selected activity or empty
-                    distance,
-                    pace_str,
-                    hr,
-                    cad,
-                    rpe,
-                    shoe if shoe else "",  # Get first selected shoe or empty
-                    remarks,
+                    distance_run,
+                    pace_str_run,
+                    hr_run,
+                    cad_run,
+                    rpe_run,
+                    shoe_run if shoe_run else "",  # Get first selected shoe or empty
+                    remarks_run,
                     (
                         mem_selection if mem_selection else ""
                     ),  # Get first selected member or empty
                 ]
                 st.session_state.pending_log = new_log
+                # st.session_state.submitted_run = True
+
                 confirm_submission(new_log)
 
-            ####----- AFTER DIALOG --------------######
-            if "submitted" not in st.session_state:
-                st.session_state["submitted"] = False
+                ####----- AFTER DIALOG WORKING --------------######
+            if "submitted_run" not in st.session_state:
+                st.session_state["submitted_run"] = False
             if "pending_log" not in st.session_state:
                 st.session_state["pending_log"] = None
 
-            if st.session_state.get("submitted") and st.session_state.get(
-                "submitted_data"
+            if st.session_state.get("submitted_run") and st.session_state.get(
+                "submitted_data_run"
             ):
-                push.push_runner_data(st.session_state["submitted_data"])
-                st.success(
-                    "✅ Your activity log was successfully recorded! Latest entry:"
-                )
-                st.write(st.session_state["submitted_data"])
+                push.push_runner_data(st.session_state["submitted_data_run"])
+                st.success("✅ Your Run was successfully recorded! Latest entry:")
+                st.write(st.session_state["submitted_data_run"])
                 st.balloons()
                 # Reset state so it doesn't rerun again
-                st.session_state["submitted"] = False
-                st.session_state["submitted_data"] = None
+                st.session_state["submitted_run"] = False
+                st.session_state["submitted_data_run"] = None
 
     with st.expander("Log Other Activity"):
         with st.form("activity_log_other", clear_on_submit=True, border=True):
             time_stamp_ = datetime.now()
             time_stamp = time_stamp_.strftime("%Y-%m-%d")
-            mem_selection = st.selectbox(
-                "Members",
-                ["Aiza", "Chona", "Fraulein", "Lead", "Maxine", "Scott"],
-                index=None,
-                placeholder="Select Member",
-            )
-            # member_name = st.markdown(f"Select Member", {mem_selection})
-            sg_now = datetime.now(ZoneInfo("Asia/Singapore"))
-            now_ = datetime.now()
-
-            date = st.date_input("Date of Activity", value=now_.date())
 
             # Activity list
-            act_selection = st.selectbox(
+            act_selection_other = st.selectbox(
                 "Activity",
                 # sorted(
                 [
@@ -326,7 +352,7 @@ with tab0:  ##LOG
                 placeholder="Select an activity",
             )
 
-            hr = st.number_input("HR (bmp)", min_value=0, max_value=220)
+            hr_other = st.number_input("HR (bmp)", min_value=0, max_value=220)
 
             duration_list = [
                 f"{h:02}:{m:02}:{s:02}"
@@ -349,11 +375,11 @@ with tab0:  ##LOG
                 index=0,
             )
 
-            duration_str = duration_map[duration_display]
+            duration_other = duration_map[duration_display]
 
-            rpe = st.slider("RPE", 0, 10, 0)
+            rpe_other = st.slider("RPE", 0, 10, 0)
             # rpe2 = st.feedback(options="faces", key=int)
-            remarks = st.text_area(
+            remarks_other = st.text_area(
                 "Remarks",
                 placeholder="How did the session feel?",
                 key="remarks_input_other",
@@ -369,41 +395,42 @@ with tab0:  ##LOG
                     time_stamp,  # Convert datetime to ISO string
                     date.isoformat(),  # Convert date to ISO string
                     (
-                        act_selection if act_selection else ""
+                        act_selection_other if act_selection_other else ""
                     ),  # Get first selected activity or empty
-                    distance,
-                    pace_str,
-                    hr,
-                    cad,
-                    rpe,
-                    shoe if shoe else "",  # Get first selected shoe or empty
-                    remarks,
+                    None,  # dist
+                    None,  # pace
+                    hr_other,
+                    None,  # cad
+                    None,  # shoes
+                    rpe_other,
+                    remarks_other,
                     (
                         mem_selection if mem_selection else ""
                     ),  # Get first selected member or empty
-                    duration_str,
+                    duration_other,
                 ]
-                st.session_state.pending_log = new_log_other
-                confirm_submission(new_log_other)
+                st.session_state.pending_log_other = new_log_other
+                # st.session_state.submitted_other = True
+                confirm_submission_other(new_log_other)
 
-            ####----- AFTER DIALOG --------------######
-            if "submitted" not in st.session_state:
-                st.session_state["submitted"] = False
-            if "pending_log" not in st.session_state:
-                st.session_state["pending_log"] = None
+                ####----- AFTER DIALOG OTHER WORKING --------------######
+            if "submitted_other" not in st.session_state:
+                st.session_state["submitted_other"] = False
+            if "pending_log_other" not in st.session_state:
+                st.session_state["pending_log_other"] = None
 
-            if st.session_state.get("submitted") and st.session_state.get(
-                "submitted_data"
+            if st.session_state.get("submitted_other") and st.session_state.get(
+                "submitted_data_other"
             ):
-                push.push_runner_data(st.session_state["submitted_data"])
+                push.push_runner_data(st.session_state["submitted_data_other"])
                 st.success(
-                    "✅ Your activity log was successfully recorded! Latest entry:"
+                    "✅ Your Other Activity was successfully recorded! Latest entry:"
                 )
-                st.write(st.session_state["submitted_data"])
+                st.write(st.session_state["submitted_data_other"])
                 st.balloons()
                 # Reset state so it doesn't rerun again
-                st.session_state["submitted"] = False
-                st.session_state["submitted_data"] = None
+                st.session_state["submitted_other"] = False
+                st.session_state["submitted_data_other"] = None
 
 with tab1:  # STATS
 
