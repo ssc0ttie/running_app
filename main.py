@@ -75,10 +75,10 @@ def confirm_submission(new_log):
         if st.button("✅ Yes, Submit"):
             # Simulate push to backend
             st.session_state["submitted_data_run"] = new_log
-            st.session_state["submitted_data_other"] = new_log_other
-            # st.success("✅ Activity Recorded!")
+            # st.session_state["submitted_data_other"] = new_log_other
+            st.success("✅ Activity Recorded!")
             st.session_state["submitted_run"] = True
-            st.session_state["submitted_other"] = True
+            # st.session_state["submitted_other"] = True
             st.session_state["pending_log"] = None
             # st.balloons()
             st.rerun()
