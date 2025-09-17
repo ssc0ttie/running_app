@@ -437,16 +437,10 @@ with tab0:  ##LOG
                 st.session_state["submitted_other"] = False
                 st.session_state["submitted_data_other"] = None
 
-    if "expand_success" not in st.session_state:
-        st.session_state.expand_success = True  # start expanded
-
     with st.expander("Edit Log"):
         from data import edit
 
         edit.edit_log(full_df)
-        st.session_state.expand_success = False
-        st.rerun()  # refresh UI so expander collapses
-
 
 with tab1:  # STATS
 
