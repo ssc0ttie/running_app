@@ -35,6 +35,7 @@ def get_runner_data():
     # RENAME HEADERS#
     df_hist.rename(
         columns={
+            # 0: "UniqueKey",
             0: "TimeStamp",
             1: "Date_of_Activity",
             2: "Activity",
@@ -101,7 +102,7 @@ def get_runner_data():
     df["Pace_Str"] = df["Pace"].apply(format_timedelta_to_pace_str)
 
     # ------------clean lookup dates and merge -----------------#
-    df["Date_of_Activity"] = pd.to_datetime(df["Date_of_Activity"])
+    df["Date_of_Activity"] = pd.to_datetime(df["Date_of_Activity"], errors="coerce")
     df_week["Date"] = pd.to_datetime(df_week["Date"])
     df = df.merge(df_week, left_on="Date_of_Activity", right_on="Date", how="left")
 
@@ -109,5 +110,21 @@ def get_runner_data():
 
     df["Moving_Time"] = df["Pace"] * df["Distance"]
     df["Moving_Time"] = pd.to_timedelta(df["Moving_Time"])
+    # create uniquekey
+    df["UniqueKey"] = (
+        df["Date_of_Activity"].astype(str)
+        + "|"
+        + df["Member Name"].astype(str)
+        + "|"
+        + df["Activity"].astype(str)
+    )
 
     return df
+
+
+def get_worksheet_object():
+    """Return the Google Sheets worksheet object for writing"""
+    client = get_gsheet_client()
+    sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
+    worksheet = sheet.get_worksheet_by_id(1611308583)  # Your worksheet ID
+    return worksheet

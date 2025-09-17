@@ -288,11 +288,14 @@ with tab0:  ##LOG
 
             submitted_run = st.form_submit_button("Run: Submit Log", type="primary")
 
+            unique_key = f"{date}|{mem_selection}|{act_selection_run}"
+
             if submitted_run:
                 time_stamp_ = datetime.now()
                 time_stamp = time_stamp_.strftime("%Y-%m-%d")
 
                 new_log = [
+                    unique_key,
                     time_stamp,  # Convert datetime to ISO string
                     date.isoformat(),  # Convert date to ISO string
                     (
@@ -385,6 +388,7 @@ with tab0:  ##LOG
                 key="remarks_input_other",
             )
 
+            unique_key_other = f"{date}|{mem_selection}|{act_selection_other}"
             # Every form must have a submit button.
 
             submitted_other = st.form_submit_button("Other: Submit Log", type="primary")
@@ -392,6 +396,7 @@ with tab0:  ##LOG
             if submitted_other:
 
                 new_log_other = [
+                    unique_key_other,
                     time_stamp,  # Convert datetime to ISO string
                     date.isoformat(),  # Convert date to ISO string
                     (
@@ -431,6 +436,17 @@ with tab0:  ##LOG
                 # Reset state so it doesn't rerun again
                 st.session_state["submitted_other"] = False
                 st.session_state["submitted_data_other"] = None
+
+    if "expand_success" not in st.session_state:
+        st.session_state.expand_success = True  # start expanded
+
+    with st.expander("Edit Log"):
+        from data import edit
+
+        edit.edit_log(full_df)
+        st.session_state.expand_success = False
+        st.rerun()  # refresh UI so expander collapses
+
 
 with tab1:  # STATS
 
