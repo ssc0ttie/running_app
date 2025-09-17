@@ -55,7 +55,7 @@ def edit_log(full_df):
             print(f"Composite key: {selected_row['UniqueKey']}")
 
             # Display current values and allow editing
-            with st.form("edit_form", clear_on_submit=True):
+            with st.form("edit_form"):
                 st.write("Edit the values below:")
 
                 # Member selection

@@ -308,9 +308,8 @@ with tab0:  ##LOG
                     rpe_run,
                     shoe_run if shoe_run else "",  # Get first selected shoe or empty
                     remarks_run,
-                    (
-                        mem_selection if mem_selection else ""
-                    ),  # Get first selected member or empty
+                    (mem_selection if mem_selection else ""),
+                    None,  # Duration_other,  # Get first selected member or empty
                 ]
                 st.session_state.pending_log = new_log
                 # st.session_state.submitted_run = True
@@ -406,8 +405,8 @@ with tab0:  ##LOG
                     None,  # pace
                     hr_other,
                     None,  # cad
-                    None,  # shoes
                     rpe_other,
+                    None,  # shoes
                     remarks_other,
                     (
                         mem_selection if mem_selection else ""
