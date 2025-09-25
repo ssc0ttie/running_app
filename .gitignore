@@ -1,2 +1,3 @@
 models/.streamlit/secrets.toml
 .streamlit/secrets.toml
+notebooks/strava.ipynb

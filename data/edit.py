@@ -135,9 +135,11 @@ def edit_log(full_df):
                     )
 
                     # Handle pace editing
+                    pace_str = str(selected_row["Pace"])
+
                     if selected_row["Pace"]:
                         # Convert pace string to minutes:seconds format for display
-                        pace_parts = selected_row["Pace"].split(":")
+                        pace_parts = pace_str.split(":")
                         if len(pace_parts) == 3:  # Format is HH:MM:SS
                             current_pace_display = (
                                 f"{int(pace_parts[1]):02d}:{int(pace_parts[2]):02d}"
