@@ -7,6 +7,7 @@ import data.push_data as push
 from data import read_data_cached as pullc
 from data import read_data_uncached as pulluc
 from zoneinfo import ZoneInfo
+import traceback
 
 
 # import data.read_data_local as local
@@ -123,7 +124,7 @@ from visuals import stats_table as stats
 
 st.text("")
 
-tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
+tab0, tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
     [
         "📓Log",
         "📊 Stats",
@@ -132,6 +133,7 @@ tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
         "🏋🏻‍♂️ Str Training",
         "🎯 Remarks",
         "💗 Scott's Corner",
+        "Strava Sync Test",
     ]
 )
 
@@ -343,7 +345,7 @@ with tab0:  ##LOG
                 "Activity",
                 # sorted(
                 [
-                    "Strength Training",
+                    "WeightTraining",
                     "Yoga",
                     "Cross Train",
                     "Rest",
@@ -530,11 +532,11 @@ with tab1:  # STATS
     # filter non running activity
     filtered_df = filtered_df[
         ~filtered_df["Activity"].isin(
-            ["Rest", "Cross Train", "Strength Training", "Yoga", 0]
+            ["Rest", "Cross Train", "Strength Training", "WeightTraining", "Yoga", 0]
         )
     ]
 
-    df = filtered_df.copy()
+    df_all = filtered_df.copy()
 
     # df["Moving_Time"] = pd.to_timedelta(df["Moving_Time"])
     # df["Pace"] = pd.to_timedelta(df["Pace"])
@@ -628,7 +630,7 @@ with tab1:  # STATS
         """,
             unsafe_allow_html=True,
         )
-        cb.generate_combo_daily(filtered_df)
+        cb.generate_combo_daily(filtered_df_with_non_running)
 
     # -----SUN BURST-------#
     # st.subheader("👥📊 Activity Intensity", divider="gray")
@@ -646,7 +648,8 @@ with tab1:  # STATS
     """,
         unsafe_allow_html=True,
     )
-    sb.generate_bubble_chart(filtered_df)
+    # sb.generate_bubble_chart(filtered_df)
+    sb.generate_bubble_chart(df_all)
 
     # # -----LINE POLAR-------#
     # # st.subheader("", divider="gray")
@@ -682,8 +685,8 @@ with tab1:  # STATS
     """,
         unsafe_allow_html=True,
     )
-    dt.generate_donut_chart(filtered_df)
-
+    # dt.generate_donut_chart(filtered_df)
+    dt.generate_donut_chart(df_all)
     # -----WORDCLOUD-------#
     # st.subheader("", divider="gray")
     st.markdown(
@@ -720,9 +723,9 @@ with tab1:  # STATS
     )
     mt.generate_matrix(filtered_df_with_non_running)
 
-    from data import editlog as elog
+    # from data import editlog as elog
 
-    # elog.start_edit()
+    # # elog.start_edit()
 
 with tab2:  ##TRAINING PLAN ##
     # st.header("🗓️💪 Your Training Plan", divider="blue")
@@ -876,3 +879,156 @@ with tab6:  ##SCOTTS CORNER
                     """,
                 unsafe_allow_html=True,
             )
+
+
+with tab7:  ##strava sync
+
+    days_back = st.slider("Days to look back", 7, 365, 30)
+    days_back = int(days_back)
+
+    col1, col2 = st.columns([3, 1])
+
+    with col2:
+        if st.button("🔄 Sync to Google Sheets", type="primary"):
+            st.session_state.sync_triggered = True
+
+    # Fetch Strava data
+    activities = push.fetch_all_activities(days_back)
+
+    def clean_activity_data(act):
+        """Clean and convert numeric values for a single activity"""
+
+        # Helper function to safely convert to float
+        def to_float(value, default=0):
+            try:
+                return float(value) if value is not None else default
+            except (ValueError, TypeError):
+                return default
+
+        # Helper function to safely convert to string
+        def to_str(value, default=""):
+            if value is None:
+                return default
+            try:
+                return str(value)
+            except:
+                return default
+
+        # Extract and clean date
+        start_date = act.get("start_date_local")
+        if start_date and "T" in start_date:
+            date_part = start_date.split("T")[0]
+        else:
+            date_part = ""
+
+        return {
+            "TimeStamp": date_part,
+            "Date_of_Activity": date_part,
+            "Activity": to_str(act.get("sport_type")),
+            "Distance": to_float(act.get("distance")) / 1000,  # Convert to km
+            "Pace": to_float(act.get("average_speed")),
+            "HR (bpm)": to_float(act.get("average_heartrate")),
+            "Cadence (steps/min)": to_float(act.get("average_cadence")) * 2,
+            "Member Name": to_str(act.get("athlete_name", "Unknown")),
+            "Duration": to_float(act.get("moving_time")),
+        }
+
+    def convert_speed_to_pace(speed_mps):
+        """Convert meters per second to min/km pace format (H:MM:SS or MM:SS)"""
+        if speed_mps <= 0:
+            return "0:00"
+
+        # Convert m/s to min/km
+        pace_seconds_per_km = 1000 / speed_mps
+
+        hours = int(pace_seconds_per_km // 3600)
+        minutes = int((pace_seconds_per_km % 3600) // 60)
+        seconds = int(pace_seconds_per_km % 60)
+
+        if hours > 0:
+            return f"{hours}:{minutes:02d}:{seconds:02d}"
+        else:
+            return f"{minutes}:{seconds:02d}"
+
+    def convert_seconds_to_time(total_seconds):
+        """Convert seconds to HH:MM:SS format"""
+        if total_seconds <= 0:
+            return "00:00:00"
+
+        hours = int(total_seconds // 3600)
+        minutes = int((total_seconds % 3600) // 60)
+        seconds = int(total_seconds % 60)
+
+        return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+    if activities:
+        cleaned_activities = [clean_activity_data(act) for act in activities]
+        strava_df = pd.DataFrame(cleaned_activities)
+
+        # Define user mapping dictionary so athlete name
+        USER_MAPPING = {
+            29563579: "Scott",
+            # Add more users here as needed
+            # 12345678: "John",
+            # 87654321: "Sarah",
+        }
+
+        # Apply conversions
+        # Now apply conversions - values are guaranteed to be numbers
+        strava_df["UniqueKey"] = (
+            strava_df[["Date_of_Activity", "Member Name", "Activity"]]
+            .astype(str)
+            .agg("|".join, axis=1)
+        )
+
+        strava_df["TimeStamp"] = pd.to_datetime(strava_df["TimeStamp"]).dt.date
+        strava_df["Date_of_Activity"] = pd.to_datetime(
+            strava_df["Date_of_Activity"]
+        ).dt.date
+        strava_df["Distance"] = (strava_df["Distance"]).round(2)
+
+        ######## Convert the Pace column to numeric first, forcing errors to NaN######
+        strava_df["Pace"] = pd.to_numeric(strava_df["Pace"], errors="coerce")
+
+        # Fill NaN values with 0
+        strava_df["Pace"] = strava_df["Pace"].fillna(0)
+        #########################################################################
+        strava_df["Pace"] = strava_df["Pace"].apply(
+            lambda x: convert_speed_to_pace(x) if x > 0 else "0:00"
+        )
+        strava_df["HR (bpm)"] = strava_df["HR (bpm)"].round().astype(int)
+        strava_df["Cadence (steps/min)"] = (
+            (strava_df["Cadence (steps/min)"]).round().astype(int)
+        )
+        strava_df["Member Name"] = strava_df["Member Name"].apply(
+            lambda x: x.get("id", "") if isinstance(x, dict) else x
+        )
+
+        strava_df["Duration"] = pd.to_numeric(
+            strava_df["Duration"], errors="coerce"
+        ).fillna(0)
+
+        strava_df["Duration"] = strava_df["Duration"].apply(convert_seconds_to_time)
+
+        st.dataframe(strava_df)
+
+        ######SYNC ACTIVATION#########
+        if st.session_state.get("sync_triggered", False):
+            # from data import push_data
+
+            st.divider()
+            st.subheader("🔄 Syncing to Google Sheets...")
+
+            with st.spinner("Pushing activities to Google Sheets..."):
+                success_count, error_count = push.push_strava_data_to_sheet(strava_df)
+
+            if success_count > 0:
+                st.success(
+                    f"✅ Successfully pushed {success_count} activities to Google Sheets!"
+                )
+
+            if error_count > 0:
+                st.error(f"❌ Failed to push {error_count} activities")
+
+            # Reset the trigger
+            st.session_state.sync_triggered = False

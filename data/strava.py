@@ -56,7 +56,7 @@ class StravaAPI:
         response = self.make_authenticated_request("/athlete")
         return response.json() if response else None
 
-    def get_activities(self, per_page=30, page=1, before=None, after=None):
+    def get_activities(self, per_page=200, page=1, before=None, after=None):
         """Get your activities with pagination"""
         params = {"per_page": per_page, "page": page}
 
@@ -78,23 +78,27 @@ class StravaAPI:
         all_activities = []
         page = 1
 
-        # Calculate timestamp for filtering
-        after_timestamp = int(
-            (datetime.now() - pd.Timedelta(days=days_back)).timestamp()
-        )
+        # FIX: Convert to Unix timestamp properly
+        after_date = datetime.now() - pd.Timedelta(days=days_back)
+        after_timestamp = int(after_date.timestamp())  # This is correct
 
         while True:
             activities = self.get_activities(
                 per_page=100, page=page, after=after_timestamp
             )
-            if not activities or len(activities) == 0:
+            if not activities:
+                print("No activities returned or API error")
+                break
+
+            if len(activities) == 0:
+                print(f"Page {page}: Empty activities list received")
                 break
 
             all_activities.extend(activities)
             print(f"Fetched page {page}: {len(activities)} activities")
             page += 1
 
-            # Rate limiting: be nice to Strava API
+            # Rate limiting
             import time
 
             time.sleep(1)

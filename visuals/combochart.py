@@ -38,7 +38,9 @@ def generate_combo(data):
         nonrun_data["Duration_Other"], errors="coerce"
     )
     filtered_data = data[
-        ~data["Activity"].isin(["Rest", "Cross Train", "Strength Training", 0])
+        ~data["Activity"].isin(
+            ["Rest", "Cross Train", "Strength Training", "WeightTraining", 0]
+        )
     ]  # filter non running activity
 
     ##NON- RUNNING ACITIVY###
@@ -48,7 +50,14 @@ def generate_combo(data):
 
     nonrun_filtered_data = nonrun_data[
         nonrun_data["Activity"].isin(
-            ["Rest", "Cross Train", "Strength Training", "Yoga", "Pilates"]
+            [
+                "Rest",
+                "Cross Train",
+                "Strength Training",
+                "Yoga",
+                "Pilates",
+                "WeightTraining",
+            ]
         )
     ]  # filter non running activity
 

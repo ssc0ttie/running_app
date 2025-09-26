@@ -31,9 +31,11 @@ def generate_matrix(data):
             "LSD Road@ Zone 2 Pace",
             "LSD Trail@ Zone 2 Pace",
             "RACE DAY",
+            "Run",
         ]
         non_running_activities = [
             "Strength Training",
+            "WeightTraining",
             "Yoga",
             "Cross Train",
             "Rest",
