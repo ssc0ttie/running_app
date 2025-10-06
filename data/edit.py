@@ -221,6 +221,7 @@ def edit_log(full_df):
                             "Others (Inform Scott)",
                             "On Cloud ni Frau",
                             "Pink Nimbus 27",
+                            "None",
                         ]
                     )
 

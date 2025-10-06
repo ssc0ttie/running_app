@@ -9,13 +9,16 @@ import streamlit as st
 def generate_matrix(data):
 
     def format_timedelta(td):
-        if pd.isnull(td):
-            return "00:00:00"
-        seconds = int(td.total_seconds())
-        hours = seconds // 3600
-        minutes = (seconds % 3600) // 60
-        secs = seconds % 60
-        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+        try:
+            total_seconds = (
+                td.total_seconds() if hasattr(td, "total_seconds") else float(td)
+            )
+            hours = int(total_seconds // 3600)
+            minutes = int((total_seconds % 3600) // 60)
+            secs = int(total_seconds % 60)
+            return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+        except (TypeError, ValueError):
+            return ""
 
         # Then apply:
 
@@ -42,7 +45,9 @@ def generate_matrix(data):
             "Pilates",
         ]
         if row["Activity"] in running_activities:
-            return row["Moving_Time"]
+            # return row["Moving_Time"]
+            return row["Duration_Other"]
+
         elif row["Activity"] in non_running_activities:
             return row["Duration_Other"]
         else:
@@ -52,8 +57,8 @@ def generate_matrix(data):
     data["MovingTime_Str"] = data["Moving_Time"].apply(format_timedelta)
     data["Duration_Str"] = data["Duration_Other"].apply(format_timedelta)
 
-    data["Combined_Duration"] = data.apply(get_combined_duration, axis=1)
-    data["Combined_Duration_Str"] = data["Combined_Duration"].apply(format_timedelta)
+    # data["Combined_Duration"] = data.apply(get_combined_duration, axis=1)
+    # data["Combined_Duration_Str"] = data["Combined_Duration"].apply(format_timedelta)
 
     data = data.sort_values(by="Date", ascending=False)
     # drop columns
@@ -74,7 +79,7 @@ def generate_matrix(data):
                 max_value=data["Distance"].max(),
                 format="%.1f",
             ),
-            "MovingTime_Str": st.column_config.TextColumn("Moving Time"),
+            "MovingTime_Str": st.column_config.TextColumn("Duration"),
             "HR (bpm)": st.column_config.NumberColumn(
                 "HR",
                 format="%d",
@@ -92,16 +97,19 @@ def generate_matrix(data):
             "Shoe": st.column_config.TextColumn("Shoes"),
             "Remarks": st.column_config.TextColumn("Remarks", width="large"),
             "Member Name": st.column_config.TextColumn("Runner"),
-            "Combined_Duration_Str": st.column_config.TextColumn("Duration"),
+            # "Combined_Duration_Str": st.column_config.TextColumn("Duration"),
+            # "Duration_Str": st.column_config.TextColumn("Duration"),
+            # "MovingTime_Str": st.column_config.TextColumn("Duration"),
             "Week": st.column_config.TextColumn("Week"),
         },
         column_order=[
             "Date_of_Activity",
             "Activity",
             "Distance",
-            "Combined_Duration_Str",
+            # "Combined_Duration_Str",
             "Pace_Str",
             # "Duration_Str",
+            "MovingTime_Str",
             "HR (bpm)",
             "Cadence (steps/min)",
             "RPE (1–10 scale)",

@@ -35,20 +35,20 @@ def get_runner_data():
     # RENAME HEADERS#
     df_hist.rename(
         columns={
-            # 0: "UniqueKey",
-            0: "TimeStamp",
-            1: "Date_of_Activity",
-            2: "Activity",
-            3: "Distance",
-            4: "Pace",
-            5: "HR (bpm)",
-            6: "Cadence (steps/min)",
-            7: "RPE (1–10 scale)",
-            8: "Shoe",
-            9: "Remarks",
-            10: "Member Name",
-            11: "Activity_ref",
-            12: "Duration_Other",
+            0: "UniqueKey",
+            1: "TimeStamp",
+            2: "Date_of_Activity",
+            3: "Activity",
+            4: "Distance",
+            5: "Pace",
+            6: "HR (bpm)",
+            7: "Cadence (steps/min)",
+            8: "RPE (1–10 scale)",
+            9: "Shoe",
+            10: "Remarks",
+            11: "Member Name",
+            12: "Activity_ref",
+            13: "Duration_Other",
         },
         inplace=True,
     )
@@ -108,16 +108,19 @@ def get_runner_data():
 
     # CALCULATE MOVING TIME
 
-    df["Moving_Time"] = df["Pace"] * df["Distance"]
-    df["Moving_Time"] = pd.to_timedelta(df["Moving_Time"])
+    # df["Moving_Time"] = df["Pace"] * df["Distance"]
+    # df["Moving_Time"] = pd.to_timedelta(df["Moving_Time"])
+
+    df["Moving_Time"] = pd.to_timedelta(df["Duration_Other"])
+
     # create uniquekey
-    df["UniqueKey"] = (
-        df["Date_of_Activity"].astype(str)
-        + "|"
-        + df["Member Name"].astype(str)
-        + "|"
-        + df["Activity"].astype(str)
-    )
+    # df["UniqueKey"] = (
+    #     df["Date_of_Activity"].astype(str)
+    #     + "|"
+    #     + df["Member Name"].astype(str)
+    #     + "|"
+    #     + df["Strava_Base_Activity"].astype(str)
+    # )
 
     return df
 

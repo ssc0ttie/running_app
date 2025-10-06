@@ -347,6 +347,75 @@ def generate_combo(data):
 
     st.plotly_chart(fig_bullet, use_container_width=True, key="hr_chart")
 
+
+def generate_combo_supplimentary(data):
+    # ----Activity Filter ---#
+
+    activity = sorted(data["Activity"].dropna().unique())
+    activity.insert(0, "All")
+
+    nonrun_data = data
+    nonrun_data["Week"] = [week[:1] + week[-2:] for week in data["Week"]]
+
+    ##GROUP BY
+    data["Week"] = [
+        week[:1] + week[-2:] for week in data["Week"]
+    ]  # shorten weekname before groupby
+
+    nonrun_data["Duration_Other"] = pd.to_timedelta(
+        nonrun_data["Duration_Other"], errors="coerce"
+    )
+
+    ##NON- RUNNING ACITIVY###
+
+    nonrun_data = nonrun_data.groupby(["Week", "Activity"], as_index=False)[
+        "Duration_Other"
+    ].sum()
+
+    # Convert Duration_Other to minutes
+    nonrun_data["Duration_Other"] = pd.to_timedelta(
+        nonrun_data["Duration_Other"], errors="coerce"
+    )
+    nonrun_data["Duration_Other_Mins"] = (
+        nonrun_data["Duration_Other"].dt.total_seconds() / 60
+    )
+
+    # Format duration as mm:ss
+    nonrun_data["Duration_Other_Str"] = nonrun_data["Duration_Other"].apply(
+        lambda td: f"{int(td.total_seconds() // 60):02d}:{int(td.total_seconds() % 60):02d}"
+    )
+
+    nonrun_data["Duration_Pct_Change"] = (
+        nonrun_data["Duration_Other"].pct_change() * 100
+    )
+
+    #  Create delta labels
+    def format_delta(val):
+        if pd.isna(val):
+            return ""
+        arrow = "<span style='color:green'>&#9650;</span>" if val > 0 else "🔻"
+        color = "green" if val > 0 else "red"
+        return f"<span style='color:{color}'>{arrow} {abs(val):.1f}%</span>"
+
+    def format_delta_rev(val):
+        if pd.isna(val):
+            return ""
+        arrow = "🔻" if val > 0 else "<span style='color:green'>&#9650;</span>"
+        color = "red" if val > 0 else "green"
+        return f"<span style='color:{color}'>{arrow} {abs(val):.1f}%</span>"
+
+    nonrun_data["Duration_Pct_Change_Label"] = nonrun_data["Duration_Pct_Change"].apply(
+        format_delta
+    )
+
+    # Combine labels
+
+    nonrun_labels = (
+        nonrun_data["Duration_Other"].round(1).astype(str)
+        + " spm<br>"
+        + nonrun_data["Duration_Pct_Change_Label"]
+    )
+
     # Add stack bar chart for nonrun activity
     fig_bar = go.Figure()
     # Loop through each activity and add a trace
@@ -377,7 +446,7 @@ def generate_combo(data):
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
     )
 
-    st.plotly_chart(fig_bar, use_container_width=True, key="nonrun_chart")
+    st.plotly_chart(fig_bar, use_container_width=True, key="nonrun_chart_2")
 
 
 def generate_combo_daily(data):

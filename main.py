@@ -124,7 +124,22 @@ from visuals import stats_table as stats
 
 st.text("")
 
-tab0, tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
+# tab0, tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
+#     [
+#         "📓Log",
+#         "📊 Stats",
+#         "🗓️ Program",
+#         "📘 Activities",
+#         "🏋🏻‍♂️ Str Training",
+#         "🎯 Remarks",
+#         "💗 Scott's Corner",
+#         "Strava Sync Test",
+#     ]
+# )
+
+
+tabs = st.radio(
+    "Choose a Section: ",
     [
         "📓Log",
         "📊 Stats",
@@ -134,11 +149,15 @@ tab0, tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
         "🎯 Remarks",
         "💗 Scott's Corner",
         "Strava Sync Test",
-    ]
+    ],
+    horizontal=True,
 )
+
 
 # -------PULL DATA ONCE --------#
 # -----load un cached when not submitting
+
+
 if "just_submitted" not in st.session_state:
     st.session_state["just_submitted"] = False
 
@@ -154,7 +173,7 @@ full_df = pd.DataFrame(df)
 
 #################################----LOG TAB ------ ################################
 
-with tab0:  ##LOG
+if tabs == "📓Log":  ##LOG
 
     st.markdown(
         """
@@ -443,7 +462,21 @@ with tab0:  ##LOG
 
         edit.edit_log(full_df)
 
-with tab1:  # STATS
+    st.write("After Strava Sync:")
+
+    with st.expander("Enter User Fields"):
+        from data import user_field
+
+        user_field.edit_user_fields(full_df)
+
+
+"""for testing and debug"""
+# with st.expander("Bulk Enter User Fields"):
+#     from data import user_field
+
+#     user_field.bulk_edit_user_fields(full_df)
+
+if tabs == "📊 Stats":  # STATS
 
     # -----ALL STATS TABLE-------#
     # st.subheader("🏆 All-Time Highlights", divider="gray")
@@ -463,7 +496,16 @@ with tab1:  # STATS
     """,
         unsafe_allow_html=True,
     )
-    stats.generate_matrix_member(full_df)
+
+    ### All activity - but not filtered from app selections
+    filtered_df_full_activity = full_df[
+        ~full_df["Activity"].isin(
+            ["Rest", "Cross Train", "Strength Training", "WeightTraining", "Yoga", 0]
+        )
+    ]
+
+    """good- checked 06102025"""
+    stats.generate_matrix_member(filtered_df_full_activity)
 
     # -------------------MEMBER FILTER  -----------------------#
     members = sorted(full_df["Member Name"].dropna().unique())
@@ -509,7 +551,9 @@ with tab1:  # STATS
             unsafe_allow_html=True,
         )
         ### --- race predictor ----##
-        rp.race_predictor(filtered_member_df)
+
+        """good- checked 06102025 - all running activity """
+        rp.race_predictor(filtered_df)
 
     #########################--- ALL TIME STATS TABLE ----#######################
     st.markdown(
@@ -528,31 +572,39 @@ with tab1:  # STATS
         unsafe_allow_html=True,
     )
 
-    filtered_df_with_non_running = filtered_df
+    # filtered_df_all_activity = filtered_df
     # filter non running activity
-    filtered_df = filtered_df[
+
+    filtered_df_withnonrun = filtered_df.copy()
+    filtered_df_all_run = filtered_df[
         ~filtered_df["Activity"].isin(
             ["Rest", "Cross Train", "Strength Training", "WeightTraining", "Yoga", 0]
         )
     ]
 
-    df_all = filtered_df.copy()
+    filtered_df_all_non_run = filtered_df[
+        filtered_df["Activity"].isin(
+            ["Rest", "Cross Train", "Strength Training", "WeightTraining", "Yoga", 0]
+        )
+    ]
+
+    filtered_df_all_run = filtered_df_all_run.copy()
 
     # df["Moving_Time"] = pd.to_timedelta(df["Moving_Time"])
     # df["Pace"] = pd.to_timedelta(df["Pace"])
-    metric_distance = int(df["Distance"].sum())
+    metric_distance = int(filtered_df_all_run["Distance"].sum())
 
     # TOTAL MOVING TIME
-    total_seconds = int(df["Moving_Time"].sum().total_seconds())
+    total_seconds = int(filtered_df_all_run["Moving_Time"].sum().total_seconds())
     hours = total_seconds // 3600
     minutes = (total_seconds % 3600) // 60
     seconds = total_seconds % 60
     metric_movingtime = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
     # NUMBER OF RUNS
-    metric_number_runs = int(df["Activity"].count())
+    metric_number_runs = int(filtered_df_all_run["Activity"].count())
     # AVG PACE
-    avg_pace = df["Pace"].mean()
+    avg_pace = filtered_df_all_run["Pace"].mean()
     if pd.isna(avg_pace):
         metric_pace = "N/A"
     else:
@@ -611,7 +663,8 @@ with tab1:  # STATS
         """,
             unsafe_allow_html=True,
         )
-        cb.generate_combo(filtered_df_with_non_running)
+        cb.generate_combo(filtered_df_all_run)
+        cb.generate_combo_supplimentary(filtered_df_all_non_run)
 
     # -----COMBO CHART DAILY-------#
     with st.expander("View Daily Key Metrics"):
@@ -630,7 +683,7 @@ with tab1:  # STATS
         """,
             unsafe_allow_html=True,
         )
-        cb.generate_combo_daily(filtered_df_with_non_running)
+        cb.generate_combo_daily(filtered_df_all_run)
 
     # -----SUN BURST-------#
     # st.subheader("👥📊 Activity Intensity", divider="gray")
@@ -649,7 +702,7 @@ with tab1:  # STATS
         unsafe_allow_html=True,
     )
     # sb.generate_bubble_chart(filtered_df)
-    sb.generate_bubble_chart(df_all)
+    sb.generate_bubble_chart(filtered_df_all_run)
 
     # # -----LINE POLAR-------#
     # # st.subheader("", divider="gray")
@@ -686,7 +739,7 @@ with tab1:  # STATS
         unsafe_allow_html=True,
     )
     # dt.generate_donut_chart(filtered_df)
-    dt.generate_donut_chart(df_all)
+    dt.generate_donut_chart(filtered_df_all_run)
     # -----WORDCLOUD-------#
     # st.subheader("", divider="gray")
     st.markdown(
@@ -703,7 +756,7 @@ with tab1:  # STATS
     """,
         unsafe_allow_html=True,
     )
-    wc.generate_wordcloud(filtered_df_with_non_running)
+    wc.generate_wordcloud(filtered_df_withnonrun)
 
     # -----ALL ACTIVITY TABLE-------#
     # st.subheader("🗂️ Activity Reference", divider="gray")
@@ -721,13 +774,13 @@ with tab1:  # STATS
     """,
         unsafe_allow_html=True,
     )
-    mt.generate_matrix(filtered_df_with_non_running)
+    mt.generate_matrix(filtered_df_withnonrun)
 
     # from data import editlog as elog
 
     # # elog.start_edit()
 
-with tab2:  ##TRAINING PLAN ##
+if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     # st.header("🗓️💪 Your Training Plan", divider="blue")
     st.markdown(
         """
@@ -751,19 +804,19 @@ with tab2:  ##TRAINING PLAN ##
         height=400,
     )
 
-with tab3:  ##STR WORK
+if tabs == "📘 Activities":  ##STR WORK
     from visuals import referencetab as ref
 
     ref.ref_tab()
 
-with tab4:  # REFERENCE
+if tabs == "🏋🏻‍♂️ Str Training":  # REFERENCE
     from visuals import strength_ref as sref
 
     sref.general_str_ref()
 
     # --------filter df
 
-with tab5:  # REMARKS
+if tabs == "🎯 Remarks":  # REMARKS
     from visuals import weekly_remarks as wr
     from visuals import stats_table as stats
 
@@ -810,7 +863,7 @@ with tab5:  # REMARKS
 
     # wr.weekly_remarks()
 
-with tab6:  ##SCOTTS CORNER
+if tabs == "💗 Scott's Corner":  ##SCOTTS CORNER
     st.markdown(
         """
             <div style="
@@ -881,9 +934,9 @@ with tab6:  ##SCOTTS CORNER
             )
 
 
-with tab7:  ##strava sync
+if tabs == "Strava Sync Test":  ##strava sync
 
-    days_back = st.slider("Days to look back", 7, 365, 30)
+    days_back = st.slider("Days to look back", 7, 365, 7)
     days_back = int(days_back)
 
     col1, col2 = st.columns([3, 1])
@@ -893,7 +946,9 @@ with tab7:  ##strava sync
             st.session_state.sync_triggered = True
 
     # Fetch Strava data
-    activities = push.fetch_all_activities(days_back)
+    import data.fetch_strava as fs
+
+    activities = fs.fetch_all_activities(days_back)
 
     def clean_activity_data(act):
         """Clean and convert numeric values for a single activity"""
@@ -936,7 +991,26 @@ with tab7:  ##strava sync
     def convert_speed_to_pace(speed_mps):
         """Convert meters per second to min/km pace format (H:MM:SS or MM:SS)"""
         if speed_mps <= 0:
-            return "0:00"
+            return 0
+
+        # Convert m/s to min/km
+        pace_seconds_per_km = 1000 / speed_mps
+
+        # hours = int(pace_seconds_per_km // 3600)
+        # minutes = int((pace_seconds_per_km % 3600) // 60)
+        # seconds = int(pace_seconds_per_km % 60)
+
+        # if hours > 0:
+        #     return f"{hours}:{minutes:02d}:{seconds:02d}"
+        # else:
+        #     return f"{hours}:{minutes:02d}:{seconds:02d}"
+
+        return pace_seconds_per_km / 86400
+
+    def convert_speed_to_pace_string(speed_mps):
+        """Convert meters per second to min/km pace format (H:MM:SS or MM:SS)"""
+        if speed_mps <= 0:
+            return "00:00:00"
 
         # Convert m/s to min/km
         pace_seconds_per_km = 1000 / speed_mps
@@ -946,12 +1020,25 @@ with tab7:  ##strava sync
         seconds = int(pace_seconds_per_km % 60)
 
         if hours > 0:
-            return f"{hours}:{minutes:02d}:{seconds:02d}"
+            return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
         else:
-            return f"{minutes}:{seconds:02d}"
+            return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
     def convert_seconds_to_time(total_seconds):
         """Convert seconds to HH:MM:SS format"""
+        if total_seconds <= 0:
+            return "00:00:00"
+
+        # hours = int(total_seconds // 3600)
+        # minutes = int((total_seconds % 3600) // 60)
+        # seconds = int(total_seconds % 60)
+
+        # return f"{hours}:{minutes:02d}:{seconds:02d}"
+
+        return total_seconds / 86400
+
+    def convert_seconds_to_time_string(total_seconds):
+        """Return formatted time string that looks correct"""
         if total_seconds <= 0:
             return "00:00:00"
 
@@ -959,7 +1046,7 @@ with tab7:  ##strava sync
         minutes = int((total_seconds % 3600) // 60)
         seconds = int(total_seconds % 60)
 
-        return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+        return f"{hours:02}:{minutes:02}:{seconds:02}"
 
     if activities:
         cleaned_activities = [clean_activity_data(act) for act in activities]
@@ -994,7 +1081,7 @@ with tab7:  ##strava sync
         strava_df["Pace"] = strava_df["Pace"].fillna(0)
         #########################################################################
         strava_df["Pace"] = strava_df["Pace"].apply(
-            lambda x: convert_speed_to_pace(x) if x > 0 else "0:00"
+            lambda x: convert_speed_to_pace_string(x) if x > 0 else "00:00:00"
         )
         strava_df["HR (bpm)"] = strava_df["HR (bpm)"].round().astype(int)
         strava_df["Cadence (steps/min)"] = (
@@ -1008,7 +1095,9 @@ with tab7:  ##strava sync
             strava_df["Duration"], errors="coerce"
         ).fillna(0)
 
-        strava_df["Duration"] = strava_df["Duration"].apply(convert_seconds_to_time)
+        strava_df["Duration"] = strava_df["Duration"].apply(
+            convert_seconds_to_time_string
+        )
 
         st.dataframe(strava_df)
 

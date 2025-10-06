@@ -23,7 +23,7 @@ def get_runner_data():
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
 
     # ---- Load main/historical worksheet (READS EVERYTHING AS STRING)---- #
-    worksheet = sheet.get_worksheet_by_id(805185830)  # or use get_worksheet_by_id(gid)
+    worksheet = sheet.get_worksheet_by_id(1611308583)  # or use get_worksheet_by_id(gid)
     sheet = worksheet.get_all_values()
     return sheet
 
@@ -49,7 +49,7 @@ def push_runner_data(data):
     client = gsclient
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
     newsource_worksheet = sheet.get_worksheet_by_id(
-        805185830
+        1611308583
     )  # or use get_worksheet_by_id(gid)
 
     newsource_worksheet.append_row(data)
@@ -113,10 +113,10 @@ def push_strava_data_to_sheet(strava_df):
                     str(row["Date_of_Activity"]),  # Date to string
                     None,  # user defined Activity
                     float(row.get("Distance", 0)),
-                    str(row.get("Pace", "0:00")),
+                    str(row.get("Pace", "0:00:00")),
                     int(row.get("HR (bpm)", 0)),
                     int(row.get("Cadence (steps/min)", 0)),
-                    None,  # rpe
+                    0,  # rpe
                     None,  # Shoe
                     None,  # Remarks
                     str(row.get("Member Name", "Unknown")),
@@ -140,44 +140,3 @@ def push_strava_data_to_sheet(strava_df):
     except Exception as e:
         st.error(f"Error in push process: {e}")
         return 0, len(strava_df)
-
-
-# Add this to your existing fetch function
-@st.cache_data(ttl=3600)
-def fetch_all_activities(days_back: int = 30):
-    """Your existing fetch function"""
-    # users = load_strava_users()
-    users = [
-        {
-            "name": "Scott",
-            "client_id": "109430",
-            "client_secret": "9f9bba1f50148b0b7a4996fe4d1e89a300aaeff5",
-            "access_token": "d1d1121f21a3ce54f20b0c6ced7fd89d7d77a929",
-            "refresh_token": "5a7c68cfec0f2d84cfc045e896fefa694ca0797b",
-        }
-    ]
-
-    all_activities = []
-
-    for user in users:
-        try:
-            strava = strav.StravaAPI(
-                client_id=user["client_id"],
-                client_secret=user["client_secret"],
-                access_token=user["access_token"],
-                refresh_token=user["refresh_token"],
-            )
-
-            profile = strava.get_athlete_profile()
-            if profile:
-                activities = strava.get_all_activities(days_back=days_back)
-
-                for act in activities:
-                    act["athlete_name"] = user["name"]
-
-                all_activities.extend(activities)
-
-        except Exception as e:
-            st.error(f"Error fetching {user['name']}: {e}")
-
-    return all_activities

@@ -118,5 +118,6 @@ def get_runner_data():
         + "|"
         + df["Activity"].astype(str)
     )
+    df["Moving_Time"] = pd.to_timedelta(df["Duration_Other"])
 
     return df
