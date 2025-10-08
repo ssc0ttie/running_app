@@ -111,11 +111,11 @@ def push_strava_data_to_sheet(strava_df):
                     unique_key,
                     str(row["TimeStamp"]),  # Date to string
                     str(row["Date_of_Activity"]),  # Date to string
-                    None,  # user defined Activity
+                    str(row.get("Activity", "")),  # user defined Activity
                     float(row.get("Distance", 0)),
-                    str(row.get("Pace", "0:00:00")),
+                    str(row.get("Pace", None)),
                     int(row.get("HR (bpm)", 0)),
-                    int(row.get("Cadence (steps/min)", 0)),
+                    int(row.get("Cadence (steps/min)", None)),
                     0,  # rpe
                     None,  # Shoe
                     None,  # Remarks

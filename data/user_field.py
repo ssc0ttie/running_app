@@ -18,11 +18,11 @@ def edit_user_fields(full_df):
 
     # Filter rows with missing user-defined fields
     df_to_edit = full_df[
-        full_df["RPE (1–10 scale)"].isna()
+        ((full_df["RPE (1–10 scale)"] == 0) & (full_df["Activity"] != "Rest"))
         | full_df["Shoe"].isna()
         | full_df["Remarks"].isna()
-        | full_df["Activity"].isna()
         | (full_df["Activity"] == "")
+        | (full_df["Activity"] == "Run")
     ].copy()
 
     if df_to_edit.empty:
@@ -40,14 +40,14 @@ def edit_user_fields(full_df):
         + "|"
         + df_to_edit["Member Name"]
         + "|"
-        + df_to_edit["Strava_Base_Activity"].fillna("")
+        + df_to_edit["Activity"].fillna("")
     )
     df_to_edit["display"] = (
         df_to_edit["Date_of_Activity_str"]
         + " - "
         + df_to_edit["Member Name"]
         + " - "
-        + df_to_edit["Strava_Base_Activity"].fillna("")
+        + df_to_edit["Activity"].fillna("")
     )
 
     # Let user select entry to edit
@@ -87,7 +87,7 @@ def edit_user_fields(full_df):
             "Pilates",
         ]
         edited_activity = st.selectbox(
-            "Activity",
+            "Activity (*Select Type of Run for Running Activity*)",
             options=activity_options,
             index=(
                 activity_options.index(selected_row["Activity"])
@@ -172,9 +172,12 @@ def edit_user_fields(full_df):
             ):
                 st.success("✅ Entry updated successfully!")
                 st.session_state["just_submitted"] = True
-                st.rerun()
+
             else:
                 st.error("❌ Error updating entry. Please try again.")
+
+    if st.button("🔄 Refresh App"):
+        st.rerun()
 
 
 def bulk_edit_user_fields(full_df):
@@ -184,14 +187,14 @@ def bulk_edit_user_fields(full_df):
     Only shows rows where at least one field is blank
     """
 
-    # Filter rows with missing fields
+    # Filter rows with missing user-defined fields
     df_to_edit = full_df[
-        full_df["RPE (1–10 scale)"].isna()
+        ((full_df["RPE (1–10 scale)"] == 0) & (full_df["Activity"] != "Rest"))
         | full_df["Shoe"].isna()
         | full_df["Remarks"].isna()
-        | full_df["Activity"].isna()
         | (full_df["Activity"] == "")
-    ]
+        | (full_df["Activity"] == "Run")
+    ].copy()
 
     df_to_edit = df_to_edit.reset_index(drop=True)
 
@@ -209,7 +212,7 @@ def bulk_edit_user_fields(full_df):
         + " - "
         + df_to_edit["Member Name"]
         + " - "
-        + df_to_edit["Strava_Base_Activity"]
+        + df_to_edit["Activity"].fillna("")
     )
 
     df_to_edit["UniqueKey"] = (
@@ -276,7 +279,7 @@ def bulk_edit_user_fields(full_df):
                     "Activity", options=activity_options
                 ),
                 "RPE (1–10 scale)": st.column_config.NumberColumn(
-                    "RPE", min_value=0, max_value=10
+                    "RPE (1–10 scale)", min_value=0, max_value=10
                 ),
                 "Shoe": st.column_config.SelectboxColumn("Shoe", options=shoe_options),
                 "Remarks": st.column_config.TextColumn("Remarks"),

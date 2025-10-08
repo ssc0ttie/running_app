@@ -79,6 +79,10 @@ def get_runner_data():
         # df["RPE (1–10 scale)"] = pd.to_numeric(df["RPE (1–10 scale)"], errors="coerce")
 
     ## ------------------  Combine historical + new  --------------#
+    common_cols = list(set(df_hist.columns) | set(df_new.columns))
+    df_hist = df_hist.reindex(columns=common_cols)
+    df_new = df_new.reindex(columns=common_cols)
+
     df = pd.concat([df_hist, df_new], ignore_index=True)
 
     # Helper function to convert 'MM:SS' pace string to total minutes as float (if needed elsewhere)
@@ -114,13 +118,13 @@ def get_runner_data():
     df["Moving_Time"] = pd.to_timedelta(df["Duration_Other"])
 
     # create uniquekey
-    # df["UniqueKey"] = (
-    #     df["Date_of_Activity"].astype(str)
-    #     + "|"
-    #     + df["Member Name"].astype(str)
-    #     + "|"
-    #     + df["Strava_Base_Activity"].astype(str)
-    # )
+    df["UniqueKey"] = (
+        df["Date_of_Activity"].astype(str)
+        + "|"
+        + df["Member Name"].astype(str)
+        + "|"
+        + df["Activity"].astype(str)
+    )
 
     return df
 

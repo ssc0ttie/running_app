@@ -464,17 +464,19 @@ if tabs == "📓Log":  ##LOG
 
     st.write("After Strava Sync:")
 
-    with st.expander("Enter User Fields"):
+    with st.expander(
+        "Enter User Fields (*RPE, Shoes, Remarks, Type of Activity-for Run*)"
+    ):
         from data import user_field
 
         user_field.edit_user_fields(full_df)
 
+    # with st.expander(
+    #     "Bulk Enter User Fields (*RPE, Shoes, Remarks, Type of Activity-for Run*)"
+    # ):
+    #     from data import user_field
 
-"""for testing and debug"""
-# with st.expander("Bulk Enter User Fields"):
-#     from data import user_field
-
-#     user_field.bulk_edit_user_fields(full_df)
+    #     user_field.bulk_edit_user_fields_new(full_df)
 
 if tabs == "📊 Stats":  # STATS
 
@@ -500,11 +502,22 @@ if tabs == "📊 Stats":  # STATS
     ### All activity - but not filtered from app selections
     filtered_df_full_activity = full_df[
         ~full_df["Activity"].isin(
-            ["Rest", "Cross Train", "Strength Training", "WeightTraining", "Yoga", 0]
+            [
+                "Rest",
+                "Cross Train",
+                "Strength Training",
+                "WeightTraining",
+                "Yoga",
+                0,
+                "",
+                "Walk",
+                "Pilates",
+                "Ride",
+            ]
         )
     ]
 
-    """good- checked 06102025"""
+    """good- checked 08102025"""
     stats.generate_matrix_member(filtered_df_full_activity)
 
     # -------------------MEMBER FILTER  -----------------------#
@@ -578,13 +591,35 @@ if tabs == "📊 Stats":  # STATS
     filtered_df_withnonrun = filtered_df.copy()
     filtered_df_all_run = filtered_df[
         ~filtered_df["Activity"].isin(
-            ["Rest", "Cross Train", "Strength Training", "WeightTraining", "Yoga", 0]
+            [
+                "Rest",
+                "Cross Train",
+                "Strength Training",
+                "WeightTraining",
+                "Yoga",
+                "",
+                0,
+                "Pilates",
+                "Walk",
+                "Ride",
+            ]
         )
     ]
 
     filtered_df_all_non_run = filtered_df[
         filtered_df["Activity"].isin(
-            ["Rest", "Cross Train", "Strength Training", "WeightTraining", "Yoga", 0]
+            [
+                "Rest",
+                "Cross Train",
+                "Strength Training",
+                "WeightTraining",
+                "Yoga",
+                0,
+                "",
+                "Walk",
+                "Pilates",
+                "Ride",
+            ]
         )
     ]
 
@@ -934,7 +969,7 @@ if tabs == "💗 Scott's Corner":  ##SCOTTS CORNER
             )
 
 
-if tabs == "Strava Sync Test":  ##strava sync
+if tabs == "Strava Sync Test":  ##strava sync plus cleanup before push
 
     days_back = st.slider("Days to look back", 7, 365, 7)
     days_back = int(days_back)
