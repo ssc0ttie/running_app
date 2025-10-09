@@ -22,7 +22,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-rdc.raceday_counter()
+rdc.raceday_counter_2()
 
 Welcome_msg = (
     "Celebrate progress, not perfection. You showed up — and that matters most."
@@ -700,6 +700,7 @@ if tabs == "📊 Stats":  # STATS
         )
         cb.generate_combo(filtered_df_all_run)
         cb.generate_combo_supplimentary(filtered_df_all_non_run)
+        cb.generate_combo_supplimentary_run(filtered_df_all_run)
 
     # -----COMBO CHART DAILY-------#
     with st.expander("View Daily Key Metrics"):
@@ -811,9 +812,6 @@ if tabs == "📊 Stats":  # STATS
     )
     mt.generate_matrix(filtered_df_withnonrun)
 
-    # from data import editlog as elog
-
-    # # elog.start_edit()
 
 if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     # st.header("🗓️💪 Your Training Plan", divider="blue")

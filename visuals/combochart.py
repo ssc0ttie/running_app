@@ -382,11 +382,16 @@ def generate_combo_supplimentary(data):
 
     # Format duration as mm:ss
     nonrun_data["Duration_Other_Str"] = nonrun_data["Duration_Other"].apply(
-        lambda td: f"{int(td.total_seconds() // 60):02d}:{int(td.total_seconds() % 60):02d}"
+        lambda td: f"{int(td.total_seconds() // 3600):01d}h {int((td.total_seconds() % 3600) // 60):02d}m"
     )
-
     nonrun_data["Duration_Pct_Change"] = (
         nonrun_data["Duration_Other"].pct_change() * 100
+    )
+
+    weekly_totals = nonrun_data.groupby("Week")["Duration_Other"].sum()
+    weekly_totals_mins = weekly_totals.dt.total_seconds() / 60
+    weekly_totals_str = weekly_totals.apply(
+        lambda td: f"{int(td.total_seconds() // 3600):01d}h {int((td.total_seconds() % 3600) // 60):02d}m"
     )
 
     #  Create delta labels
@@ -436,7 +441,7 @@ def generate_combo_supplimentary(data):
     )
 
     fig_bar.update_layout(
-        title="Weekly Duration by Supplimentary Activity",
+        title="Weekly Duration Supplimentary Activity",
         xaxis_title="Week",
         yaxis_title="Duration (Mins)",
         barmode="stack",  # key for stacking
@@ -444,6 +449,18 @@ def generate_combo_supplimentary(data):
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=True,  # show legend for activity breakdown
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+
+    fig_bar.add_trace(
+        go.Scatter(
+            x=weekly_totals.index,
+            y=weekly_totals_mins,
+            text=weekly_totals_str,
+            mode="text",
+            textposition="top center",
+            showlegend=False,
+            textfont=dict(size=14, color="black"),
+        )
     )
 
     st.plotly_chart(fig_bar, use_container_width=True, key="nonrun_chart_2")
@@ -763,3 +780,121 @@ def generate_combo_daily(data):
     )
 
     st.plotly_chart(fig_bullet, use_container_width=True, key="hr_chart_2")
+
+
+def generate_combo_supplimentary_run(data):
+    # ----Activity Filter ---#
+
+    activity = sorted(data["Activity"].dropna().unique())
+    activity.insert(0, "All")
+
+    nonrun_data = data
+    nonrun_data["Week"] = [week[:1] + week[-2:] for week in data["Week"]]
+
+    ##GROUP BY
+    data["Week"] = [
+        week[:1] + week[-2:] for week in data["Week"]
+    ]  # shorten weekname before groupby
+
+    nonrun_data["Duration_Other"] = pd.to_timedelta(
+        nonrun_data["Duration_Other"], errors="coerce"
+    )
+
+    ##NON- RUNNING ACITIVY###
+
+    nonrun_data = nonrun_data.groupby(["Week", "Activity"], as_index=False)[
+        "Duration_Other"
+    ].sum()
+
+    # Convert Duration_Other to minutes
+    nonrun_data["Duration_Other"] = pd.to_timedelta(
+        nonrun_data["Duration_Other"], errors="coerce"
+    )
+    nonrun_data["Duration_Other_Mins"] = (
+        nonrun_data["Duration_Other"].dt.total_seconds() / 60
+    )
+
+    # Format duration as mm:ss
+    nonrun_data["Duration_Other_Str"] = nonrun_data["Duration_Other"].apply(
+        lambda td: f"{int(td.total_seconds() // 3600):01d}h {int((td.total_seconds() % 3600) // 60):02d}m"
+    )
+    nonrun_data["Duration_Pct_Change"] = (
+        nonrun_data["Duration_Other"].pct_change() * 100
+    )
+
+    weekly_totals = nonrun_data.groupby("Week")["Duration_Other"].sum()
+    weekly_totals_mins = weekly_totals.dt.total_seconds() / 60
+    weekly_totals_str = weekly_totals.apply(
+        lambda td: f"{int(td.total_seconds() // 3600):01d}h {int((td.total_seconds() % 3600) // 60):02d}m"
+    )
+
+    #  Create delta labels
+    def format_delta(val):
+        if pd.isna(val):
+            return ""
+        arrow = "<span style='color:green'>&#9650;</span>" if val > 0 else "🔻"
+        color = "green" if val > 0 else "red"
+        return f"<span style='color:{color}'>{arrow} {abs(val):.1f}%</span>"
+
+    def format_delta_rev(val):
+        if pd.isna(val):
+            return ""
+        arrow = "🔻" if val > 0 else "<span style='color:green'>&#9650;</span>"
+        color = "red" if val > 0 else "green"
+        return f"<span style='color:{color}'>{arrow} {abs(val):.1f}%</span>"
+
+    nonrun_data["Duration_Pct_Change_Label"] = nonrun_data["Duration_Pct_Change"].apply(
+        format_delta
+    )
+
+    # Combine labels
+
+    nonrun_labels = (
+        nonrun_data["Duration_Other"].round(1).astype(str)
+        + " spm<br>"
+        + nonrun_data["Duration_Pct_Change_Label"]
+    )
+
+    # Add stack bar chart for nonrun activity
+    fig_bar = go.Figure()
+    # Loop through each activity and add a trace
+    for activity in nonrun_data["Activity"].unique():
+        subset = nonrun_data[nonrun_data["Activity"] == activity]
+        fig_bar.add_trace(
+            go.Bar(
+                x=subset["Week"],
+                y=subset["Duration_Other_Mins"],
+                name=activity,
+                text=subset["Duration_Other_Str"],
+                textposition="auto",
+            )
+        )
+
+    fig_bar.update_xaxes(
+        categoryorder="array", categoryarray=sorted(nonrun_data["Week"].unique())
+    )
+
+    fig_bar.update_layout(
+        title="Weekly Duration Runs",
+        xaxis_title="Week",
+        yaxis_title="Duration (Mins)",
+        barmode="stack",  # key for stacking
+        height=400,
+        margin=dict(l=20, r=20, t=40, b=20),
+        showlegend=True,  # show legend for activity breakdown
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+
+    fig_bar.add_trace(
+        go.Scatter(
+            x=weekly_totals.index,
+            y=weekly_totals_mins,
+            text=weekly_totals_str,
+            mode="text",
+            textposition="top center",
+            showlegend=False,
+            textfont=dict(size=14, color="black"),
+        )
+    )
+
+    st.plotly_chart(fig_bar, use_container_width=True, key="run_chart_2")
