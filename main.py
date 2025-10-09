@@ -969,7 +969,7 @@ if tabs == "💗 Scott's Corner":  ##SCOTTS CORNER
 
 if tabs == "Strava Sync Test":  ##strava sync plus cleanup before push
 
-    days_back = st.slider("Days to look back", 7, 365, 7)
+    days_back = st.slider("Days to look back", 2, 365, 2)
     days_back = int(days_back)
 
     col1, col2 = st.columns([3, 1])
