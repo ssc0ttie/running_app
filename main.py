@@ -369,6 +369,7 @@ if tabs == "📓Log":  ##LOG
                     "Cross Train",
                     "Rest",
                     "Pilates",
+                    "Walk",
                 ],
                 # ),
                 index=None,
@@ -513,6 +514,8 @@ if tabs == "📊 Stats":  # STATS
                 "Walk",
                 "Pilates",
                 "Ride",
+                "Cooldown",
+                "Warm up",
             ]
         )
     ]
@@ -602,6 +605,8 @@ if tabs == "📊 Stats":  # STATS
                 "Pilates",
                 "Walk",
                 "Ride",
+                "Warm up",
+                "Cooldown",
             ]
         )
     ]
@@ -619,6 +624,8 @@ if tabs == "📊 Stats":  # STATS
                 "Walk",
                 "Pilates",
                 "Ride",
+                "Warm up",
+                "Cooldown",
             ]
         )
     ]
@@ -810,7 +817,37 @@ if tabs == "📊 Stats":  # STATS
     """,
         unsafe_allow_html=True,
     )
-    mt.generate_matrix(filtered_df_withnonrun)
+    st.markdown(
+        """
+        <div style="
+            color:#018729;
+            font-size: 18px;
+            font-weight: 600;
+            padding-bottom: 4px;
+            margin-top: 10px;
+            margin-bottom: 5px;">
+            ᯓ🏃🏻‍♀️‍➡️ Run</div>
+    """,
+        unsafe_allow_html=True,
+    )
+    mt.generate_matrix(filtered_df_all_run)
+    st.divider()
+
+    st.markdown(
+        """
+        <div style="
+            color:#018729;
+            font-size: 18px;
+            font-weight: 600;
+            padding-bottom: 4px;
+            margin-top: 10px;
+            margin-bottom: 5px;">
+            ᯓ🤸🏼 Other</div>
+    """,
+        unsafe_allow_html=True,
+    )
+
+    mt.generate_matrix(filtered_df_all_non_run)
 
 
 if tabs == "🗓️ Program":  ##TRAINING PLAN ##

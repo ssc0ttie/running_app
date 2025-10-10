@@ -19,8 +19,8 @@ def edit_user_fields(full_df):
     # Filter rows with missing user-defined fields
     df_to_edit = full_df[
         ((full_df["RPE (1–10 scale)"] == 0) & (full_df["Activity"] != "Rest"))
-        | full_df["Shoe"].isna()
-        | full_df["Remarks"].isna()
+        # | full_df["Shoe"].isna()
+        # | full_df["Remarks"].isna()
         | (full_df["Activity"] == "")
         | (full_df["Activity"] == "Run")
     ].copy()
@@ -80,7 +80,6 @@ def edit_user_fields(full_df):
             "LSD Road@ Zone 2 Pace",
             "LSD Trail@ Zone 2 Pace",
             "RACE DAY",
-            "Strength Training",
             "Yoga",
             "Cross Train",
             "Rest",
@@ -89,11 +88,12 @@ def edit_user_fields(full_df):
         edited_activity = st.selectbox(
             "Activity (*Select Type of Run for Running Activity*)",
             options=activity_options,
-            index=(
-                activity_options.index(selected_row["Activity"])
-                if selected_row["Activity"] in activity_options
-                else 0
-            ),
+            index=None,
+            # index=(
+            #     activity_options.index(selected_row["Activity"])
+            #     if selected_row["Activity"] in activity_options
+            #     else 0
+            # ),
         )
 
         # RPE
@@ -137,11 +137,12 @@ def edit_user_fields(full_df):
         edited_shoe = st.selectbox(
             "Shoe",
             options=shoe_options,
-            index=(
-                shoe_options.index(selected_row["Shoe"])
-                if selected_row["Shoe"] in shoe_options
-                else 0
-            ),
+            index=None,
+            # index=(
+            #     shoe_options.index(selected_row["Shoe"])
+            #     if selected_row["Shoe"] in shoe_options
+            #     else 0
+            # ),
         )
 
         # Remarks
