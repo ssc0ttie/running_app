@@ -1132,11 +1132,6 @@ if tabs == "Strava Sync Test":  ##strava sync plus cleanup before push
 
         # Apply conversions
         # Now apply conversions - values are guaranteed to be numbers
-        strava_df["UniqueKey"] = (
-            strava_df[["Date_of_Activity", "Member Name", "Activity"]]
-            .astype(str)
-            .agg("|".join, axis=1)
-        )
 
         strava_df["TimeStamp"] = pd.to_datetime(strava_df["TimeStamp"]).dt.date
         strava_df["Date_of_Activity"] = pd.to_datetime(
@@ -1169,6 +1164,11 @@ if tabs == "Strava Sync Test":  ##strava sync plus cleanup before push
             convert_seconds_to_time_string
         )
 
+        strava_df["UniqueKey"] = (
+            strava_df[["Date_of_Activity", "Member Name", "Activity", "HR (bpm)"]]
+            .astype(str)
+            .agg("|".join, axis=1)
+        )
         st.dataframe(strava_df)
 
         ######SYNC ACTIVATION#########
