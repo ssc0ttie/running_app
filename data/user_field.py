@@ -34,20 +34,14 @@ def edit_user_fields(full_df):
         "%Y-%m-%d"
     )
 
+    # df_to_edit["HR (bpm)"] = df_to_edit["HR (bpm)"].round().astype(int)
+
     # Build unique key and display string
+
     df_to_edit["UniqueKey"] = (
-        df_to_edit["Date_of_Activity_str"]
-        + "|"
-        + df_to_edit["Member Name"]
-        + "|"
-        + df_to_edit["Activity"].fillna("")
-    )
-    df_to_edit["display"] = (
-        df_to_edit["Date_of_Activity_str"]
-        + " - "
-        + df_to_edit["Member Name"]
-        + " - "
-        + df_to_edit["Activity"].fillna("")
+        df_to_edit[["Date_of_Activity", "Member Name", "Activity", "HR (bpm)"]]
+        .astype(str)
+        .agg("|".join, axis=1)
     )
 
     # Let user select entry to edit
