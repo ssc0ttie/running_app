@@ -124,24 +124,10 @@ from visuals import stats_table as stats
 
 st.text("")
 
-# tab0, tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
-#     [
-#         "📓Log",
-#         "📊 Stats",
-#         "🗓️ Program",
-#         "📘 Activities",
-#         "🏋🏻‍♂️ Str Training",
-#         "🎯 Remarks",
-#         "💗 Scott's Corner",
-#         "Strava Sync Test",
-#     ]
-# )
-
 
 tabs = st.radio(
     "Choose a Section: ",
     [
-        "📓Log",
         "📊 Stats",
         "🗓️ Program",
         "📘 Activities",
@@ -149,6 +135,7 @@ tabs = st.radio(
         "🎯 Remarks",
         "💗 Scott's Corner",
         "Strava Sync Test",
+        "📓Log",
     ],
     horizontal=True,
 )
@@ -520,7 +507,6 @@ if tabs == "📊 Stats":  # STATS
         )
     ]
 
-    """good- checked 08102025"""
     stats.generate_matrix_member(filtered_df_full_activity)
 
     # -------------------MEMBER FILTER  -----------------------#
@@ -568,7 +554,6 @@ if tabs == "📊 Stats":  # STATS
         )
         ### --- race predictor ----##
 
-        """good- checked 06102025 - all running activity """
         rp.race_predictor(filtered_df)
 
     #########################--- ALL TIME STATS TABLE ----#######################
@@ -746,24 +731,6 @@ if tabs == "📊 Stats":  # STATS
     )
     # sb.generate_bubble_chart(filtered_df)
     sb.generate_bubble_chart(filtered_df_all_run)
-
-    # # -----LINE POLAR-------#
-    # # st.subheader("", divider="gray")
-    # st.markdown(
-    #     """
-    #     <div style="
-    #         color:#3a3939;
-    #         font-size: 20px;
-    #         font-weight: 600;
-    #         border-bottom: 1px solid #ccc;
-    #         padding-bottom: 4px;
-    #         margin-top: 20px;
-    #         margin-bottom: 10px;">
-    #         ⚖️📊 Activity Comparison</div>
-    # """,
-    #     unsafe_allow_html=True,
-    # )
-    # lp.generate_linepolar(filtered_df)
 
     # -----DONUT-------#
     # st.subheader("", divider="gray")
