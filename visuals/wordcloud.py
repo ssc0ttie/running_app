@@ -40,12 +40,16 @@ def generate_wordcloud(data):
             "ayun",
             "kaya",
             "parang",
+            "yoga",
+            "buhat",
+            "tempo",
+            "lsd",
         ]
     )  # Tagalog-specific common filler words
 
     # Generate word cloud
     wordcloud = WordCloud(
-        width=350,
+        width=250,
         height=250,
         background_color="white",
         stopwords=stopwords,
@@ -54,7 +58,7 @@ def generate_wordcloud(data):
 
     # Display
     # st.subheader("📝 Word Cloud from Runner Remarks")
-    fig, ax = plt.subplots(figsize=(2.5, 2.5))
+    fig, ax = plt.subplots(figsize=(1.5, 1.5))
     ax.imshow(wordcloud, interpolation="bilinear")
     ax.axis("off")
     st.pyplot(fig)
