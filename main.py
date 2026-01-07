@@ -22,7 +22,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-rdc.raceday_counter_2()
+# rdc.raceday_counter_2()
 
 Welcome_msg = (
     "Celebrate progress, not perfection. You showed up — and that matters most."
@@ -128,8 +128,8 @@ st.text("")
 tabs = st.radio(
     "Choose a Section: ",
     [
-        "📊 Stats",
         "🗓️ Program",
+        "📊 Stats",
         "📘 Activities",
         "🏋🏻‍♂️ Str Training",
         "🎯 Remarks",
@@ -500,7 +500,20 @@ if tabs == "📊 Stats":  # STATS
         unsafe_allow_html=True,
     )
 
+    ### --- Capture Year --- ####
+    full_df["Date_of_Activity"] = pd.to_datetime(
+        full_df["Date_of_Activity"], errors="coerce"
+    )
+    full_df["year"] = full_df["Date_of_Activity"].dt.year
+
+    _years = sorted(full_df["Date_of_Activity"].dt.year.dropna().unique().tolist())
+    # _years.insert(0, "All")
+
+    selected_year = st.selectbox("Select Year to Filter", _years)
+
     ### All activity - but not filtered from app selections
+    full_df = full_df[full_df["year"] == selected_year]
+
     filtered_df_full_activity = full_df[
         ~full_df["Activity"].isin(
             [
@@ -851,7 +864,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     components.iframe(
         prog_sheet,
         width=400,
-        height=400,
+        height=600,
     )
 
 if tabs == "📘 Activities":  ##STR WORK

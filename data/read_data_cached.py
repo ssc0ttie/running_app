@@ -21,7 +21,7 @@ def get_gsheet_client():
 
 
 ### -- CACHED: Load all runner data with TTL -- ###
-@st.cache_data(ttl=300)  # refresh every 5 minutes
+@st.cache_data(ttl=120)  # refresh every 5 minutes
 def get_runner_data():
     client = get_gsheet_client()
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
@@ -68,7 +68,7 @@ def get_runner_data():
     )
     df_week["Date"] = pd.to_datetime(df_week["Date"])
 
-    # ---- Load week lookup ---- #
+    # ---- Load week lookup --- THIS IS THE MAIN DATA SINCE June 2025- #
     new_logs_data = sheet.get_worksheet_by_id(1611308583).get_all_records()
     df_new = pd.DataFrame(new_logs_data)
 

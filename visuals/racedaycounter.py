@@ -4,13 +4,18 @@ def raceday_counter():
     from zoneinfo import ZoneInfo
 
     sg_now = datetime.now(ZoneInfo("Asia/Singapore"))
-    race_day = datetime(2025, 12, 6)
+
+    st.write(sg_now)
+
+    race_day = datetime(2026, 4, 5)
     race_day = race_day.date()
+    st.write(race_day)
 
     today = sg_now.date()
     now_ = datetime.now()
     days_left = (race_day - now_.date()).days
 
+    st.write(days_left)
     # <p style="font-size: 1rem; color: #2f3e46; margin-top: 0.25rem;">Stay consistent. Trust the process . You've got this 💪</p>
     if days_left > 1:
         st.markdown(
@@ -66,7 +71,10 @@ def raceday_counter_2():
     from zoneinfo import ZoneInfo
 
     sg_now = datetime.now(ZoneInfo("Asia/Singapore"))
-    race_day = datetime(2025, 12, 6, tzinfo=ZoneInfo("Asia/Singapore"))
+    race_day = datetime(2026, 4, 5, tzinfo=ZoneInfo("Asia/Singapore"))
+
+    st.write(sg_now)
+    st.write(race_day)
 
     today = sg_now.date()
     now_ = sg_now
@@ -80,6 +88,7 @@ def raceday_counter_2():
     minutes_left = (time_diff.seconds % 3600) // 60
     seconds_left = time_diff.seconds % 60
 
+    st.write(days_left)
     if days_left > 1:
         st.markdown(
             f"""
