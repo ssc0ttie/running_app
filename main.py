@@ -947,6 +947,15 @@ if tabs == "💗 Scott's Corner":  ##SCOTTS CORNER
         height=500,
         width=600,
     )
+
+    st.subheader("Chona")
+    prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
+    components.iframe(
+        prog_sheet,
+        height=500,
+        width=600,
+    )
+
     ####CUSTOM ZONES####
     col1, col2 = st.columns(2)
     with col1:  ###SCOTT ZONES####
