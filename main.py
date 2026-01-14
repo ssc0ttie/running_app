@@ -844,6 +844,7 @@ if tabs == "📊 Stats":  # STATS
 
 
 if tabs == "🗓️ Program":  ##TRAINING PLAN ##
+
     # st.header("🗓️💪 Your Training Plan", divider="blue")
     st.markdown(
         """
@@ -859,13 +860,33 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     """,
         unsafe_allow_html=True,
     )
-    # with st.expander("View Training Program"):
-    prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
-    components.iframe(
-        prog_sheet,
-        width=400,
-        height=600,
-    )
+
+    with st.expander("2xu Compression Run 2026"):
+        # with st.expander("View Training Program"):
+        prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
+        components.iframe(
+            prog_sheet,
+            width=400,
+            height=600,
+        )
+
+    with st.expander("Scott Program"):
+        prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
+        components.iframe(
+            prog_sheet,
+            height=500,
+            width=600,
+        )
+
+    with st.expander("Chona Progaram"):
+        # st.subheader("Chona")
+        prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
+        components.iframe(
+            prog_sheet,
+            height=500,
+            width=600,
+        )
+
 
 if tabs == "📘 Activities":  ##STR WORK
     from visuals import referencetab as ref
@@ -927,34 +948,37 @@ if tabs == "🎯 Remarks":  # REMARKS
     # wr.weekly_remarks()
 
 if tabs == "💗 Scott's Corner":  ##SCOTTS CORNER
-    st.markdown(
-        """
-            <div style="
-                color:#3a3939;
-                font-size: 20px;
-                font-weight: 450;
-                border-bottom: 1px solid #ccc;
-                padding-bottom: 4px;
-                margin-top: 20px;
-                margin-bottom: 10px;">
-                🗓️ Training Plan</div>
-        """,
-        unsafe_allow_html=True,
-    )
-    prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
-    components.iframe(
-        prog_sheet,
-        height=500,
-        width=600,
-    )
 
-    st.subheader("Chona")
-    prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
-    components.iframe(
-        prog_sheet,
-        height=500,
-        width=600,
-    )
+    # with st.expander("Scott Program"):
+    #     st.markdown(
+    #         """
+    #             <div style="
+    #                 color:#3a3939;
+    #                 font-size: 20px;
+    #                 font-weight: 450;
+    #                 border-bottom: 1px solid #ccc;
+    #                 padding-bottom: 4px;
+    #                 margin-top: 20px;
+    #                 margin-bottom: 10px;">
+    #                 🗓️ Training Plan</div>
+    #         """,
+    #         unsafe_allow_html=True,
+    #     )
+    #     prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
+    #     components.iframe(
+    #         prog_sheet,
+    #         height=500,
+    #         width=600,
+    #     )
+
+    # with st.expander("Chona Progaram"):
+    #     st.subheader("Chona")
+    #     prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
+    #     components.iframe(
+    #         prog_sheet,
+    #         height=500,
+    #         width=600,
+    #     )
 
     ####CUSTOM ZONES####
     col1, col2 = st.columns(2)
