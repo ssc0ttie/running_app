@@ -875,7 +875,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         components.iframe(
             prog_sheet,
             height=500,
-            width=600,
+            width=1200,
         )
 
     with st.expander("Chona Progaram"):

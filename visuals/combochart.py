@@ -42,6 +42,7 @@ def generate_combo(data):
             ["Rest", "Cross Train", "Strength Training", "WeightTraining", 0]
         )
     ]  # filter non running activity
+    filtered_data = filtered_data.sort_values(by="Date_of_Activity")
 
     ##NON- RUNNING ACITIVY###
 
@@ -124,6 +125,8 @@ def generate_combo(data):
     dist_data["Distance_Pct_Change_Label"] = dist_data["Distance_Pct_Change"].apply(
         format_delta
     )
+    # dist_data = df.sort_values(by="")
+
     pace_data["Pace_Pct_Change_Label"] = pace_data["Pace_Pct_Change"].apply(
         format_delta_rev
     )
