@@ -537,8 +537,13 @@ if tabs == "📊 Stats":  # STATS
 
     # -------------------MEMBER FILTER  -----------------------#
     members = sorted(full_df["Member Name"].dropna().unique())
+    members_count = len(members)
+
     members.insert(0, "All")  # Add 'All' option at the top
-    selected_member = st.selectbox("Select Member to Filter", members, index=0)
+    selected_member = st.selectbox(
+        "Select Member to Filter", members, index=members_count
+    )
+    # selected_member = "Scott"
 
     # Filter the DataFrame
 
