@@ -19,12 +19,12 @@ def generate_combo(data):
         data = data[data["Activity"].isin(selected_activity)]
 
     nonrun_data = data
-    nonrun_data["Week"] = [week[:1] + week[-2:] for week in data["Week"]]
+    # nonrun_data["Week"] = [week[:1] + week[-2:] for week in data["Week"]]
 
-    ##GROUP BY
-    data["Week"] = [
-        week[:1] + week[-2:] for week in data["Week"]
-    ]  # shorten weekname before groupby
+    # ##GROUP BY
+    # data["Week"] = [
+    #     week[:1] + week[-2:] for week in data["Week"]
+    # ]  # shorten weekname before groupby
 
     data = data[data["Distance"].notnull() & (data["Distance"] > 0)]
 
@@ -358,12 +358,12 @@ def generate_combo_supplimentary(data):
     activity.insert(0, "All")
 
     nonrun_data = data
-    nonrun_data["Week"] = [week[:1] + week[-2:] for week in data["Week"]]
+    # nonrun_data["Week"] = [week[:1] + week[-2:] for week in data["Week"]]
 
-    ##GROUP BY
-    data["Week"] = [
-        week[:1] + week[-2:] for week in data["Week"]
-    ]  # shorten weekname before groupby
+    # ##GROUP BY
+    # data["Week"] = [
+    #     week[:1] + week[-2:] for week in data["Week"]
+    # ]  # shorten weekname before groupby
 
     nonrun_data["Duration_Other"] = pd.to_timedelta(
         nonrun_data["Duration_Other"], errors="coerce"
@@ -792,12 +792,12 @@ def generate_combo_supplimentary_run(data):
     activity.insert(0, "All")
 
     nonrun_data = data
-    nonrun_data["Week"] = [week[:1] + week[-2:] for week in data["Week"]]
+    # nonrun_data["Week"] = [week[:1] + week[-2:] for week in data["Week"]]
 
-    ##GROUP BY
-    data["Week"] = [
-        week[:1] + week[-2:] for week in data["Week"]
-    ]  # shorten weekname before groupby
+    # ##GROUP BY
+    # data["Week"] = [
+    #     week[:1] + week[-2:] for week in data["Week"]
+    # ]  # shorten weekname before groupby
 
     nonrun_data["Duration_Other"] = pd.to_timedelta(
         nonrun_data["Duration_Other"], errors="coerce"

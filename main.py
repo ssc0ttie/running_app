@@ -507,12 +507,17 @@ if tabs == "📊 Stats":  # STATS
     full_df["year"] = full_df["Date_of_Activity"].dt.year
 
     _years = sorted(full_df["Date_of_Activity"].dt.year.dropna().unique().tolist())
-    # _years.insert(0, "All")
+    _years.insert(0, "All")
 
     selected_year = st.selectbox("Select Year to Filter", _years, index=1)
 
     ### All activity - but not filtered from app selections
-    full_df = full_df[full_df["year"] == selected_year]
+
+    # Apply filtering with all years
+    if selected_year == "All":
+        filtered_member_df = full_df
+    else:
+        full_df = full_df[full_df["year"] == selected_year]
 
     filtered_df_full_activity = full_df[
         ~full_df["Activity"].isin(
