@@ -508,8 +508,9 @@ if tabs == "📊 Stats":  # STATS
 
     _years = sorted(full_df["Date_of_Activity"].dt.year.dropna().unique().tolist())
     _years.insert(0, "All")
+    last_index = len(_years) - 1
 
-    selected_year = st.selectbox("Select Year to Filter", _years, index=1)
+    selected_year = st.selectbox("Select Year to Filter", _years, index=last_index)
 
     ### All activity - but not filtered from app selections
 
