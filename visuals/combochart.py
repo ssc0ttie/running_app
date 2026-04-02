@@ -174,19 +174,27 @@ def generate_combo(data):
             name="Distance (km)",
             text=dist_labels,
             textposition="auto",
-            marker=dict(color="mediumaquamarine"),
+            marker=dict(color="#f3d2b2"),  # earthy clay — was "mediumaquamarine"
         ),
     )
 
     fig_bar.update_layout(
         title="Weekly Distance (km)",
+        title_font=dict(color="#2b2b2b"),
+        plot_bgcolor="#faf7f2",  # soft paper background
+        paper_bgcolor="#faf7f2",
         yaxis=dict(
             showticklabels=False,
             ticks="",
             showgrid=False,
-            title="",  # Removes Y-axis title
+            title="",
+            gridcolor="#efe6dc",  # faint trail color for any grid
         ),
         xaxis_title="Week",
+        xaxis=dict(
+            title_font=dict(color="#2b2b2b"),
+            tickfont=dict(color="#4a3729"),
+        ),
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
@@ -204,19 +212,30 @@ def generate_combo(data):
             text=pace_labels,
             textposition="top center",
             name="Pace",
-            line=dict(color="#986868", width=2),
-            marker=dict(size=5, line=dict(width=2, color="crimson")),
+            line=dict(color="#6b4c3a", width=2),  # boulder brown — was "#986868"
+            marker=dict(
+                size=5, line=dict(width=2, color="#4a3729")
+            ),  # deep soil — was "crimson"
         )
     )
+
     fig_line.update_layout(
         title="Weekly Average Pace (min/km)",
+        title_font=dict(color="#2b2b2b"),
+        plot_bgcolor="#faf7f2",
+        paper_bgcolor="#faf7f2",
         yaxis=dict(
             showticklabels=False,
             ticks="",
             showgrid=False,
-            title="",  # Removes Y-axis title
+            title="",
+            gridcolor="#efe6dc",
         ),
         xaxis_title="Week",
+        xaxis=dict(
+            title_font=dict(color="#2b2b2b"),
+            tickfont=dict(color="#4a3729"),
+        ),
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
@@ -237,25 +256,36 @@ def generate_combo(data):
             text=cadence_labels,
             textposition="top center",
             name="Cadence",
-            line=dict(color="royalblue", width=2),
-            marker=dict(size=6),
+            line=dict(color="#6b4c3a", width=2),  # boulder brown — was "royalblue"
+            marker=dict(size=6, color="#9b7b5c"),  # earthy clay
+            fillcolor="rgba(107, 76, 58, 0.15)",  # subtle boulder tint
         )
     )
+
     fig_area.update_layout(
         title="Weekly Average Cadence (spm)",
+        title_font=dict(color="#2b2b2b"),
+        plot_bgcolor="#faf7f2",
+        paper_bgcolor="#faf7f2",
         yaxis=dict(
             showticklabels=False,
             ticks="",
             showgrid=False,
-            title="",  # Removes Y-axis title
+            title="",
+            gridcolor="#efe6dc",
         ),
         xaxis_title="Week",
+        xaxis=dict(
+            title_font=dict(color="#2b2b2b"),
+            tickfont=dict(color="#4a3729"),
+        ),
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=False,
     )
 
     fig_area.update_yaxes(range=[120, cadence_data["Cadence (steps/min)"].max() + 30])
+
     st.plotly_chart(fig_area, use_container_width=True, key="cadence_chart")
 
     # ---------- 📉 HR  Chart ----------
@@ -264,6 +294,7 @@ def generate_combo(data):
     weeks = hr_data["Week"]
     avg_hr = hr_data["HR (bpm)"]
 
+    # Still Here HR zones — muted, earthy, gentle
     # Heart rate zone boundaries
     zones = [
         {"name": "Zone 1: Easy", "start": 110, "end": 129, "color": "#A3A8A3"},  # Green
@@ -295,7 +326,7 @@ def generate_combo(data):
 
     fig_bullet = go.Figure()
 
-    # Draw stacked HR zones for each week
+    # Draw stacked HR zones
     for zone in zones:
         fig_bullet.add_trace(
             go.Bar(
@@ -304,43 +335,46 @@ def generate_combo(data):
                 base=[zone["start"]] * len(weeks),
                 name=zone["name"],
                 marker_color=zone["color"],
-                # width=0.6,
                 hoverinfo="skip",
-                opacity=0.6,
+                opacity=0.5,  # softer — was 0.6
             )
         )
 
-        # Overlay the actual HR value as a thin black bar
+    # Overlay actual HR values
     fig_bullet.add_trace(
         go.Bar(
             x=weeks,
-            y=avg_hr,  # Directly use avg_hr as bar height
+            y=avg_hr,
             name="Avg HR",
             marker=dict(
-                color="rgba(65, 105, 225, 0.6)",
-                line=dict(
-                    color="rgba(112, 128, 144, 0.6)", width=3
-                ),  # Adjust border width and color
+                color="rgba(107, 76, 58, 0.7)",  # boulder with opacity
+                line=dict(color="#4a3729", width=2),  # deep soil border — was slate
             ),
-            # width=0.4,
             text=hr_labels,
             textposition="outside",
-            textfont=dict(size=14),
+            textfont=dict(size=14, color="#4a3729"),
             hovertemplate="Week: %{x}<br>Avg HR: %{y} bpm",
         )
     )
 
     fig_bullet.update_layout(
-        barmode="overlay",  # overlay to show thin bar on top
+        barmode="overlay",
         title="Weekly Avg Heart Rate vs HR Zones",
+        title_font=dict(color="#2b2b2b"),
+        plot_bgcolor="#faf7f2",
+        paper_bgcolor="#faf7f2",
         xaxis_title="Week",
-        yaxis_title="Heart Rate (bpm)",
+        xaxis=dict(
+            title_font=dict(color="#2b2b2b"),
+            tickfont=dict(color="#4a3729"),
+        ),
         yaxis=dict(
             showticklabels=False,
             ticks="",
             showgrid=False,
             title="",
-            range=[110, 190],  # Removes Y-axis title
+            range=[110, 190],
+            gridcolor="#efe6dc",
         ),
         height=450,
         showlegend=False,
@@ -444,16 +478,36 @@ def generate_combo_supplimentary(data):
     )
 
     fig_bar.update_layout(
-        title="Weekly Duration Supplimentary Activity",
+        title="Weekly Duration Supplementary Activity",
+        title_font=dict(color="#2b2b2b"),
+        plot_bgcolor="#faf7f2",
+        paper_bgcolor="#faf7f2",
         xaxis_title="Week",
+        xaxis=dict(
+            title_font=dict(color="#2b2b2b"),
+            tickfont=dict(color="#4a3729"),
+            gridcolor="#efe6dc",
+        ),
         yaxis_title="Duration (Mins)",
-        barmode="stack",  # key for stacking
+        yaxis=dict(
+            title_font=dict(color="#2b2b2b"),
+            gridcolor="#efe6dc",
+        ),
+        barmode="stack",
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
-        showlegend=True,  # show legend for activity breakdown
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            font=dict(color="#2b2b2b"),
+        ),
     )
 
+    # Add total duration labels
     fig_bar.add_trace(
         go.Scatter(
             x=weekly_totals.index,
@@ -462,10 +516,9 @@ def generate_combo_supplimentary(data):
             mode="text",
             textposition="top center",
             showlegend=False,
-            textfont=dict(size=14, color="black"),
+            textfont=dict(size=14, color="#4a3729"),
         )
     )
-
     st.plotly_chart(fig_bar, use_container_width=True, key="nonrun_chart_2")
 
 
@@ -879,13 +932,32 @@ def generate_combo_supplimentary_run(data):
 
     fig_bar.update_layout(
         title="Weekly Duration Runs",
+        title_font=dict(color="#2b2b2b"),
+        plot_bgcolor="#faf7f2",
+        paper_bgcolor="#faf7f2",
         xaxis_title="Week",
+        xaxis=dict(
+            title_font=dict(color="#2b2b2b"),
+            tickfont=dict(color="#4a3729"),
+            gridcolor="#efe6dc",
+        ),
         yaxis_title="Duration (Mins)",
-        barmode="stack",  # key for stacking
+        yaxis=dict(
+            title_font=dict(color="#2b2b2b"),
+            gridcolor="#efe6dc",
+        ),
+        barmode="stack",
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
-        showlegend=True,  # show legend for activity breakdown
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            font=dict(color="#2b2b2b"),
+        ),
     )
 
     fig_bar.add_trace(
@@ -896,7 +968,7 @@ def generate_combo_supplimentary_run(data):
             mode="text",
             textposition="top center",
             showlegend=False,
-            textfont=dict(size=14, color="black"),
+            textfont=dict(size=14, color="#4a3729"),
         )
     )
 

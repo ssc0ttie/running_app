@@ -44,21 +44,39 @@ def generate_wordcloud(data):
             "buhat",
             "tempo",
             "lsd",
+            "pace",
         ]
     )  # Tagalog-specific common filler words
 
     # Generate word cloud
+    # wordcloud = WordCloud(
+    #     width=150,
+    #     height=150,
+    #     background_color="white",
+    #     stopwords=stopwords,
+    #     colormap="viridis",
+    # ).generate(filtered_text)
+
+    # # Display
+    # # st.subheader("📝 Word Cloud from Runner Remarks")
+    # fig, ax = plt.subplots(figsize=(5, 5))
+    # ax.imshow(wordcloud, interpolation="bilinear")
+    # ax.axis("off")
+    # st.pyplot(fig)
+
     wordcloud = WordCloud(
-        width=250,
-        height=250,
-        background_color="white",
+        width=150,
+        height=150,
+        background_color="#faf7f2",
         stopwords=stopwords,
         colormap="viridis",
     ).generate(filtered_text)
 
-    # Display
-    # st.subheader("📝 Word Cloud from Runner Remarks")
-    fig, ax = plt.subplots(figsize=(1.5, 1.5))
+    fig, ax = plt.subplots(figsize=(2, 2))
     ax.imshow(wordcloud, interpolation="bilinear")
     ax.axis("off")
-    st.pyplot(fig)
+
+    # Constrain within a narrow column
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.pyplot(fig, use_container_width=True)

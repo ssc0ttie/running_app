@@ -45,13 +45,13 @@ with st.popover("💡 How to Use This Page"):
         """
         <p>Welcome! Here's how to navigate this page:</p>
         <ul>
-            <li>📓 <strong>Logs</strong>: Log your training.</li>
+            <li>📓 <strong>Logs</strong>: Edit / Log your training.</li>
             <li>📊 <strong>Stats</strong>: Track your progress.</li>
             <li>🗓️ <strong>Program</strong>: Your marathon plan.</li>
             <li>📘 <strong>Activities</strong>: Learn about your activities.</li>
             <li>🏋🏻‍♂️ <strong>Strength</strong>: Your strength workouts.</li>
             <li>🎯 <strong>Remarks</strong>: Your Weekly Remarks.</li>
-            <li>💗 <strong>Scott</strong>: Scott's Corner.</li>
+            <li>💗 <strong>Scott</strong>: HR Zones.</li>
             
         </ul>
         <p><em>Tip:</em> If switching apps (Strava, Garmin, etc.),the app will try to rerun, wait for the app to load and continue with your log.</p>
@@ -131,11 +131,12 @@ tabs = st.radio(
         "📘 Activities",
         "🏋🏻‍♂️ Str Training",
         "🎯 Remarks",
-        "💗 Scott's Corner",
-        "Strava Sync Test",
-        "📓Log",
+        "💗 HR Zones",
+        "🔄 Strava Sync",
+        "📓Log /  Edit Log",
     ],
     horizontal=True,
+    index=1,
 )
 
 
@@ -710,7 +711,7 @@ if tabs == "📊 Stats":  # STATS
 
     # -----COMBO CHART WEEKLY-------#
     # st.subheader("📅🏃‍♂️ Weekly Distance vs. Pace", divider="gray")
-    with st.expander("View Weekly Key Metrics"):
+    with st.expander("View Weekly Key Metrics", expanded=True):
         st.markdown(
             """
             <div style="
@@ -729,24 +730,24 @@ if tabs == "📊 Stats":  # STATS
         cb.generate_combo_supplimentary(filtered_df_all_non_run)
         cb.generate_combo_supplimentary_run(filtered_df_all_run)
 
-    # -----COMBO CHART DAILY-------#
-    with st.expander("View Daily Key Metrics"):
-        # st.subheader("📈📍 Daily Distance vs. Pace", divider="gray")
-        st.markdown(
-            """
-            <div style="
-                color:#3a3939;
-                font-size: 20px;
-                font-weight: 600;
-                border-bottom: 1px solid #ccc;
-                padding-bottom: 4px;
-                margin-top: 20px;
-                margin-bottom: 10px;">
-                📈📍 Daily Key Metrics</div>
-        """,
-            unsafe_allow_html=True,
-        )
-        cb.generate_combo_daily(filtered_df_all_run)
+    # # -----COMBO CHART DAILY-------#
+    # with st.expander("View Daily Key Metrics"):
+    #     # st.subheader("📈📍 Daily Distance vs. Pace", divider="gray")
+    #     st.markdown(
+    #         """
+    #         <div style="
+    #             color:#3a3939;
+    #             font-size: 20px;
+    #             font-weight: 600;
+    #             border-bottom: 1px solid #ccc;
+    #             padding-bottom: 4px;
+    #             margin-top: 20px;
+    #             margin-bottom: 10px;">
+    #             📈📍 Daily Key Metrics</div>
+    #     """,
+    #         unsafe_allow_html=True,
+    #     )
+    #     cb.generate_combo_daily(filtered_df_all_run)
 
     # -----SUN BURST-------#
     # st.subheader("👥📊 Activity Intensity", divider="gray")
