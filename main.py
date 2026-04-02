@@ -876,8 +876,8 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
         components.iframe(
             prog_sheet,
-            width=400,
-            height=600,
+            width=500,
+            height=1600,
         )
 
     with st.expander("Scott Program"):
@@ -885,7 +885,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         components.iframe(
             prog_sheet,
             height=500,
-            width=1200,
+            width=1600,
         )
 
     with st.expander("Chona Progaram"):
@@ -894,7 +894,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         components.iframe(
             prog_sheet,
             height=500,
-            width=600,
+            width=1600,
         )
 
 
