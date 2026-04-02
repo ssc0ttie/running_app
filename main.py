@@ -16,17 +16,15 @@ from visuals import racedaycounter as rdc
 
 
 st.set_page_config(
-    page_title="Operation SCSM 2025",
-    page_icon="🏃‍♂️",
+    page_title="StillHere",
+    page_icon="🪨",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 # rdc.raceday_counter_2()
 
-Welcome_msg = (
-    "Celebrate progress, not perfection. You showed up — and that matters most."
-)
+Welcome_msg = "The boulder will roll back again — you already know that . You just have to keep showing up. And you did. That’s enough."
 st.text("")
 
 st.markdown(
