@@ -160,7 +160,7 @@ def generate_combo(data):
     nonrun_labels = (
         nonrun_data["Duration_Other"].round(1).astype(str)
         + " spm<br>"
-        + nonrun_data["Duration_Pct_Change_Label"]
+        + nonrun_data["Duration_Pct_Change_Label"].astype(str)
     )
     # Create combo plot
     fig = make_subplots(specs=[[{"secondary_y": True}]])
