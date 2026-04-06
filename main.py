@@ -42,7 +42,7 @@ st.markdown(
 
 col1, col2 = st.columns(2)
 
-with col1:
+with col2:
     with st.popover("💡 How to Use This Page"):
         st.markdown(
             """
@@ -54,7 +54,7 @@ with col1:
                 <li>📘 <strong>Activities</strong>: Learn about your activities.</li>
                 <li>🏋🏻‍♂️ <strong>Strength</strong>: Your strength workouts.</li>
                 <li>🎯 <strong>Remarks</strong>: Your Weekly Remarks.</li>
-                <li>💗 <strong>Scott</strong>: HR Zones.</li>
+                <li>💗 <strong> HR Zones.</li>
                 
             </ul>
             <p><em>Tip:</em> If switching apps (Strava, Garmin, etc.),the app will try to rerun, wait for the app to load and continue with your log.</p>
@@ -62,7 +62,7 @@ with col1:
             """,
             unsafe_allow_html=True,
         )
-with col2:
+with col1:
     with st.popover("Coach"):
         # Initialize session state
         if "authenticated" not in st.session_state:
@@ -83,7 +83,13 @@ with col2:
 
         if st.session_state.authenticated:
             options.append("📊 Stats")
+            options.append("📘 Activities")
+            options.append("🏋🏻‍♂️ Str Training")
+            options.append("💗 HR Zones")
+            options.append("📓Log /  Edit Log")
+            options.append("📊 Stats")
             options.append("🔄 Strava Sync")  # Add the hidden option
+
         tabs = st.radio("Choose a Section:", options, horizontal=True, index=0)
 
 # element_name = "Log Your Activity Here"
