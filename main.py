@@ -40,27 +40,51 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+col1, col2 = st.columns(2)
 
-with st.popover("💡 How to Use This Page"):
-    st.markdown(
-        """
-        <p>Welcome! Here's how to navigate this page:</p>
-        <ul>
-            <li>📓 <strong>Logs</strong>: Edit / Log your training.</li>
-            <li>📊 <strong>Stats</strong>: Track your progress.</li>
-            <li>🗓️ <strong>Program</strong>: Your marathon plan.</li>
-            <li>📘 <strong>Activities</strong>: Learn about your activities.</li>
-            <li>🏋🏻‍♂️ <strong>Strength</strong>: Your strength workouts.</li>
-            <li>🎯 <strong>Remarks</strong>: Your Weekly Remarks.</li>
-            <li>💗 <strong>Scott</strong>: HR Zones.</li>
-            
-        </ul>
-        <p><em>Tip:</em> If switching apps (Strava, Garmin, etc.),the app will try to rerun, wait for the app to load and continue with your log.</p>
-        <p><strong>PS:</strong> If it lags, don't worry — it's just *thinking really hard*. 🧠💻</p>
-        """,
-        unsafe_allow_html=True,
-    )
+with col1:
+    with st.popover("💡 How to Use This Page"):
+        st.markdown(
+            """
+            <p>Welcome! Here's how to navigate this page:</p>
+            <ul>
+                <li>📓 <strong>Logs</strong>: Edit / Log your training.</li>
+                <li>📊 <strong>Stats</strong>: Track your progress.</li>
+                <li>🗓️ <strong>Program</strong>: Your marathon plan.</li>
+                <li>📘 <strong>Activities</strong>: Learn about your activities.</li>
+                <li>🏋🏻‍♂️ <strong>Strength</strong>: Your strength workouts.</li>
+                <li>🎯 <strong>Remarks</strong>: Your Weekly Remarks.</li>
+                <li>💗 <strong>Scott</strong>: HR Zones.</li>
+                
+            </ul>
+            <p><em>Tip:</em> If switching apps (Strava, Garmin, etc.),the app will try to rerun, wait for the app to load and continue with your log.</p>
+            <p><strong>PS:</strong> If it lags, don't worry — it's just *thinking really hard*. 🧠💻</p>
+            """,
+            unsafe_allow_html=True,
+        )
+with col2:
+    with st.popover("Coach"):
+        # Initialize session state
+        if "authenticated" not in st.session_state:
+            st.session_state.authenticated = False
 
+        # Passcode input
+        passcode = st.text_input("Coach passcode", type="password")
+
+        if st.button("Submit"):
+            if passcode == "8465":  # Your secret passcode
+                st.session_state.authenticated = True
+            else:
+                st.session_state.authenticated = False
+                st.error("Wrong passcode!")
+
+        # Radio button that shows/hides based on authentication
+        options = ["🗓️ Program"]
+
+        if st.session_state.authenticated:
+            options.append("📊 Stats")  # Add the hidden option
+
+        tabs = st.radio("Choose a Section:", options, horizontal=True, index=0)
 
 # element_name = "Log Your Activity Here"
 
@@ -124,21 +148,21 @@ from visuals import stats_table as stats
 st.text("")
 
 
-tabs = st.radio(
-    "Choose a Section: ",
-    [
-        "🗓️ Program",
-        "📊 Stats",
-        # "📘 Activities",
-        # "🏋🏻‍♂️ Str Training",
-        # "🎯 Remarks",
-        # "💗 HR Zones",
-        "🔄 Strava Sync",
-        # "📓Log /  Edit Log",
-    ],
-    horizontal=True,
-    index=0,
-)
+# tabs = st.radio(
+#     "Choose a Section: ",
+#     [
+#         "🗓️ Program",
+#         "📊 Stats",
+#         # "📘 Activities",
+#         # "🏋🏻‍♂️ Str Training",
+#         # "🎯 Remarks",
+#         # "💗 HR Zones",
+#         "🔄 Strava Sync",
+#         # "📓Log /  Edit Log",
+#     ],
+#     horizontal=True,
+#     index=0,
+# )
 
 
 # -------PULL DATA ONCE --------#
