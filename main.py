@@ -25,20 +25,38 @@ st.set_page_config(
 
 # rdc.raceday_counter_2()
 
-Welcome_msg = "The boulder will roll back again — you already know that . You just have to keep showing up. And you did. That’s enough."
+
+Welcome_msg = "The boulder will roll back down again — you already know that. You just have to keep showing up. And you did. That's enough."
+
+# st.markdown("🪨 · · · ✦ · · · 🪨")
 st.text("")
 
 st.markdown(
     f"""
     <div style="text-align: center; padding: 0.75rem; border-radius: 0.5rem;
-                background-color: rgba(0, 0, 0, 0); border-left: 4px solid #2e8b57; margin-bottom: 1rem;">
-        <p style="font-size: 1.1rem; color: #2f3e46; font-style: italic; margin: 0;">
+                background-color: rgba(0, 0, 0, 0); border-left: 4px solid #8b5a2b; margin-bottom: 1rem;">
+        <p style="font-size: 1.1rem; color: #3b2f2a; font-style: italic; margin: 0;">
             {Welcome_msg}
         </p>
     </div>
     """,
     unsafe_allow_html=True,
 )
+
+# Welcome_msg = "The boulder will roll back down again — you already know that. You just have to keep showing up. And you did. That’s enough."
+# st.text("")
+
+# st.markdown(
+#     f"""
+#     <div style="text-align: center; padding: 0.75rem; border-radius: 0.5rem;
+#                 background-color: rgba(0, 0, 0, 0); border-left: 4px solid #2e8b57; margin-bottom: 1rem;">
+#         <p style="font-size: 1.1rem; color: #2f3e46; font-style: italic; margin: 0;">
+#             {Welcome_msg}
+#         </p>
+#     </div>
+#     """,
+#     unsafe_allow_html=True,
+# )
 
 col1, col2 = st.columns(2)
 
