@@ -8,7 +8,8 @@ runOnSave = true
 #textColor = "#2f3e46"
 #font = "serif"
 
-
+[theme]
+base="light"
 primaryColor = "#6b4c3a"           // warm, weathered earth — the boulder
 backgroundColor = "#faf7f2"        // soft, worn paper — gentle and real
 secondaryBackgroundColor = "#efe6dc" // faded, quiet — like an old trail
