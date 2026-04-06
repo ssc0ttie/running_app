@@ -78,12 +78,12 @@ with col2:
                 st.session_state.authenticated = False
                 st.error("Wrong passcode!")
 
-        # Radio button that shows/hides based on authentication
+            # Radio button that shows/hides based on authentication
         options = ["🗓️ Program"]
 
         if st.session_state.authenticated:
-            options.append("📊 Stats")  # Add the hidden option
-
+            options.append("📊 Stats")
+            options.append("🔄 Strava Sync")  # Add the hidden option
         tabs = st.radio("Choose a Section:", options, horizontal=True, index=0)
 
 # element_name = "Log Your Activity Here"
