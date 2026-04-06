@@ -137,7 +137,7 @@ tabs = st.radio(
         "📓Log /  Edit Log",
     ],
     horizontal=True,
-    index=1,
+    index=0,
 )
 
 
