@@ -131,7 +131,7 @@ tabs = st.radio(
         "📊 Stats",
         "📘 Activities",
         "🏋🏻‍♂️ Str Training",
-        "🎯 Remarks",
+        # "🎯 Remarks",
         "💗 HR Zones",
         "🔄 Strava Sync",
         "📓Log /  Edit Log",
@@ -958,7 +958,7 @@ if tabs == "🏋🏻‍♂️ Str Training":  # REFERENCE
 
 # wr.weekly_remarks()
 
-if tabs == "💗 Scott's Corner":  ##SCOTTS CORNER
+if tabs == "💗 HR Zones":  ##SCOTTS CORNER
 
     # with st.expander("Scott Program"):
     #     st.markdown(
