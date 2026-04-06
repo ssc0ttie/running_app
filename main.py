@@ -22,6 +22,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+
 # rdc.raceday_counter_2()
 
 Welcome_msg = "The boulder will roll back again — you already know that . You just have to keep showing up. And you did. That’s enough."
@@ -871,14 +872,14 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         unsafe_allow_html=True,
     )
 
-    # with st.expander("2xu Compression Run 2026"):
-    #     # with st.expander("View Training Program"):
-    #     prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
-    #     components.iframe(
-    #         prog_sheet,
-    #         width=500,
-    #         height=1600,
-    #     )
+    with st.expander("Base Building 2026"):
+        # with st.expander("View Training Program"):
+        prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
+        components.iframe(
+            prog_sheet,
+            height=500,
+            width=1600,
+        )
 
     with st.expander("Scott Program"):
         prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
@@ -888,7 +889,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
             width=1600,
         )
 
-    with st.expander("Chona Progaram"):
+    with st.expander("Chona Program"):
         # st.subheader("Chona")
         prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
         components.iframe(
