@@ -871,14 +871,14 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         unsafe_allow_html=True,
     )
 
-    with st.expander("2xu Compression Run 2026"):
-        # with st.expander("View Training Program"):
-        prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
-        components.iframe(
-            prog_sheet,
-            width=500,
-            height=1600,
-        )
+    # with st.expander("2xu Compression Run 2026"):
+    #     # with st.expander("View Training Program"):
+    #     prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
+    #     components.iframe(
+    #         prog_sheet,
+    #         width=500,
+    #         height=1600,
+    #     )
 
     with st.expander("Scott Program"):
         prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
@@ -910,52 +910,52 @@ if tabs == "🏋🏻‍♂️ Str Training":  # REFERENCE
 
     # --------filter df
 
-if tabs == "🎯 Remarks":  # REMARKS
-    from visuals import weekly_remarks as wr
-    from visuals import stats_table as stats
+# if tabs == "🎯 Remarks":  # REMARKS
+#     from visuals import weekly_remarks as wr
+#     from visuals import stats_table as stats
 
-    st.markdown(
-        """
-        <div style="
-            color:#3a3939;
-            font-size: 20px;
-            font-weight: 600;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-            🎯 Weekly Remarks
-        </div>
-    """,
-        unsafe_allow_html=True,
-    )
+#     st.markdown(
+#         """
+#         <div style="
+#             color:#3a3939;
+#             font-size: 20px;
+#             font-weight: 600;
+#             border-bottom: 1px solid #ccc;
+#             padding-bottom: 4px;
+#             margin-top: 20px;
+#             margin-bottom: 10px;">
+#             🎯 Weekly Remarks
+#         </div>
+#     """,
+#         unsafe_allow_html=True,
+#     )
 
-    #### --- ACTIVATE ONLY DURING WEEKLY REVIEWS -----###
-    ##-- WEEKLY  CHART -- ##
-    # coach_df = (
-    #     full_df
-    #     if selected_weeks == "All"
-    #     else full_df[full_df["Week"].isin(selected_weeks)]
-    # )
-    #
-    # list_weeks = sorted(
-    #     filtered_df["Week"].dropna().unique(),
-    #     key=lambda x: int("".join(filter(str.isdigit, x))),
-    # )
-    # # list_weeks = sorted(full_df["Week"].dropna().unique())
-    # latest_week = list_weeks[-1]
+#### --- ACTIVATE ONLY DURING WEEKLY REVIEWS -----###
+##-- WEEKLY  CHART -- ##
+# coach_df = (
+#     full_df
+#     if selected_weeks == "All"
+#     else full_df[full_df["Week"].isin(selected_weeks)]
+# )
+#
+# list_weeks = sorted(
+#     filtered_df["Week"].dropna().unique(),
+#     key=lambda x: int("".join(filter(str.isdigit, x))),
+# )
+# # list_weeks = sorted(full_df["Week"].dropna().unique())
+# latest_week = list_weeks[-1]
 
-    # latest_week = "W 3"
-    # coach_df = filtered_df[filtered_df["Week"] == (latest_week)]
+# latest_week = "W 3"
+# coach_df = filtered_df[filtered_df["Week"] == (latest_week)]
 
-    # st.markdown(f"""## 🏁 Week: {latest_week}""")
+# st.markdown(f"""## 🏁 Week: {latest_week}""")
 
-    # # st.write(filtered_df.columns)
+# # st.write(filtered_df.columns)
 
-    # # ####----WEEKLY SUMMARY TABLE --- ###
-    # stats.generate_matrix_coach(coach_df)
+# # ####----WEEKLY SUMMARY TABLE --- ###
+# stats.generate_matrix_coach(coach_df)
 
-    # wr.weekly_remarks()
+# wr.weekly_remarks()
 
 if tabs == "💗 Scott's Corner":  ##SCOTTS CORNER
 
@@ -1040,7 +1040,7 @@ if tabs == "💗 Scott's Corner":  ##SCOTTS CORNER
             )
 
 
-if tabs == "Strava Sync Test":  ##strava sync plus cleanup before push
+if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
 
     days_back = st.slider("Days to look back", 2, 365, 2)
     days_back = int(days_back)
