@@ -205,19 +205,20 @@ st.text("")
 
 ##########################################################################
 
+if tabs != "🗓️ Program":
 
-if st.session_state.get("just_submitted", False):
-    df = pulluc.get_runner_data()  # Uncached for fresh data after submission
-    st.session_state["just_submitted"] = False
-else:
-    df = pullc.get_runner_data()  # Cached for normal viewing
-    if df is None:
-        # Fallback to empty dataframe or previous data
-        df = pd.DataFrame()
+    if st.session_state.get("just_submitted", False):
+        df = pulluc.get_runner_data()  # Uncached for fresh data after submission
+        st.session_state["just_submitted"] = False
+    else:
+        df = pullc.get_runner_data()  # Cached for normal viewing
+        if df is None:
+            # Fallback to empty dataframe or previous data
+            df = pd.DataFrame()
 
-#############################################################################
+    #############################################################################
 
-full_df = pd.DataFrame(df)
+    full_df = pd.DataFrame(df)
 
 #################################----LOG TAB ------ ################################
 
