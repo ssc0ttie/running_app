@@ -910,7 +910,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         """
         <div style="
             color:#3a3939;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 600;
             border-bottom: 1px solid #ccc;
             padding-bottom: 4px;
@@ -919,6 +919,17 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
             🗓️💪 Your Training Plan</div>
     """,
         unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+    ##### 📋 Activity Type Abbreviations
+
+    **AR** – Active Recovery | **CT** – Cross Train | **E** – Easy Run  
+    **GA** – General Aerobic | **I** – Interval | **LSD** – Long Slow Distance  
+    **LT** – Lactate Threshold | **MLR** – Medium Long Run | **MP** – Marathon Pace  
+    **R** – Recovery Run | **S** – Speedwork | **STR** – Strength Training | **T** – Tempo
+    """
     )
 
     with st.expander("Base Building 2026"):
