@@ -8,12 +8,22 @@ runOnSave = true
 #textColor = "#2f3e46"
 #font = "serif"
 
+#[theme]
+#base="light"
+#primaryColor = "#6b4c3a"           // warm, weathered earth — the boulder
+#backgroundColor = "#faf7f2"        // soft, worn paper — gentle and real
+#secondaryBackgroundColor = "#efe6dc" // faded, quiet — like an old trail
+#textColor = "#2b2b2b"              // dark but not harsh — readable and calm
+#accentColor = "#9b7b5c"            // muted clay — for buttons or highlights
+#borderColor = "#d9cdbc"            // soft boundary — no sharp edges
+#font = "sans serif"                // keep it clean and unpretentious
+
 [theme]
 base="light"
-primaryColor = "#6b4c3a"           // warm, weathered earth — the boulder
-backgroundColor = "#faf7f2"        // soft, worn paper — gentle and real
-secondaryBackgroundColor = "#efe6dc" // faded, quiet — like an old trail
-textColor = "#2b2b2b"              // dark but not harsh — readable and calm
-accentColor = "#9b7b5c"            // muted clay — for buttons or highlights
-borderColor = "#d9cdbc"            // soft boundary — no sharp edges
-font = "sans serif"                // keep it clean and unpretentious
+primaryColor = "#c17b4f"           // slightly warmer terracotta for buttons
+backgroundColor = "#faf7f2"        
+secondaryBackgroundColor = "#efe6dc"
+textColor = "#2b2b2b"              
+accentColor = "#8b6b4a"            // slightly richer clay
+borderColor = "#d9cdbc"            
+font = "sans serif"                

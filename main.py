@@ -777,130 +777,39 @@ if tabs == "📊 Stats":  # STATS
             unsafe_allow_html=True,
         )
         cb.generate_combo(filtered_df_all_run)
-        cb.generate_combo_supplimentary(filtered_df_all_non_run)
-        cb.generate_combo_supplimentary_run(filtered_df_all_run)
+        cb.generate_running_duration_chart_new(filtered_df_all_run)
 
-    # # -----COMBO CHART DAILY-------#
-    # with st.expander("View Daily Key Metrics"):
-    #     # st.subheader("📈📍 Daily Distance vs. Pace", divider="gray")
-    #     st.markdown(
-    #         """
-    #         <div style="
-    #             color:#3a3939;
-    #             font-size: 20px;
-    #             font-weight: 600;
-    #             border-bottom: 1px solid #ccc;
-    #             padding-bottom: 4px;
-    #             margin-top: 20px;
-    #             margin-bottom: 10px;">
-    #             📈📍 Daily Key Metrics</div>
-    #     """,
-    #         unsafe_allow_html=True,
-    #     )
-    #     cb.generate_combo_daily(filtered_df_all_run)
+    with st.expander("View Supplimentary Metrics", expanded=True):
+        cb.generate_combo_supplimentary_new(filtered_df_all_non_run)
 
-    # -----SUN BURST-------#
-    # st.subheader("👥📊 Activity Intensity", divider="gray")
-    st.markdown(
-        """
-        <div style="
-            color:#3a3939;
-            font-size: 20px;
-            font-weight: 600;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-            👥📊 Activity Intensity</div>
-    """,
-        unsafe_allow_html=True,
-    )
-    # sb.generate_bubble_chart(filtered_df)
-    sb.generate_bubble_chart(filtered_df_all_run)
+    with st.expander("View Other Charts", expanded=True):
+        col1, col2, col3 = st.columns(3)
 
-    # -----DONUT-------#
-    # st.subheader("", divider="gray")
-    st.markdown(
-        """
-        <div style="
-            color:#3a3939;
-            font-size: 20px;
-            font-weight: 600;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-             👟📈! Shoe Mileage</div>
-    """,
-        unsafe_allow_html=True,
-    )
-    # dt.generate_donut_chart(filtered_df)
-    dt.generate_donut_chart(filtered_df_all_run)
-    # -----WORDCLOUD-------#
-    # st.subheader("", divider="gray")
-    st.markdown(
-        """
-        <div style="
-            color:#3a3939;
-            font-size: 20px;
-            font-weight: 600;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-             🏃💬 Runner's Word Cloud</div>
-    """,
-        unsafe_allow_html=True,
-    )
-    wc.generate_wordcloud(filtered_df_withnonrun)
+        with col1:
+            st.markdown("##### 🫧 Activity Intensity Bubble Chart")
+            bubble_fig = sb.generate_bubble_chart_new(filtered_df_all_run)
+            st.plotly_chart(bubble_fig, use_container_width=True, key="bubble_chart")
 
-    # -----ALL ACTIVITY TABLE-------#
-    # st.subheader("🗂️ Activity Reference", divider="gray")
-    st.markdown(
-        """
-        <div style="
-            color:#3a3939;
-            font-size: 20px;
-            font-weight: 600;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-            🗂️ Activity Reference</div>
-    """,
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        """
-        <div style="
-            color:#018729;
-            font-size: 18px;
-            font-weight: 600;
-            padding-bottom: 4px;
-            margin-top: 10px;
-            margin-bottom: 5px;">
-            ᯓ🏃🏻‍♀️‍➡️ Run</div>
-    """,
-        unsafe_allow_html=True,
-    )
-    mt.generate_matrix(filtered_df_all_run)
-    st.divider()
+        with col2:
+            st.markdown("##### 👟 Distance by Shoe")
+            donut_fig = dt.generate_donut_chart_new(filtered_df_all_run)
+            st.plotly_chart(donut_fig, use_container_width=True, key="donut_chart")
 
-    st.markdown(
-        """
-        <div style="
-            color:#018729;
-            font-size: 18px;
-            font-weight: 600;
-            padding-bottom: 4px;
-            margin-top: 10px;
-            margin-bottom: 5px;">
-            ᯓ🤸🏼 Other</div>
-    """,
-        unsafe_allow_html=True,
-    )
+        with col3:
+            st.markdown("##### 🏃💬 Runner's Word Cloud")
+            wc.generate_wordcloud_new(filtered_df_withnonrun)
 
-    mt.generate_matrix(filtered_df_all_non_run)
+    with st.expander("View Detailed Entries", expanded=True):
+
+        st.subheader("🗂️ Activity Reference", divider="gray")
+
+        # # Run section with expander for cleaner UI
+        # with st.expander("🏃‍♀️ Run Activities", expanded=True):
+        mt.generate_matrix_new(filtered_df_all_run)
+
+        # # Other activities section
+        # with st.expander("🤸‍♀️ Cross-Training & Recovery", expanded=True):
+        mt.generate_matrix_new(filtered_df_all_non_run)
 
 
 if tabs == "🗓️ Program":  ##TRAINING PLAN ##

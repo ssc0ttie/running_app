@@ -120,3 +120,167 @@ def generate_matrix(data):
         ],
         use_container_width=True,
     )
+
+
+def generate_matrix_simple(data):
+    """Simpler matrix generation with basic formatting"""
+
+    def format_timedelta(td):
+        try:
+            total_seconds = (
+                td.total_seconds() if hasattr(td, "total_seconds") else float(td)
+            )
+            hours = int(total_seconds // 3600)
+            minutes = int((total_seconds % 3600) // 60)
+            secs = int(total_seconds % 60)
+            return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+        except (TypeError, ValueError):
+            return ""
+
+    if data.empty:
+        st.info("No data available")
+        return
+
+    # Format time columns
+    for col in ["Duration", "Duration_Other", "Pace"]:
+        if col in data.columns:
+            data[col] = data[col].apply(format_timedelta)
+
+    # Select and rename columns for display
+    display_cols = {
+        "Date_of_Activity": "Date",
+        "Activity": "Activity",
+        "Distance": "Distance (km)",
+        "Duration": "Duration",
+        "Pace": "Pace (min/km)",
+        "HR (bpm)": "HR",
+        "Cadence (steps/min)": "Cadence",
+        "Remarks": "Notes",
+    }
+
+    # Filter available columns
+    available_cols = {k: v for k, v in display_cols.items() if k in data.columns}
+
+    # Create display dataframe
+    display_df = data[list(available_cols.keys())].copy()
+    display_df = display_df.rename(columns=available_cols)
+
+    # Round numeric columns
+    for col in ["Distance (km)", "HR", "Cadence"]:
+        if col in display_df.columns:
+            display_df[col] = pd.to_numeric(display_df[col], errors="coerce").round(1)
+
+    # Sort by date
+    if "Date" in display_df.columns:
+        display_df["Date"] = pd.to_datetime(display_df["Date"])
+        display_df = display_df.sort_values("Date", ascending=False)
+        display_df["Date"] = display_df["Date"].dt.strftime("%Y-%m-%d")
+
+    st.dataframe(
+        display_df,
+        use_container_width=True,
+        hide_index=True,
+    )
+
+
+def generate_matrix_new(data, title=""):
+    """Generate a styled matrix/dataframe for activity details"""
+
+    if data.empty:
+        st.info(f"No {title} data available")
+        return
+
+    # Format timedelta columns if they exist
+    time_columns = ["Duration", "Duration_Other", "Pace"]
+    for col in time_columns:
+        if col in data.columns:
+            data[col] = data[col].apply(format_timedelta)
+
+    # Select relevant columns for display
+    display_columns = [
+        "Date_of_Activity",
+        "Activity",
+        "Distance",
+        "Duration",
+        "Pace",
+        "HR (bpm)",
+        "Cadence (steps/min)",
+        "Remarks",
+    ]
+
+    # Filter to only columns that exist in the data
+    available_columns = [col for col in display_columns if col in data.columns]
+
+    # Create display dataframe
+    display_df = data[available_columns].copy()
+
+    # Round numeric columns
+    numeric_columns = ["Distance", "HR (bpm)", "Cadence (steps/min)"]
+    for col in numeric_columns:
+        if col in display_df.columns:
+            display_df[col] = pd.to_numeric(display_df[col], errors="coerce").round(1)
+
+    # Sort by date (most recent first)
+    if "Date_of_Activity" in display_df.columns:
+        display_df["Date_of_Activity"] = pd.to_datetime(
+            display_df["Date_of_Activity"], errors="coerce"
+        )
+        display_df = display_df.sort_values("Date_of_Activity", ascending=False)
+
+    # Display with custom styling
+    st.dataframe(
+        display_df,
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            "Date_of_Activity": st.column_config.DateColumn(
+                "Date", format="YYYY-MM-DD"
+            ),
+            "Distance": st.column_config.NumberColumn("Distance (km)", format="%.1f"),
+            "Duration": st.column_config.TextColumn("Duration"),
+            "Pace": st.column_config.TextColumn("Pace (min/km)"),
+            "HR (bpm)": st.column_config.NumberColumn("HR (bpm)", format="%.0f"),
+            "Cadence (steps/min)": st.column_config.NumberColumn(
+                "Cadence", format="%.0f"
+            ),
+            "Remarks": st.column_config.TextColumn("Notes", width="medium"),
+        },
+    )
+
+
+def format_timedelta(td):
+    """Format timedelta objects or numeric values to HH:MM:SS"""
+    try:
+        if pd.isna(td):
+            return ""
+
+        # Handle timedelta objects
+        if hasattr(td, "total_seconds"):
+            total_seconds = td.total_seconds()
+        # Handle numeric values (assuming minutes or seconds)
+        elif isinstance(td, (int, float)):
+            # Check if it's likely pace format (e.g., 6.5 min/km)
+            if td < 60 and td > 0:
+                # Treat as minutes (pace)
+                minutes = int(td)
+                seconds = int((td % 1) * 60)
+                return f"{minutes:02d}:{seconds:02d}"
+            else:
+                total_seconds = td
+        else:
+            return str(td)
+
+        # Handle negative or zero
+        if total_seconds <= 0:
+            return ""
+
+        hours = int(total_seconds // 3600)
+        minutes = int((total_seconds % 3600) // 60)
+        seconds = int(total_seconds % 60)
+
+        if hours > 0:
+            return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+        else:
+            return f"{minutes:02d}:{seconds:02d}"
+    except (TypeError, ValueError, AttributeError):
+        return str(td) if td else ""
