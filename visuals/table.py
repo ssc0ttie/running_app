@@ -206,6 +206,7 @@ def generate_matrix_new(data, title=""):
         "HR (bpm)",
         "Cadence (steps/min)",
         "Remarks",
+        "Week",
     ]
 
     # Filter to only columns that exist in the data
@@ -244,6 +245,7 @@ def generate_matrix_new(data, title=""):
                 "Cadence", format="%.0f"
             ),
             "Remarks": st.column_config.TextColumn("Notes", width="medium"),
+            "Week": st.column_config.TextColumn("Week"),
         },
     )
 

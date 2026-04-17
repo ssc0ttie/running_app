@@ -81,17 +81,22 @@ with col2:
             unsafe_allow_html=True,
         )
 with col1:
-    with st.popover("Coach"):
+    with st.popover("Other Content"):
         # Initialize session state
         if "authenticated" not in st.session_state:
             st.session_state.authenticated = False
 
+        if "memberverified" not in st.session_state:
+            st.session_state.memberverified = False
+
         # Passcode input
-        passcode = st.text_input("Coach passcode", type="password")
+        passcode = st.text_input("Passcode", type="password")
 
         if st.button("Submit"):
             if passcode == "8465":  # Your secret passcode
                 st.session_state.authenticated = True
+            elif passcode == "0525":  # Your secret passcode
+                st.session_state.memberverified = True
             else:
                 st.session_state.authenticated = False
                 st.error("Wrong passcode!")
@@ -105,8 +110,14 @@ with col1:
             options.append("🏋🏻‍♂️ Str Training")
             options.append("💗 HR Zones")
             options.append("📓Log /  Edit Log")
-            options.append("📊 Stats")
+            options.append("🎯 Remarks")
             options.append("🔄 Strava Sync")  # Add the hidden option
+
+        if st.session_state.memberverified:
+            options.append("📊 Stats")
+            options.append("📘 Activities")
+            options.append("📓Log /  Edit Log")
+        # Add the hidden option
 
         tabs = st.radio("Choose a Section:", options, horizontal=True, index=0)
 
