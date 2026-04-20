@@ -581,7 +581,7 @@ if tabs == "📊 Stats":  # STATS
     full_df["year"] = full_df["Date_of_Activity"].dt.year
 
     _years = sorted(full_df["Date_of_Activity"].dt.year.dropna().unique().tolist())
-    _years.insert(0, "All")
+    _years.insert(0, "All Time")
     last_index = len(_years) - 1
 
     selected_year = st.selectbox("Select Year to Filter", _years, index=last_index)
@@ -589,7 +589,7 @@ if tabs == "📊 Stats":  # STATS
     ### All activity - but not filtered from app selections
 
     # Apply filtering with all years
-    if selected_year == "All":
+    if selected_year == "All Time":
         filtered_member_df = full_df
     else:
         full_df = full_df[full_df["year"] == selected_year]
@@ -669,17 +669,37 @@ if tabs == "📊 Stats":  # STATS
 
     #########################--- ALL TIME STATS TABLE ----#######################
     st.markdown(
-        """
-        <div style="
-            color:#3a3939;
-            font-size: 20px;
-            font-weight: 600;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-            📊 Overview & Stats
-        </div>
+        f"""
+    <div style="
+        color:#3a3939;
+        font-size: 20px;
+        font-weight: 600;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 8px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;">
+        📊 Overview & Stats: &nbsp; 
+        <span style="
+            background-color: #f0f2f6;
+            color: #31333F;
+            padding: 2px 12px;
+            border-radius: 15px;
+            font-size: 18px;
+            border: 1px solid #d1d5db;">
+            {selected_member}  
+        </span>
+                <span style="
+            background-color: #f0f2f6;
+            color: #31333F;
+            padding: 2px 12px;
+            border-radius: 15px;
+            font-size: 18px;
+            border: 1px solid #d1d5db;">
+            {selected_year} 
+        </span>
+    </div>
     """,
         unsafe_allow_html=True,
     )
