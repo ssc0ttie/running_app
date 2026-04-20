@@ -102,7 +102,7 @@ with col1:
                 st.error("Wrong passcode!")
 
             # Radio button that shows/hides based on authentication
-        options = ["🗓️ Program", "📊 Stats", "📘 Activities", "📓Log /  Edit Log"]
+        options = ["🗓️ Program", "📊 Stats", "📓Log /  Edit Log"]
 
         if st.session_state.authenticated:
             options.append("📊 Stats")
