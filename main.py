@@ -81,7 +81,7 @@ with col2:
             unsafe_allow_html=True,
         )
 with col1:
-    with st.popover("Other Content"):
+    with st.popover("Coach"):
         # Initialize session state
         if "authenticated" not in st.session_state:
             st.session_state.authenticated = False
@@ -102,7 +102,7 @@ with col1:
                 st.error("Wrong passcode!")
 
             # Radio button that shows/hides based on authentication
-        options = ["🗓️ Program"]
+        options = ["🗓️ Program", "📊 Stats", "📘 Activities", "📓Log /  Edit Log"]
 
         if st.session_state.authenticated:
             options.append("📊 Stats")
@@ -119,7 +119,7 @@ with col1:
             options.append("📓Log /  Edit Log")
         # Add the hidden option
 
-        tabs = st.radio("Choose a Section:", options, horizontal=True, index=0)
+tabs = st.radio("Choose a Section:", options, horizontal=True, index=0)
 
 # element_name = "Log Your Activity Here"
 
