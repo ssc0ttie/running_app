@@ -15,6 +15,8 @@ def edit_log(full_df):
     full_df["Date_of_Activity_str"] = full_df["Date_of_Activity"].dt.strftime(
         "%Y-%m-%d"
     )
+    full_df["HR (bpm)"] = pd.to_numeric(full_df["HR (bpm)"], errors="coerce")
+    hrval = full_df["HR (bpm)"]
 
     # Build a unique composite key for each row
     full_df["UniqueKey"] = (
@@ -23,8 +25,9 @@ def edit_log(full_df):
         + full_df["Member Name"]
         + "|"
         + full_df["Activity"]
+        + "|"
+        + full_df["HR (bpm)"].apply(lambda x: str(int(x)) if pd.notnull(x) else "N/A")
     )
-
     if not full_df.empty:
         # Create a unique identifier for each row
         full_df["display"] = (
@@ -33,6 +36,10 @@ def edit_log(full_df):
             + full_df["Member Name"]
             + " - "
             + full_df["Activity"]
+            + "|"
+            + full_df["HR (bpm)"].apply(
+                lambda x: str(int(x)) if pd.notnull(x) else "N/A"
+            )
         )
 
         # Let user select which entry to edit

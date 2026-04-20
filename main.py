@@ -233,7 +233,7 @@ if tabs != "🗓️ Program":
 
 #################################----LOG TAB ------ ################################
 
-if tabs == "📓Log":  ##LOG
+if tabs == "📓Log /  Edit Log":  ##LOG
 
     st.markdown(
         """
@@ -523,7 +523,21 @@ if tabs == "📓Log":  ##LOG
 
         edit.edit_log(full_df)
 
-    st.write("After Strava Sync:")
+    st.markdown(
+        """
+    <div style="
+        color:#f15950;
+        font-size: 15px;
+        font-weight: 800;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 4px;
+        margin-top: 20px;
+        margin-bottom: 10px;">
+        *If you opted for strava auto sync
+    </div>
+""",
+        unsafe_allow_html=True,
+    )
 
     with st.expander(
         "Enter User Fields (*RPE, Shoes, Remarks, Type of Activity-for Run*)"
