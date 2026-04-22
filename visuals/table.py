@@ -206,6 +206,7 @@ def generate_matrix_new(data, title=""):
         "HR (bpm)",
         "Cadence (steps/min)",
         "Remarks",
+        "Member Name",
         "Week",
     ]
 

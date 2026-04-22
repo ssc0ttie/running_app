@@ -616,56 +616,61 @@ if tabs == "📊 Stats":  # STATS
     stats.generate_matrix_member(filtered_df_full_activity)
 
     # -------------------MEMBER FILTER  -----------------------#
-    members = sorted(full_df["Member Name"].dropna().unique())
-    members_count = len(members)
+    col1, col2 = st.columns(2)
 
-    members.insert(0, "All")  # Add 'All' option at the top
-    selected_member = st.selectbox(
-        "Select Member to Filter", members, index=members_count
-    )
-    # selected_member = "Scott"
+    with col1:
+        members = sorted(full_df["Member Name"].dropna().unique())
+        members_count = len(members)
 
-    # Filter the DataFrame
+        members.insert(0, "All")  # Add 'All' option at the top
+        selected_member = st.selectbox(
+            "Select Member to Filter", members, index=members_count
+        )
+        # selected_member = "Scott"
 
-    # Apply filtering
-    if selected_member == "All":
-        filtered_member_df = full_df
-    else:
-        filtered_member_df = full_df[full_df["Member Name"] == selected_member]
+        # Filter the DataFrame
+
+        # Apply filtering
+        if selected_member == "All":
+            filtered_member_df = full_df
+        else:
+            filtered_member_df = full_df[full_df["Member Name"] == selected_member]
 
     # -------------------WEEK FILTER  -----------------------#
-
-    weeks = sorted(filtered_member_df["Week"].dropna().unique())
-    weeks.insert(0, "All")
-    selected_weeks = st.multiselect("Select Week(s) to Compare", weeks, default=["All"])
-
-    if not selected_weeks or "All" in selected_weeks:
-        filtered_df = filtered_member_df
-    else:
-        filtered_df = filtered_member_df[
-            filtered_member_df["Week"].isin(selected_weeks)
-        ]
-
-    with st.popover("⏱️ Open Race Predictor"):
-        from models import race_predictor as rp
-
-        st.markdown(
-            """
-            <div style="
-                color:#3a3939;
-                font-size: 20px;
-                font-weight: 600;
-                border-bottom: 1px solid #ccc;
-                padding-bottom: 4px;
-                margin-top: 20px;
-                margin-bottom: 10px;">
-                ⏱️ Predict Your Race Time</div>
-        """,
-            unsafe_allow_html=True,
+    with col2:
+        weeks = sorted(filtered_member_df["Week"].dropna().unique())
+        weeks.insert(0, "All")
+        selected_weeks = st.multiselect(
+            "Select Week(s) to Compare", weeks, default=["All"]
         )
-        ### --- race predictor ----##
 
-        rp.race_predictor(filtered_df)
+        if not selected_weeks or "All" in selected_weeks:
+            filtered_df = filtered_member_df
+        else:
+            filtered_df = filtered_member_df[
+                filtered_member_df["Week"].isin(selected_weeks)
+            ]
+    # with col3:
+    #     with st.popover("⏱️ Open Race Predictor"):
+    #         from models import race_predictor as rp
+
+    #         st.markdown(
+    #             """
+    #             <div style="
+    #                 color:#3a3939;
+    #                 font-size: 20px;
+    #                 font-weight: 600;
+    #                 border-bottom: 1px solid #ccc;
+    #                 padding-bottom: 4px;
+    #                 margin-top: 20px;
+    #                 margin-bottom: 10px;">
+    #                 ⏱️ Predict Your Race Time</div>
+    #         """,
+    #             unsafe_allow_html=True,
+    #         )
+    #         ### --- race predictor ----##
+
+    #         rp.race_predictor(filtered_df)
 
     #########################--- ALL TIME STATS TABLE ----#######################
     st.markdown(
@@ -806,7 +811,7 @@ if tabs == "📊 Stats":  # STATS
 
     # -----COMBO CHART WEEKLY-------#
     # st.subheader("📅🏃‍♂️ Weekly Distance vs. Pace", divider="gray")
-    with st.expander("View Weekly Key Metrics", expanded=True):
+    with st.expander("View Weekly Key Metrics", expanded=False):
         st.markdown(
             """
             <div style="
@@ -824,10 +829,10 @@ if tabs == "📊 Stats":  # STATS
         cb.generate_combo(filtered_df_all_run)
         cb.generate_running_duration_chart_new(filtered_df_all_run)
 
-    with st.expander("View Supplimentary Metrics", expanded=True):
+    with st.expander("View Supplimentary Metrics", expanded=False):
         cb.generate_combo_supplimentary_new(filtered_df_all_non_run)
 
-    with st.expander("View Other Charts", expanded=True):
+    with st.expander("View Other Charts", expanded=False):
         col1, col2, col3 = st.columns(3)
 
         with col1:
@@ -844,7 +849,7 @@ if tabs == "📊 Stats":  # STATS
             st.markdown("##### 🏃💬 Runner's Word Cloud")
             wc.generate_wordcloud_new(filtered_df_withnonrun)
 
-    with st.expander("View Detailed Entries", expanded=True):
+    with st.expander("View Detailed Entries", expanded=False):
 
         st.subheader("🗂️ Activity Reference", divider="gray")
 
