@@ -104,7 +104,7 @@ def create_activity_card(row, index):
     stats_html_3 = f"""
 <div style="padding: 20px; background: #fafafa;">
     <!-- Responsive Metrics Grid -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 20px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 20px; margin-bottom: 20px;">
         <div>
             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Distance']:.1f}</div>
             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Distance (km)</div>
@@ -144,6 +144,7 @@ def create_activity_card(row, index):
     </div>
 </div>
 """
+
     # Complete card HTML - put everything together
     card_html = f"""
     <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden;">
