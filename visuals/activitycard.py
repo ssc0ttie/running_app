@@ -171,12 +171,14 @@ def create_activity_card(row, index):
                 control_scale=True,
                 # zoom_start=13,
                 width="100%",
-                height=250,
-                zoom_control=True,  # Keep buttons visible
-                scrollWheelZoom=False,  # Disable scroll wheel
-                touchZoom=False,  # Disable pinch zoom
-                doubleClickZoom=False,  # Disable double click
-                dragging=True,  # Allow panning (less intrusive)
+                height=200,
+                zoom_control=False,  # Remove zoom buttons
+                scrollWheelZoom=False,  # Disable mouse wheel zoom
+                dragging=False,  # Disable panning/dragging
+                touchZoom=False,  # Disable touch zoom on phones
+                doubleClickZoom=False,  # Disable double click zoom
+                boxZoom=False,  # Disable box zoom
+                keyboard=False,  # Disable keyboard controls
             )
 
             lats = [c[0] for c in coords]
