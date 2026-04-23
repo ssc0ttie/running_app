@@ -157,7 +157,6 @@ def create_activity_card(row, index):
         </div>
         {stats_html_3}
   
-   
     """
 
     # Decode polyline for map
