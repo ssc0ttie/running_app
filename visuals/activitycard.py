@@ -46,6 +46,43 @@ def format_pace(pace):
     return f"{minutes:02d}:{seconds:02d}"
 
 
+def format_max_pace(max_pace):
+    """
+    Specifically format max pace to ensure no hours
+    """
+    if pd.isna(max_pace):
+        return "N/A"
+
+    # If it's already a formatted string
+    if isinstance(max_pace, str):
+        parts = max_pace.split(":")
+        if len(parts) == 3:  # HH:MM:SS
+            # Convert hours to minutes
+            total_minutes = int(parts[0]) * 60 + int(parts[1])
+            return f"{total_minutes:02d}:{int(parts[2]):02d}"
+        elif len(parts) == 2:  # MM:SS
+            return max_pace
+        return max_pace
+
+    # If it's a timedelta
+    if hasattr(max_pace, "total_seconds"):
+        total_seconds = int(max_pace.total_seconds())
+        total_seconds = total_seconds % 3600  # Remove hours
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+        return f"{minutes:02d}:{seconds:02d}"
+
+    # If it's a number
+    if isinstance(max_pace, (int, float)):
+        total_seconds = int(max_pace)
+        total_seconds = total_seconds % 3600
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+        return f"{minutes:02d}:{seconds:02d}"
+
+    return str(max_pace)
+
+
 def create_activity_card(row, index):
     """
     Create a Strava-style activity card for each activity
@@ -54,6 +91,7 @@ def create_activity_card(row, index):
     # Format values
     moving_time_str = format_duration(row["Moving_Time"])
     pace_str = format_pace(row["Pace"])
+    max_pace_str = format_max_pace(row["Max_Pace"])
     activity = str(row["Activity"])
 
     if hasattr(row["Date_of_Activity"], "strftime"):
@@ -62,64 +100,50 @@ def create_activity_card(row, index):
         date_str = str(row["Date_of_Activity"])
 
     # Start building the stats HTML - include all stats in one continuous string
-    stats_html = f"""
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; padding: 20px; background: #fafafa;">
-        <div style="text-align: center;">
+
+    stats_html_3 = f"""
+<div style="padding: 20px; background: #fafafa;">
+    <!-- Responsive Metrics Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 20px;">
+        <div>
             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Distance']:.1f}</div>
             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Distance (km)</div>
         </div>
-        <div style="text-align: center;">
+        <div>
             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{moving_time_str}</div>
             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Moving Time</div>
         </div>
-        <div style="text-align: center;">
+        <div>
             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{pace_str}</div>
             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Avg Pace</div>
         </div>
-        </div>
-                <div style="text-align: center;">
+        <div>
             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['HR (bpm)']:.0f}</div>
             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Avg HR</div>
         </div>
-        </div>
-                <div style="text-align: center;">
+        <div>
             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Cadence (steps/min)']:.0f}</div>
             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Cadence</div>
         </div>
+        <div>
+            <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{max_pace_str}</div>
+            <div style="font-size: 12px; color: #666; text-transform: uppercase;">Max Pace</div>
         </div>
-            <div style="padding: 12px 20px; background: #f9f9f9; border-top: 1px solid #f0f0f0; color: #555; font-size: 14px; font-style: italic;">
+        <div>
+            <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Max_HR']:.0f}</div>
+            <div style="font-size: 12px; color: #666; text-transform: uppercase;">Max HR</div>
+        </div>
+        <div>
+            <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Elevation_Gained']:.0f}</div>
+            <div style="font-size: 12px; color: #666; text-transform: uppercase;">Elevation Gained</div>
+        </div>
+    </div>
+    </div>
+    <div style="padding: 12px 20px; background: #f9f9f9; border-top: 1px solid #f0f0f0; color: #555; font-size: 16px; font-style: italic;">
         💭 {row['Remarks']}
     </div>
-    """
-
-    stats_html_2 = f"""
-<div style="padding: 20px; background: #fafafa;">
-    <div style="margin-bottom: 16px;">
-        <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Distance']:.1f}</div>
-        <div style="font-size: 12px; color: #666; text-transform: uppercase;">Distance (km)</div>
-    </div>
-    <div style="margin-bottom: 16px;">
-        <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{moving_time_str}</div>
-        <div style="font-size: 12px; color: #666; text-transform: uppercase;">Moving Time</div>
-    </div>
-    <div style="margin-bottom: 16px;">
-        <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{pace_str}</div>
-        <div style="font-size: 12px; color: #666; text-transform: uppercase;">Avg Pace</div>
-    </div>
-    <div style="margin-bottom: 16px;">
-        <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['HR (bpm)']:.0f}</div>
-        <div style="font-size: 12px; color: #666; text-transform: uppercase;">Avg HR</div>
-    </div>
-    <div>
-        <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Cadence (steps/min)']:.0f}</div>
-        <div style="font-size: 12px; color: #666; text-transform: uppercase;">Cadence</div>
-    </div>
-</div>
-<div style="padding: 12px 20px; background: #f9f9f9; border-top: 1px solid #f0f0f0; color: #555; font-size: 16px; font-style: italic;">
-    💭 {row['Remarks']}
 </div>
 """
-
     # Complete card HTML - put everything together
     card_html = f"""
     <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden;">
@@ -130,7 +154,7 @@ def create_activity_card(row, index):
             </div>
             <div style="color: #666; font-size: 14px;">{date_str}</div>
         </div>
-        {stats_html_2}
+        {stats_html_3}
   
    
     """
@@ -148,6 +172,11 @@ def create_activity_card(row, index):
                 # zoom_start=13,
                 width="100%",
                 height=250,
+                zoom_control=True,  # Keep buttons visible
+                scrollWheelZoom=False,  # Disable scroll wheel
+                touchZoom=False,  # Disable pinch zoom
+                doubleClickZoom=False,  # Disable double click
+                dragging=True,  # Allow panning (less intrusive)
             )
 
             lats = [c[0] for c in coords]

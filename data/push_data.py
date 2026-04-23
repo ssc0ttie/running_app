@@ -107,6 +107,7 @@ def push_strava_data_to_sheet(strava_df):
                     continue
 
                 # Convert all values to gspread-compatible types
+                ################# ADD COLUMN TO BE PUSHED TO GSHEETS FROM STRAVA API ######
                 row_data = [
                     unique_key,
                     str(row["TimeStamp"]),  # Date to string
@@ -123,6 +124,9 @@ def push_strava_data_to_sheet(strava_df):
                     str(row.get("Duration", "00:00:00")),
                     str(row.get("Activity", "")),
                     str(row.get("Map_Polyline", "")),
+                    str(row.get("Max_Pace", None)),
+                    int(row.get("Max_HR", None)),
+                    int(row.get("Elevation_Gained", None)),
                 ]
 
                 push_runner_data(row_data)

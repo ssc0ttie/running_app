@@ -1133,7 +1133,7 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
             date_part = start_date.split("T")[0]
         else:
             date_part = ""
-
+        #################EDIT HERE TO ADD DATA FROM STRAVA####################
         return {
             "TimeStamp": date_part,
             "Date_of_Activity": date_part,
@@ -1145,6 +1145,9 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
             "Member Name": to_str(act.get("athlete_name", "Unknown")),
             "Duration": to_float(act.get("moving_time")),
             "Map_Polyline": act.get("map", {}).get("summary_polyline"),
+            "Max_Pace": to_float(act.get("max_speed")),
+            "Max_HR": to_float(act.get("max_heartrate")),
+            "Elevation_Gained": to_float(act.get("total_elevation_gain")),
         }
 
     def convert_speed_to_pace(speed_mps):
@@ -1237,7 +1240,17 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
         strava_df["Pace"] = strava_df["Pace"].apply(
             lambda x: convert_speed_to_pace_string(x) if x > 0 else "00:00:00"
         )
+
+        # Fill NaN values with 0
+        strava_df["Max_Pace"] = pd.to_numeric(strava_df["Max_Pace"], errors="coerce")
+        strava_df["Max_Pace"] = strava_df["Max_Pace"].fillna(0)
+        #########################################################################
+        strava_df["Max_Pace"] = strava_df["Max_Pace"].apply(
+            lambda x: convert_speed_to_pace_string(x) if x > 0 else "00:00:00"
+        )
         strava_df["HR (bpm)"] = strava_df["HR (bpm)"].round().astype(int)
+        strava_df["Max_HR"] = strava_df["Max_HR"].round().astype(int)
+
         strava_df["Cadence (steps/min)"] = (
             (strava_df["Cadence (steps/min)"]).round().astype(int)
         )
