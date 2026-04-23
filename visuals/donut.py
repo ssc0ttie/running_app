@@ -58,7 +58,7 @@ def generate_donut_chart_new(data):
         values="Distance",
         hole=0.4,
         color_discrete_sequence=["#E8956A", "#4A9B9B", "#6B9B6A", "#D4855A", "#F0B87A"],
-        hover_data={"Distance": ":.1f"},
+        hover_data={"Distance": ":.0f"},
     )
 
     fig.update_traces(

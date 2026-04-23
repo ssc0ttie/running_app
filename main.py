@@ -23,12 +23,8 @@ st.set_page_config(
 )
 
 
-# rdc.raceday_counter_2()
-
-
 Welcome_msg = "The boulder will roll back down again — you already know that. You just have to keep showing up. And you did. That's enough."
 
-# st.markdown("🪨 · · · ✦ · · · 🪨")
 st.text("")
 
 st.markdown(
@@ -43,20 +39,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Welcome_msg = "The boulder will roll back down again — you already know that. You just have to keep showing up. And you did. That’s enough."
-# st.text("")
-
-# st.markdown(
-#     f"""
-#     <div style="text-align: center; padding: 0.75rem; border-radius: 0.5rem;
-#                 background-color: rgba(0, 0, 0, 0); border-left: 4px solid #2e8b57; margin-bottom: 1rem;">
-#         <p style="font-size: 1.1rem; color: #2f3e46; font-style: italic; margin: 0;">
-#             {Welcome_msg}
-#         </p>
-#     </div>
-#     """,
-#     unsafe_allow_html=True,
-# )
 
 col1, col2 = st.columns(2)
 
@@ -102,11 +84,10 @@ with col1:
                 st.error("Wrong passcode!")
 
             # Radio button that shows/hides based on authentication
-        options = ["🗓️ Program", "📊 Stats", "📓Log /  Edit Log"]
+        options = ["🗓️ Program", "📊 Stats", "🗺️ Your Activities", "📓Log /  Edit Log"]
 
         if st.session_state.authenticated:
-            options.append("📊 Stats")
-            options.append("📘 Activities")
+            options.append("🗺️ Your Activities")
             options.append("🏋🏻‍♂️ Str Training")
             options.append("💗 HR Zones")
             options.append("📓Log /  Edit Log")
@@ -115,7 +96,7 @@ with col1:
 
         if st.session_state.memberverified:
             options.append("📊 Stats")
-            options.append("📘 Activities")
+            options.append("🗺️ Your Activities")
             options.append("📓Log /  Edit Log")
         # Add the hidden option
 
@@ -808,6 +789,7 @@ if tabs == "📊 Stats":  # STATS
     from visuals import line_polar as lp
     from visuals import donut as dt
     from visuals import wordcloud as wc
+    from visuals import mappolyline as poly
 
     # -----COMBO CHART WEEKLY-------#
     # st.subheader("📅🏃‍♂️ Weekly Distance vs. Pace", divider="gray")
@@ -848,20 +830,6 @@ if tabs == "📊 Stats":  # STATS
         with col3:
             st.markdown("##### 🏃💬 Runner's Word Cloud")
             wc.generate_wordcloud_new(filtered_df_withnonrun)
-
-    with st.expander("View Detailed Entries", expanded=False):
-
-        st.subheader("🗂️ Activity Reference", divider="gray")
-
-        # # Run section with expander for cleaner UI
-        # with st.expander("🏃‍♀️ Run Activities", expanded=True):
-        mt.generate_matrix_new(filtered_df_all_run)
-
-        # # Other activities section
-        # with st.expander("🤸‍♀️ Cross-Training & Recovery", expanded=True):
-        mt.generate_matrix_new(filtered_df_all_non_run)
-
-
 if tabs == "🗓️ Program":  ##TRAINING PLAN ##
 
     # st.header("🗓️💪 Your Training Plan", divider="blue")
@@ -918,10 +886,74 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         )
 
 
-if tabs == "📘 Activities":  ##STR WORK
+if tabs == "📘 Reference":  ##STR WORK
     from visuals import referencetab as ref
 
     ref.ref_tab()
+
+if tabs == "🗺️ Your Activities":  ##STR WORK
+
+    st.markdown("### 🏃 Recent Activities")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        members = sorted(full_df["Member Name"].dropna().unique())
+        members_count = len(members)
+
+        members.insert(0, "All")  # Add 'All' option at the top
+        selected_member = st.selectbox(
+            "Select Member to Filter", members, index=members_count
+        )
+        # selected_member = "Scott"
+
+        # Filter the DataFrame
+
+        # Apply filtering
+        if selected_member == "All":
+            filtered_member_df = full_df
+        else:
+            filtered_member_df = full_df[full_df["Member Name"] == selected_member]
+
+    # -------------------WEEK FILTER  -----------------------#
+    with col2:
+        weeks = sorted(filtered_member_df["Week"].dropna().unique(), reverse=True)
+        # weeks.insert(0, "All")
+        selected_weeks = st.multiselect(
+            "Select Week(s) to Compare", weeks, default=[weeks[0]]
+        )
+
+        if not selected_weeks or "All" in selected_weeks:
+            filtered_df = filtered_member_df
+        else:
+            filtered_df = filtered_member_df[
+                filtered_member_df["Week"].isin(selected_weeks)
+            ]
+
+    from visuals import table as mt
+    from visuals import mappolyline as poly
+    from visuals import activitycard as acard
+
+    filtered_df = filtered_df[
+        ~filtered_df["Activity"].isin(
+            [
+                "Rest",
+                "Cross Train",
+                "Strength Training",
+                "WeightTraining",
+                "Yoga",
+                "",
+                0,
+                "Pilates",
+                "Walk",
+                "Ride",
+                "Warm up",
+                "Cooldown",
+            ]
+        )
+    ]
+
+    acard.display_strava_style_feed_test(filtered_df)
+
 
 if tabs == "🏋🏻‍♂️ Str Training":  # REFERENCE
     from visuals import strength_ref as sref
@@ -1112,6 +1144,7 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
             "Cadence (steps/min)": to_float(act.get("average_cadence")) * 2,
             "Member Name": to_str(act.get("athlete_name", "Unknown")),
             "Duration": to_float(act.get("moving_time")),
+            "Map_Polyline": act.get("map", {}).get("summary_polyline"),
         }
 
     def convert_speed_to_pace(speed_mps):

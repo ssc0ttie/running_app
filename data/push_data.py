@@ -122,6 +122,7 @@ def push_strava_data_to_sheet(strava_df):
                     str(row.get("Member Name", "Unknown")),
                     str(row.get("Duration", "00:00:00")),
                     str(row.get("Activity", "")),
+                    str(row.get("Map_Polyline", "")),
                 ]
 
                 push_runner_data(row_data)

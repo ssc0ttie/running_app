@@ -208,6 +208,7 @@ def generate_matrix_new(data, title=""):
         "Remarks",
         "Member Name",
         "Week",
+        "Map_Polyline",
     ]
 
     # Filter to only columns that exist in the data
