@@ -8,3 +8,9 @@ wordcloud
 requests
 # ZoneInfo
 # zoneinfo
+
+folium
+streamlit_folium 
+polyline
+
+
