@@ -10,17 +10,34 @@ from zoneinfo import ZoneInfo
 import traceback
 
 
-# import data.read_data_local as local
-import numpy as np
-from visuals import racedaycounter as rdc
-
-
 st.set_page_config(
     page_title="StillHere",
     page_icon="🪨",
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+#######  LOGIN STATE ############
+
+# if "logged_in" not in st.session_state:
+#     st.session_state.logged_in = False
+
+# if not st.session_state.logged_in:
+#     st.title("Login")
+#     pwd = st.text_input("Password", type="password")
+#     if st.button("Login"):
+#         if pwd == "8465":
+#             st.session_state.logged_in = True
+#             st.rerun()
+#     st.stop()
+
+# # Add logout button somewhere in your existing code
+# if st.sidebar.button("Logout"):
+#     st.session_state.logged_in = False
+#     st.rerun()
+
+import numpy as np
+from visuals import racedaycounter as rdc
 
 
 Welcome_msg = "The boulder will roll back down again — you already know that. You just have to keep showing up. And you did. That's enough."

@@ -160,7 +160,7 @@ def create_activity_card(row, index):
   
     """
 
-    card_html = f"""
+    card_html_1 = f"""
     <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden;">
         <div style="padding: 14px 20px; border-bottom: 1px solid #f0f0f0; background: #fafafa;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -174,6 +174,27 @@ def create_activity_card(row, index):
         </div>
         {stats_html_3}
     """
+
+    card_html = f"""
+    <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden;">
+        <div style="padding: 16px 20px; border-bottom: 1px solid #f0f0f0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #9b7b5c, #FF8C42); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 20px;">🏃🏻</span>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; font-size: 18px; color: #333;">{member}</div>
+                        <div style="font-size: 13px; color: #FC4C02; text-transform: uppercase; letter-spacing: 0.5px;">{activity}</div>
+                    </div>
+                </div>
+                <div style="color: #666; font-size: 13px;">{date_str}</div>
+            </div>
+        </div>
+        {stats_html_3}
+    </div>
+    """
+
     # Decode polyline for map
     map_object = None
     if "Map_Polyline" in row and row["Map_Polyline"]:
