@@ -93,6 +93,7 @@ def create_activity_card(row, index):
     pace_str = format_pace(row["Pace"])
     max_pace_str = format_max_pace(row["Max_Pace"])
     activity = str(row["Activity"])
+    member = str(row["Member Name"])
 
     if hasattr(row["Date_of_Activity"], "strftime"):
         date_str = row["Date_of_Activity"].strftime("%A, %b %d, %Y")
@@ -146,12 +147,12 @@ def create_activity_card(row, index):
 """
 
     # Complete card HTML - put everything together
-    card_html = f"""
+    card_html_old = f"""
     <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden;">
         <div style="padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 24px;">🏃</span>
-                <span style="font-weight: 600; font-size: 22px; color: #333;">{activity}</span>
+                <span style="font-weight: 600; font-size: 22px; color: #333;">{member} 's: {activity}</span>
             </div>
             <div style="color: #666; font-size: 14px;">{date_str}</div>
         </div>
@@ -159,6 +160,20 @@ def create_activity_card(row, index):
   
     """
 
+    card_html = f"""
+    <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden;">
+        <div style="padding: 14px 20px; border-bottom: 1px solid #f0f0f0; background: #fafafa;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span style="font-weight: 600; font-size: 18px; color: #333;">{member}</span>
+                    <span style="color: #999; margin: 0 6px;">•</span>
+                    <span style="font-size: 16px; color: #FC4C02;">{activity}</span>
+                </div>
+                <div style="color: #666; font-size: 12px;">{date_str}</div>
+            </div>
+        </div>
+        {stats_html_3}
+    """
     # Decode polyline for map
     map_object = None
     if "Map_Polyline" in row and row["Map_Polyline"]:

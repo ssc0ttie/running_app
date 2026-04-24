@@ -84,20 +84,21 @@ with col1:
                 st.error("Wrong passcode!")
 
             # Radio button that shows/hides based on authentication
-        options = ["🗓️ Program", "📊 Stats", "🗺️ Your Activities", "📓Log /  Edit Log"]
+        options = ["🗓️ Program", "🗺️ Your Activities", "📓Log"]
 
         if st.session_state.authenticated:
+            options.append("📊 Stats")
             options.append("🗺️ Your Activities")
             options.append("🏋🏻‍♂️ Str Training")
             options.append("💗 HR Zones")
-            options.append("📓Log /  Edit Log")
+            options.append("📓Log")
             options.append("🎯 Remarks")
             options.append("🔄 Strava Sync")  # Add the hidden option
 
         if st.session_state.memberverified:
             options.append("📊 Stats")
             options.append("🗺️ Your Activities")
-            options.append("📓Log /  Edit Log")
+            options.append("📓Log")
         # Add the hidden option
 
 tabs = st.radio("Choose a Section:", options, horizontal=True, index=0)
@@ -214,7 +215,7 @@ if tabs != "🗓️ Program":
 
 #################################----LOG TAB ------ ################################
 
-if tabs == "📓Log /  Edit Log":  ##LOG
+if tabs == "📓Log":  ##LOG
 
     st.markdown(
         """
@@ -901,8 +902,12 @@ if tabs == "🗺️ Your Activities":  ##STR WORK
         members_count = len(members)
 
         members.insert(0, "All")  # Add 'All' option at the top
+        default_mem = "All"
         selected_member = st.selectbox(
-            "Select Member to Filter", members, index=members_count
+            "Select Member to Filter",
+            members,
+            # index=members_count,
+            index=members.index(default_mem),
         )
         # selected_member = "Scott"
 
@@ -1107,6 +1112,11 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
     import data.fetch_strava as fs
 
     activities = fs.fetch_all_activities(days_back)
+
+    sample_extract_df = pd.DataFrame(activities)
+
+    # Basic export
+    sample_extract_df.to_csv("output.csv", index=False)
 
     def clean_activity_data(act):
         """Clean and convert numeric values for a single activity"""
