@@ -840,7 +840,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     """
     )
 
-    with st.expander("Base Building 2026"):
+    with st.expander("Base Building + SG Marathon 2026"):
         # with st.expander("View Training Program"):
         prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
         components.iframe(
