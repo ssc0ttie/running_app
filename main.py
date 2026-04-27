@@ -68,13 +68,9 @@ with col2:
                 <li>📓 <strong>Logs</strong>: Edit / Log your training.</li>
                 <li>📊 <strong>Stats</strong>: Track your progress.</li>
                 <li>🗓️ <strong>Program</strong>: Your marathon plan.</li>
-                <li>📘 <strong>Activities</strong>: Learn about your activities.</li>
-                <li>🏋🏻‍♂️ <strong>Strength</strong>: Your strength workouts.</li>
-                <li>🎯 <strong>Remarks</strong>: Your Weekly Remarks.</li>
-                <li>💗 <strong> HR Zones.</li>
-                
+                <li>🗺️ <strong> Your Runs</strong>: View Recent Runs.</li>
+                <li>💗 <strong> HR Zones</strong>: View HR Zones.</li>
             </ul>
-            <p><em>Tip:</em> If switching apps (Strava, Garmin, etc.),the app will try to rerun, wait for the app to load and continue with your log.</p>
             <p><strong>PS:</strong> If it lags, don't worry — it's just *thinking really hard*. 🧠💻</p>
             """,
             unsafe_allow_html=True,
@@ -101,11 +97,9 @@ with col1:
                 st.error("Wrong passcode!")
 
             # Radio button that shows/hides based on authentication
-        options = ["🗓️ Program", "🗺️ Your Activities", "📓Log"]
+        options = ["🗓️ Program", "🗺️ Your Runs", "📓Log", "📊 Stats"]
 
         if st.session_state.authenticated:
-            options.append("📊 Stats")
-            options.append("🗺️ Your Activities")
             options.append("🏋🏻‍♂️ Str Training")
             options.append("💗 HR Zones")
             options.append("📓Log")
@@ -114,7 +108,7 @@ with col1:
 
         if st.session_state.memberverified:
             options.append("📊 Stats")
-            options.append("🗺️ Your Activities")
+            options.append("🗺️ Your Runs")
             options.append("📓Log")
         # Add the hidden option
 
@@ -181,37 +175,6 @@ from visuals import stats_table as stats
 
 st.text("")
 
-
-# tabs = st.radio(
-#     "Choose a Section: ",
-#     [
-#         "🗓️ Program",
-#         "📊 Stats",
-#         # "📘 Activities",
-#         # "🏋🏻‍♂️ Str Training",
-#         # "🎯 Remarks",
-#         # "💗 HR Zones",
-#         "🔄 Strava Sync",
-#         # "📓Log /  Edit Log",
-#     ],
-#     horizontal=True,
-#     index=0,
-# )
-
-
-# -------PULL DATA ONCE --------#
-# -----load un cached when not submitting
-
-##################################################################
-# if "just_submitted" not in st.session_state:
-#     st.session_state["just_submitted"] = False
-
-
-# if st.session_state["just_submitted"] == False:
-#     df = pulluc.get_runner_data()
-#     st.session_state["just_submitted"] = False
-# else:
-#     df = pullc.get_runner_data()
 
 ##########################################################################
 
@@ -909,9 +872,9 @@ if tabs == "📘 Reference":  ##STR WORK
 
     ref.ref_tab()
 
-if tabs == "🗺️ Your Activities":  ##STR WORK
+if tabs == "🗺️ Your Runs":  ##STR WORK
 
-    st.markdown("### 🏃 Recent Activities")
+    st.markdown("### 🏃 Recent Runs")
     col1, col2 = st.columns(2)
 
     with col1:

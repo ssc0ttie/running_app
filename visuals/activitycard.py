@@ -87,6 +87,7 @@ def create_activity_card(row, index):
     """
     Create a Strava-style activity card for each activity
     """
+    from visuals import generateavatar as avtr
 
     # Format values
     moving_time_str = format_duration(row["Moving_Time"])
@@ -94,6 +95,7 @@ def create_activity_card(row, index):
     max_pace_str = format_max_pace(row["Max_Pace"])
     activity = str(row["Activity"])
     member = str(row["Member Name"])
+    avatar = avtr.get_member_avatar_advanced(member)
 
     if hasattr(row["Date_of_Activity"], "strftime"):
         date_str = row["Date_of_Activity"].strftime("%A, %b %d, %Y")
@@ -180,8 +182,8 @@ def create_activity_card(row, index):
         <div style="padding: 16px 20px; border-bottom: 1px solid #f0f0f0;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #9b7b5c, #FF8C42); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <span style="font-size: 20px;">🏃🏻</span>
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, {avatar['color1']}, {avatar['color2']}); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <span style="font-size: 24px;">{avatar['emoji']}</span>
                     </div>
                     <div>
                         <div style="font-weight: 700; font-size: 18px; color: #333;">{member}</div>
@@ -192,7 +194,6 @@ def create_activity_card(row, index):
             </div>
         </div>
         {stats_html_3}
-    </div>
     """
 
     # Decode polyline for map
@@ -293,6 +294,8 @@ def display_strava_style_feed_test(df):
     Display activities in a Strava-style narrative feed
     """
 
+    from visuals.generateavatar import get_member_avatar_advanced as avatar
+
     # Sort by date (most recent first)
     if "Date_of_Activity" in df.columns:
         df = df.sort_values("Date_of_Activity", ascending=False).reset_index(drop=True)
@@ -315,159 +318,3 @@ def display_strava_style_feed_test(df):
 
         # Add spacing
         st.markdown("<br>", unsafe_allow_html=True)
-
-
-def display_strava_style_feed_new(df):
-    """
-    Display activities in a Strava-style narrative feed with map on the right
-    """
-
-    # Sort by date (most recent first)
-    if "Date_of_Activity" in df.columns:
-        df = df.sort_values("Date_of_Activity", ascending=False).reset_index(drop=True)
-
-    st.markdown("### 🏃 Recent Activities")
-
-    for index, row in df.iterrows():
-        # Create two columns - left for stats (40%), right for map (60%)
-        col_left, col_right = st.columns([0.4, 0.6])
-
-        # Format values
-        moving_time_str = format_duration(row["Moving_Time"])
-        pace_str = format_pace(row["Pace"])
-
-        if hasattr(row["Date_of_Activity"], "strftime"):
-            date_str = row["Date_of_Activity"].strftime("%A, %b %d, %Y")
-        else:
-            date_str = str(row["Date_of_Activity"])
-
-        # Build HR and Cadence HTML
-        hr_html = (
-            f"""
-        <div style="margin-bottom: 12px;">
-            <div style="font-size: 20px; font-weight: 700; color: #FC4C02;">{row['HR (bpm)']:.0f}</div>
-            <div style="font-size: 11px; color: #666; text-transform: uppercase;">Avg HR</div>
-        </div>
-        """
-            if pd.notna(row.get("HR (bpm)"))
-            else ""
-        )
-
-        cadence_html = (
-            f"""
-        <div>
-            <div style="font-size: 20px; font-weight: 700; color: #FC4C02;">{row['Cadence (steps/min)']:.0f}</div>
-            <div style="font-size: 11px; color: #666; text-transform: uppercase;">Cadence</div>
-        </div>
-        """
-            if pd.notna(row.get("Cadence (steps/min)"))
-            else ""
-        )
-
-        # LEFT COLUMN - Stats Card
-        with col_left:
-            card_html = f"""
-            <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; height: 100%;">
-                <div style="padding: 12px 16px; border-bottom: 1px solid #f0f0f0;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="font-size: 20px;">🏃</span>
-                            <span style="font-weight: 600; font-size: 14px; color: #333;">Run</span>
-                        </div>
-                        <div style="color: #666; font-size: 12px;">{date_str}</div>
-                    </div>
-                </div>
-                
-                <div style="padding: 16px;">
-                    <div style="margin-bottom: 16px;">
-                        <div style="font-size: 28px; font-weight: 700; color: #FC4C02;">{row['Distance']:.1f}</div>
-                        <div style="font-size: 11px; color: #666; text-transform: uppercase;">Distance (km)</div>
-                    </div>
-                    
-                    <div style="margin-bottom: 16px;">
-                        <div style="font-size: 20px; font-weight: 700; color: #FC4C02;">{moving_time_str}</div>
-                        <div style="font-size: 11px; color: #666; text-transform: uppercase;">Moving Time</div>
-                    </div>
-                    
-                    <div style="margin-bottom: 16px;">
-                        <div style="font-size: 20px; font-weight: 700; color: #FC4C02;">{pace_str}</div>
-                        <div style="font-size: 11px; color: #666; text-transform: uppercase;">Avg Pace</div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 20px; margin-top: 16px; padding-top: 12px; border-top: 1px solid #f0f0f0;">
-                        {hr_html}
-                        {cadence_html}
-                    </div>
-                </div>
-                
-                {f'''
-                <div style="padding: 10px 16px; background: #f9f9f9; border-top: 1px solid #f0f0f0; color: #555; font-size: 12px; font-style: italic;">
-                    💭 {row['Remarks']}
-                </div>
-                ''' if pd.notna(row.get('Remarks')) and row.get('Remarks') else ''}
-            </div>
-            """
-
-            st.markdown(card_html, unsafe_allow_html=True)
-
-        # RIGHT COLUMN - Map
-        with col_right:
-            if "Map_Polyline" in row and row["Map_Polyline"]:
-                try:
-                    coords = polyline.decode(row["Map_Polyline"])
-
-                    m = folium.Map(
-                        location=coords[0],
-                        tiles="CartoDB positron",
-                        control_scale=True,
-                        zoom_start=13,
-                        width="100%",
-                        height="100%",
-                    )
-
-                    # Add transparency styling
-                    m.get_root().html.add_child(
-                        folium.Element(
-                            """
-                        <style>
-                            .leaflet-tile-pane { opacity: 0.4; }
-                            .leaflet-container { background: transparent !important; }
-                        </style>
-                    """
-                        )
-                    )
-
-                    # Add the route
-                    folium.PolyLine(
-                        coords,
-                        color="#FC4C02",
-                        weight=5,
-                        opacity=0.9,
-                        popup=f"{row['Distance']:.1f} km",
-                    ).add_to(m)
-
-                    # Add start marker
-                    folium.Marker(
-                        coords[0],
-                        icon=folium.Icon(color="green", icon="play", prefix="fa"),
-                        popup="Start",
-                    ).add_to(m)
-
-                    # Add end marker
-                    folium.Marker(
-                        coords[-1],
-                        icon=folium.Icon(
-                            color="red", icon="flag-checkered", prefix="fa"
-                        ),
-                        popup="Finish",
-                    ).add_to(m)
-
-                    st_folium(m, width=None, height=350, key=f"activity_map_{index}")
-
-                except Exception as e:
-                    st.warning(f"Map not available: {e}")
-            else:
-                st.info("No map data available for this activity")
-
-        # Add spacing between activities
-        st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
