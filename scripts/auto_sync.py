@@ -1,24 +1,30 @@
 #!/usr/bin/env python3
 """
-Standalone sync script for GitHub Actions
-This replicates the "Strava Sync" tab functionality without Streamlit UI
+Production Strava sync script for GitHub Actions
+Syncs data for ALL users automatically
 """
 
-import sys
 import os
-import pandas as pd
+import sys
+import warnings
 from datetime import datetime
+
+# Suppress warnings
+os.environ["STREAMLIT_WATCH_FILE"] = "false"
+os.environ["STREAMLIT_BROWSER_GATHER_USAGE_STATS"] = "false"
+warnings.filterwarnings("ignore")
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Import your existing modules
+# Import modules
 from data.fetch_strava_2 import fetch_all_activities
-import data.push_data_2 as push
+from data.push_data_simple import push_strava_data_to_sheet
+import pandas as pd
 
 
 def clean_activity_data(act):
-    """Clean and convert numeric values for a single activity (copied from main.py)"""
+    """Clean and convert numeric values for a single activity"""
 
     def to_float(value, default=0):
         try:
@@ -83,28 +89,31 @@ def convert_seconds_to_time_string(total_seconds):
 
 
 def main():
-    print(f"🚀 Auto Sync Started at {datetime.now()}")
-    print("=" * 60)
+    print("=" * 70)
+    print(f"🚀 STRAVA AUTO SYNC - PRODUCTION")
+    print(f"📍 Started at: {datetime.now()}")
+    print("=" * 70)
 
-    # Sync last 30 days (adjust as needed)
+    # Get days back from environment (default 30)
     days_back = int(os.environ.get("DAYS_BACK", "30"))
-    print(f"📡 Fetching activities from the last {days_back} days...")
+    print(f"📅 Syncing activities from the last {days_back} days")
 
-    # Fetch activities using your existing function
+    # Fetch activities for ALL users
+    print("\n📡 Fetching Strava data for all users...")
     activities = fetch_all_activities(days_back)
 
     if not activities:
         print("❌ No activities fetched")
-        return
+        sys.exit(1)
 
     print(f"✅ Fetched {len(activities)} raw activities")
 
-    # Clean and convert activities (same as your main.py)
-    print("🔄 Cleaning and converting data...")
+    # Clean and convert
+    print("\n🔄 Processing activities...")
     cleaned_activities = [clean_activity_data(act) for act in activities]
     strava_df = pd.DataFrame(cleaned_activities)
 
-    # Apply all the same transformations as your main.py
+    # Apply transformations
     strava_df["TimeStamp"] = pd.to_datetime(strava_df["TimeStamp"]).dt.date
     strava_df["Date_of_Activity"] = pd.to_datetime(
         strava_df["Date_of_Activity"]
@@ -145,15 +154,23 @@ def main():
         .agg("|".join, axis=1)
     )
 
-    print(f"📊 Processed {len(strava_df)} activities for sync")
+    # Show summary by member
+    print("\n📊 Activities by member:")
+    member_counts = strava_df["Member Name"].value_counts()
+    for member, count in member_counts.items():
+        print(f"   • {member}: {count} activities")
 
     # Push to Google Sheets
-    print("📤 Pushing to Google Sheets...")
-    success_count, error_count = push.push_strava_data_to_sheet(strava_df)
+    print("\n📤 Pushing to Google Sheets...")
+    success_count, error_count = push_strava_data_to_sheet(strava_df)
 
-    print("=" * 60)
-    print(f"🏁 Sync Completed at {datetime.now()}")
-    print(f"📈 Summary: {success_count} new activities added, {error_count} errors")
+    print("\n" + "=" * 70)
+    print(f"🏁 SYNC COMPLETED at {datetime.now()}")
+    print(f"📈 Summary:")
+    print(f"   • Total activities fetched: {len(activities)}")
+    print(f"   • New activities added: {success_count}")
+    print(f"   • Errors: {error_count}")
+    print("=" * 70)
 
     if error_count > 0:
         sys.exit(1)

@@ -5,8 +5,26 @@ import data.strava as strav
 import pandas as pd
 import sys
 import os
+import warnings
 
-# Try to import Streamlit, but don't fail if not available
+# Suppress warnings
+warnings.filterwarnings("ignore")
+
+
+# Define fallback print functions
+def _print_info(msg):
+    print(f"ℹ️ {msg}")
+
+
+def _print_success(msg):
+    print(f"✅ {msg}")
+
+
+def _print_error(msg):
+    print(f"❌ {msg}")
+
+
+# Try to import Streamlit
 try:
     import streamlit as st
 
@@ -23,13 +41,16 @@ except ImportError:
             return decorator
 
         def error(self, msg):
-            print(f"ERROR: {msg}")
+            _print_error(msg)
 
         def info(self, msg):
-            print(f"INFO: {msg}")
+            _print_info(msg)
 
         def success(self, msg):
-            print(f"SUCCESS: {msg}")
+            _print_success(msg)
+
+        def warning(self, msg):
+            print(f"⚠️ {msg}")
 
     st = DummySt()
 
@@ -62,10 +83,7 @@ def fetch_all_activities(days_back: int = 7):
 
     for name, creds in users.items():
         try:
-            if HAS_STREAMLIT:
-                st.info(f"Fetching data for {name}...")
-            else:
-                print(f"📡 Fetching data for {name}...")
+            st.info(f"Fetching data for {name}...")
 
             strava = strav.StravaAPI(
                 client_id=creds["client_id"],
@@ -82,16 +100,9 @@ def fetch_all_activities(days_back: int = 7):
                     act["athlete_name"] = name
 
                 all_activities.extend(activities)
-
-                if HAS_STREAMLIT:
-                    st.success(f"Fetched {len(activities)} activities for {name}")
-                else:
-                    print(f"✅ Fetched {len(activities)} activities for {name}")
+                st.success(f"Fetched {len(activities)} activities for {name}")
 
         except Exception as e:
-            if HAS_STREAMLIT:
-                st.error(f"Error fetching {name}: {e}")
-            else:
-                print(f"❌ Error fetching {name}: {e}")
+            st.error(f"Error fetching {name}: {e}")
 
     return all_activities

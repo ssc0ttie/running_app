@@ -3,3 +3,5 @@ models/.streamlit/secrets.toml
 notebooks/strava.ipynb
 .env
 main.py
+scripts/test_scott.py
+scripts/diagnosesheet.py

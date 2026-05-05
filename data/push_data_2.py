@@ -1,37 +1,45 @@
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-import streamlit as st
-import pandas as pd
-from data import read_data_uncached as rd
-from data import strava as strav
-
-# data/push_data.py
+# data/push_data.py - KEEP YOUR ORIGINAL FUNCTIONS
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 import json
 import os
 
+
+# Define fallback functions BEFORE using them
+def _print_info(msg):
+    print(f"ℹ️ {msg}")
+
+
+def _print_success(msg):
+    print(f"✅ {msg}")
+
+
+def _print_error(msg):
+    print(f"❌ {msg}")
+
+
+def _print_warning(msg):
+    print(f"⚠️ {msg}")
+
+
 # Try to import Streamlit, but don't fail if not available
 try:
     import streamlit as st
 
     HAS_STREAMLIT = True
+    # Use Streamlit functions if available
+    st_info = st.info
+    st_success = st.success
+    st_error = st.error
+    st_warning = st.warning
 except ImportError:
     HAS_STREAMLIT = False
-
-    # Create dummy functions
-    def st_error(msg):
-        print(f"❌ {msg}")
-
-    def st_warning(msg):
-        print(f"⚠️ {msg}")
-
-    def st_info(msg):
-        print(f"ℹ️ {msg}")
-
-    def st_success(msg):
-        print(f"✅ {msg}")
+    # Use print fallbacks
+    st_info = _print_info
+    st_success = _print_success
+    st_error = _print_error
+    st_warning = _print_warning
 
 
 def get_google_sheets_creds():
@@ -65,8 +73,8 @@ def get_runner_data():
     client = get_gsheet_client()
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
     worksheet = sheet.get_worksheet_by_id(1611308583)
-    sheet = worksheet.get_all_values()
-    return sheet
+    sheet_data = worksheet.get_all_values()
+    return sheet_data
 
 
 def get_existing_uniquekeys_from_sheet():
@@ -80,11 +88,14 @@ def get_existing_uniquekeys_from_sheet():
     except ValueError:
         raise ValueError("UniqueKey column not found in sheet")
 
-    existing_keys = {row[uniquekey_idx] for row in sheet_data[1:]}
+    existing_keys = {
+        row[uniquekey_idx] for row in sheet_data[1:] if len(row) > uniquekey_idx
+    }
     return existing_keys
 
 
 def push_runner_data(data):
+    """Your original function - append row to sheet"""
     gsclient = get_gsheet_client()
     sheet = gsclient.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
     newsource_worksheet = sheet.get_worksheet_by_id(1611308583)
@@ -92,29 +103,24 @@ def push_runner_data(data):
 
 
 def push_strava_data_to_sheet(strava_df):
-    """Push Strava data to Google Sheets"""
+    """Push Strava data to Google Sheets using same format as manual sync"""
     try:
         success_count = 0
         error_count = 0
 
         existing_keys = get_existing_uniquekeys_from_sheet()
 
-        if HAS_STREAMLIT:
-            st.info(f"Found {len(existing_keys)} existing activities in sheet")
-        else:
-            print(f"ℹ️ Found {len(existing_keys)} existing activities in sheet")
+        st_info(f"Found {len(existing_keys)} existing activities in sheet")
 
         for index, row in strava_df.iterrows():
             try:
                 unique_key = str(row["UniqueKey"])
 
                 if unique_key in existing_keys:
-                    if HAS_STREAMLIT:
-                        st.warning(f"Skipping duplicate: {unique_key}")
-                    else:
-                        print(f"⚠️ Skipping duplicate: {unique_key}")
+                    st_warning(f"Skipping duplicate: {unique_key}")
                     continue
 
+                # Use EXACTLY the same row format as your working manual sync
                 row_data = [
                     unique_key,
                     str(row["TimeStamp"]),
@@ -148,23 +154,17 @@ def push_strava_data_to_sheet(strava_df):
                 success_count += 1
                 existing_keys.add(unique_key)
 
+                # Print progress every 10 records
+                if success_count % 10 == 0:
+                    st_info(f"Progress: {success_count} activities pushed...")
+
             except Exception as e:
-                if HAS_STREAMLIT:
-                    st.error(f"Error pushing row {index}: {e}")
-                else:
-                    print(f"❌ Error pushing row {index}: {e}")
+                st_error(f"Error pushing row {index}: {e}")
                 error_count += 1
 
-        if HAS_STREAMLIT:
-            st.success(f"Pushed {success_count} new activities. Errors: {error_count}")
-        else:
-            print(f"✅ Pushed {success_count} new activities. Errors: {error_count}")
-
+        st_success(f"Pushed {success_count} new activities. Errors: {error_count}")
         return success_count, error_count
 
     except Exception as e:
-        if HAS_STREAMLIT:
-            st.error(f"Error in push process: {e}")
-        else:
-            print(f"❌ Error in push process: {e}")
+        st_error(f"Error in push process: {e}")
         return 0, len(strava_df)
