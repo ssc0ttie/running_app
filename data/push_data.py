@@ -55,24 +55,6 @@ def push_runner_data(data):
     newsource_worksheet.append_row(data)
 
 
-# 1611308583  the original sheet
-# 805185830 the test sheet
-
-# def push_runner_data_dev(hist_df, newlog_df):
-#     path = r"C:/Users/king.m/Python/2025/DS Proj/running_app/data/runner_data.xlsx"
-
-#     updated_df = pd.concat([hist_df, newlog_df], ignore_index=True)
-
-#     # Optional cleanup (remove duplicates, sort, etc.)
-#     updated_df.drop_duplicates(inplace=True)
-
-#     # Write back to Excel (overwrites existing content in that sheet)
-#     with pd.ExcelWriter(path, mode="w", engine="openpyxl") as writer:
-#         updated_df.to_excel(writer, sheet_name="for streamlit", index=False)
-
-#     return True
-
-
 def format_activity_for_sheet(activity_dict):
     """Convert activity dictionary to the row format expected by your sheet"""
     return [

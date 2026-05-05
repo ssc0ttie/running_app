@@ -1,0 +1,33 @@
+name: Strava Auto Sync
+
+on:
+  schedule:
+    # Runs at 6 AM, 12 PM, 6 PM, 12 AM UTC daily
+    - cron: "0 6,12,18,0 * * *"
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install pandas gspread oauth2client requests
+          # Add any other dependencies from your requirements.txt
+
+      - name: Run Strava sync
+        env:
+          STRAVA_USERS: ${{ secrets.STRAVA_USERS }}
+          GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
+          DAYS_BACK: "30"
+        run: |
+          python scripts/auto_sync.py

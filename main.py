@@ -229,7 +229,7 @@ if tabs == "📓Log":  ##LOG
     )
     mem_selection = st.selectbox(
         "Members",
-        ["Aiza", "Chona", "Fraulein", "Lead", "Maxine", "Scott"],
+        ["Aiza", "Chona", "Fraulein", "Lead", "Maxine", "Scott", "Alvin"],
         index=None,
         placeholder="Select Member",
         key="shared_member",
