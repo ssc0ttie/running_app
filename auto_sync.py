@@ -13,8 +13,8 @@ from datetime import datetime
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import your existing modules
-from data.fetch_strava import fetch_all_activities
-import data.push_data as push
+from data.fetch_strava_2 import fetch_all_activities
+import data.push_data_2 as push
 
 
 def clean_activity_data(act):
