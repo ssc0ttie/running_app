@@ -18,7 +18,7 @@ warnings.filterwarnings("ignore")
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import modules
-from data.fetch_strava_2 import fetch_all_activities
+from data.fetch_strava_automation import fetch_all_activities
 from data.push_data_simple import push_strava_data_to_sheet
 import pandas as pd
 
