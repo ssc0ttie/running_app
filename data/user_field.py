@@ -37,9 +37,9 @@ def edit_user_fields(full_df):
         # Create a unique identifier for each row
         full_df["display"] = (
             full_df["Date_of_Activity_str"]
-            + " - "
+            + "|"
             + full_df["Member Name"]
-            + " - "
+            + "|"
             + full_df["Activity"]
             + "|"
             + full_df["HR (bpm)"].apply(
