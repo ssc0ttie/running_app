@@ -16,6 +16,42 @@ def edit_user_fields(full_df):
         full_df["Date_of_Activity"], errors="coerce"
     )
 
+    # Let user select an entry to edit
+    full_df["Date_of_Activity_str"] = full_df["Date_of_Activity"].dt.strftime(
+        "%Y-%m-%d"
+    )
+    full_df["HR (bpm)"] = pd.to_numeric(full_df["HR (bpm)"], errors="coerce")
+    hrval = full_df["HR (bpm)"]
+
+    # Build a unique composite key for each row
+    full_df["UniqueKey"] = (
+        full_df["Date_of_Activity_str"]
+        + "|"
+        + full_df["Member Name"]
+        + "|"
+        + full_df["Activity"]
+        + "|"
+        + full_df["HR (bpm)"].apply(lambda x: str(int(x)) if pd.notnull(x) else "N/A")
+    )
+    if not full_df.empty:
+        # Create a unique identifier for each row
+        full_df["display"] = (
+            full_df["Date_of_Activity_str"]
+            + " - "
+            + full_df["Member Name"]
+            + " - "
+            + full_df["Activity"]
+            + "|"
+            + full_df["HR (bpm)"].apply(
+                lambda x: str(int(x)) if pd.notnull(x) else "N/A"
+            )
+        )
+
+    # Ensure Date_of_Activity is datetime
+    full_df["Date_of_Activity"] = pd.to_datetime(
+        full_df["Date_of_Activity"], errors="coerce"
+    )
+
     # Filter rows with missing user-defined fields
     df_to_edit = full_df[
         ((full_df["RPE (1–10 scale)"] == 0) & (full_df["Activity"] != "Rest"))
@@ -67,17 +103,17 @@ def edit_user_fields(full_df):
         activity_options = [
             "Easy Run",
             "Aerobic Run",
-            "Tempo Run",
-            "Cooldown",
-            "Warm up",
-            "Speed Work (Zone 4-5 x400M)",
-            "LSD Road@ Zone 2 Pace",
-            "LSD Trail@ Zone 2 Pace",
+            "Tempo",
+            # "Cooldown",
+            # "Warm up",
+            # "Speed Work (Zone 4-5 x400M)",
+            "LSD Road",
+            "LSD Trail",
             "RACE DAY",
-            "Yoga",
-            "Cross Train",
-            "Rest",
-            "Pilates",
+            # "Yoga",
+            # "Cross Train",
+            # "Rest",
+            # "Pilates",
         ]
         edited_activity = st.selectbox(
             "Activity (*Select Type of Run for Running Activity*)",
@@ -160,11 +196,15 @@ def edit_user_fields(full_df):
                     "Remarks": edited_remarks,
                 }
             )
+            key_selected_row = selected_row["UniqueKey"]
+            cleaned_key = (
+                key_selected_row[: key_selected_row.rfind(".")]
+                if "." in key_selected_row
+                else key_selected_row
+            )
 
             # Update Google Sheet
-            if update_data.update_runner_data_user_field(
-                selected_row["UniqueKey"], updated_entry
-            ):
+            if update_data.update_runner_data_user_field(cleaned_key, updated_entry):
                 st.success("✅ Entry updated successfully!")
                 st.session_state["just_submitted"] = True
 

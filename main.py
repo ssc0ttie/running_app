@@ -9,7 +9,6 @@ from data import read_data_uncached as pulluc
 from zoneinfo import ZoneInfo
 import traceback
 
-
 st.set_page_config(
     page_title="StillHere",
     page_icon="🪨",
@@ -38,7 +37,6 @@ st.set_page_config(
 
 import numpy as np
 from visuals import racedaycounter as rdc
-
 
 Welcome_msg = "The boulder will roll back down again — you already know that. You just have to keep showing up. And you did. That's enough."
 
@@ -212,278 +210,279 @@ if tabs == "📓Log":  ##LOG
     """,
         unsafe_allow_html=True,
     )
-    st.markdown(
-        """
-        <div style="
-            color:#f15950;
-            font-size: 15px;
-            font-weight: 800;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-            *Click Box Below to enter Log
-        </div>
-    """,
-        unsafe_allow_html=True,
-    )
-    mem_selection = st.selectbox(
-        "Members",
-        ["Aiza", "Chona", "Fraulein", "Lead", "Maxine", "Scott", "Alvin"],
-        index=None,
-        placeholder="Select Member",
-        key="shared_member",
-    )
+    # st.markdown(
+    #     """
+    #     <div style="
+    #         color:#f15950;
+    #         font-size: 15px;
+    #         font-weight: 800;
+    #         border-bottom: 1px solid #ccc;
+    #         padding-bottom: 4px;
+    #         margin-top: 20px;
+    #         margin-bottom: 10px;">
+    #         *Click Box Below to enter Log
+    #     </div>
+    # """,
+    #     unsafe_allow_html=True,
+    # )
+    # mem_selection = st.selectbox(
+    #     "Members",
+    #     ["Aiza", "Chona", "Fraulein", "Lead", "Maxine", "Scott", "Alvin"],
+    #     index=None,
+    #     placeholder="Select Member",
+    #     key="shared_member",
+    # )
     # member_name = st.markdown(f"Select Member", {mem_selection})
-    sg_now = datetime.now(ZoneInfo("Asia/Singapore"))
-    now_ = datetime.now()
+    # sg_now = datetime.now(ZoneInfo("Asia/Singapore"))
+    # now_ = datetime.now()
 
-    date = st.date_input("Date of Activity", value=now_.date(), key="shared_date")
+    # date = st.date_input("Date of Activity", value=now_.date(), key="shared_date")
 
-    ###----- FORM RUN--------------######
-    with st.expander("Log Run"):
-        with st.form("activity_log", clear_on_submit=True, border=True):
+    # ###----- FORM RUN--------------######
+    # with st.expander("Log Run"):
+    #     with st.form("activity_log", clear_on_submit=True, border=True):
 
-            # Activity list
-            act_selection_run = st.selectbox(
-                "Activity",
-                # sorted(
-                [
-                    "Easy Run",
-                    "Aerobic Run",
-                    "Tempo Run",
-                    "Cooldown",
-                    "Warm up",
-                    "Speed Work (Zone 4-5 x400M)",
-                    "LSD Road@ Zone 2 Pace",
-                    "LSD Trail@ Zone 2 Pace",
-                    "RACE DAY",
-                ],
-                # ),
-                index=None,
-                placeholder="Select an activity",
-                key="activity_run",
-            )
+    #         # Activity list
+    #         act_selection_run = st.selectbox(
+    #             "Activity",
+    #             # sorted(
+    #             [
+    #                 "Easy Run",
+    #                 "Aerobic Run",
+    #                 "Tempo Run",
+    #                 "Cooldown",
+    #                 "Warm up",
+    #                 "Speed Work (Zone 4-5 x400M)",
+    #                 "LSD Road@ Zone 2 Pace",
+    #                 "LSD Trail@ Zone 2 Pace",
+    #                 "RACE DAY",
+    #             ],
+    #             # ),
+    #             index=None,
+    #             placeholder="Select an activity",
+    #             key="activity_run",
+    #         )
 
-            distance_run = st.number_input(
-                "Distance", placeholder="Enter distance", key="distance_run"
-            )
+    #         distance_run = st.number_input(
+    #             "Distance", placeholder="Enter distance", key="distance_run"
+    #         )
 
-            # Add default value at the beginning
-            default_pace = "00:00:00"
+    #         # Add default value at the beginning
+    #         default_pace = "00:00:00"
 
-            pace_list = [f"{m:02}:{s:02}" for m in range(0, 15) for s in (range(0, 59))]
+    #         pace_list = [f"{m:02}:{s:02}" for m in range(0, 15) for s in (range(0, 59))]
 
-            # display_paces = [f"{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
-            value_paces = [
-                f"0:{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 59)
-            ]
-            pace_map = dict(zip(pace_list, value_paces))
-            pace_display = st.selectbox(
-                "Select Pace (min:sec) *type in your pace and select",
-                pace_list,
-                index=0,
-                key="pace_run",
-            )
+    #         # display_paces = [f"{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
+    #         value_paces = [
+    #             f"0:{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 59)
+    #         ]
+    #         pace_map = dict(zip(pace_list, value_paces))
+    #         pace_display = st.selectbox(
+    #             "Select Pace (min:sec) *type in your pace and select",
+    #             pace_list,
+    #             index=0,
+    #             key="pace_run",
+    #         )
 
-            pace_str_run = pace_map[pace_display]
+    #         pace_str_run = pace_map[pace_display]
 
-            hr_run = st.number_input(
-                "HR (bmp)", min_value=0, max_value=220, key="hr_run"
-            )
-            cad_run = st.number_input(
-                "Cadence (spm)", min_value=0, max_value=200, key="cad_run"
-            )
-            rpe_run = st.slider("RPE", 0, 10, 0, key="rpe_run")
-            # rpe2 = st.feedback(options="faces", key=int)
-            shoe_run = st.selectbox(
-                "Shoe",
-                sorted(
-                    [
-                        "Adidas Adizero SL2",
-                        "Adidas Adizero SL",
-                        "Asics Purple",
-                        "Boston 12",
-                        "NB Rebel v3",
-                        "Nike",
-                        "Nike Winflo 10",
-                        "Novablast 3",
-                        "Novablast 4",
-                        "Novablast 5",
-                        "Asics GT1000-12",
-                        "Adidas Pink",
-                        "Reebok Float Ride Energy 4",
-                        "Sketcher",
-                        "Superblast 2",
-                        "Peak Cushy",
-                        "Peppa Pig",
-                        "Others (Inform Scott)",
-                        "On Cloud ni Frau",
-                        "Pink Nimbus 27",
-                    ]
-                ),
-                index=None,
-                key="shoe_run",
-            )
-            remarks_run = st.text_area(
-                "Remarks", placeholder="How did the session feel?", key="remarks_run"
-            )
+    #         hr_run = st.number_input(
+    #             "HR (bmp)", min_value=0, max_value=220, key="hr_run"
+    #         )
+    #         cad_run = st.number_input(
+    #             "Cadence (spm)", min_value=0, max_value=200, key="cad_run"
+    #         )
+    #         rpe_run = st.slider("RPE", 0, 10, 0, key="rpe_run")
+    #         # rpe2 = st.feedback(options="faces", key=int)
+    #         shoe_run = st.selectbox(
+    #             "Shoe",
+    #             sorted(
+    #                 [
+    #                     "Adidas Adizero SL2",
+    #                     "Adidas Adizero SL",
+    #                     "Asics Purple",
+    #                     "Boston 12",
+    #                     "NB Rebel v3",
+    #                     "Nike",
+    #                     "Nike Winflo 10",
+    #                     "Novablast 3",
+    #                     "Novablast 4",
+    #                     "Novablast 5",
+    #                     "Asics GT1000-12",
+    #                     "Adidas Pink",
+    #                     "Reebok Float Ride Energy 4",
+    #                     "Sketcher",
+    #                     "Superblast 2",
+    #                     "Peak Cushy",
+    #                     "Peppa Pig",
+    #                     "Others (Inform Scott)",
+    #                     "On Cloud ni Frau",
+    #                     "Pink Nimbus 27",
+    #                 ]
+    #             ),
+    #             index=None,
+    #             key="shoe_run",
+    #         )
+    #         remarks_run = st.text_area(
+    #             "Remarks", placeholder="How did the session feel?", key="remarks_run"
+    #         )
 
-            submitted_run = st.form_submit_button("Run: Submit Log", type="primary")
+    #         submitted_run = st.form_submit_button("Run: Submit Log", type="primary")
 
-            unique_key = f"{date}|{mem_selection}|{act_selection_run}"
+    #         unique_key = f"{date}|{mem_selection}|{act_selection_run}"
 
-            if submitted_run:
-                time_stamp_ = datetime.now()
-                time_stamp = time_stamp_.strftime("%Y-%m-%d")
+    # if submitted_run:
+    #     time_stamp_ = datetime.now()
+    #     time_stamp = time_stamp_.strftime("%Y-%m-%d")
 
-                new_log = [
-                    unique_key,
-                    time_stamp,  # Convert datetime to ISO string
-                    date.isoformat(),  # Convert date to ISO string
-                    (
-                        act_selection_run if act_selection_run else ""
-                    ),  # Get first selected activity or empty
-                    distance_run,
-                    pace_str_run,
-                    hr_run,
-                    cad_run,
-                    rpe_run,
-                    shoe_run if shoe_run else "",  # Get first selected shoe or empty
-                    remarks_run,
-                    (mem_selection if mem_selection else ""),
-                    None,  # Duration_other,  # Get first selected member or empty
-                ]
-                st.session_state.pending_log = new_log
-                # st.session_state.submitted_run = True
+    #     new_log = [
+    #         unique_key,
+    #         time_stamp,  # Convert datetime to ISO string
+    #         date.isoformat(),  # Convert date to ISO string
+    #         (
+    #             act_selection_run if act_selection_run else ""
+    #         ),  # Get first selected activity or empty
+    #         distance_run,
+    #         pace_str_run,
+    #         hr_run,
+    #         cad_run,
+    #         rpe_run,
+    #         shoe_run if shoe_run else "",  # Get first selected shoe or empty
+    #         remarks_run,
+    #         (mem_selection if mem_selection else ""),
+    #         None,  # Duration_other,  # Get first selected member or empty
+    #     ]
+    #     st.session_state.pending_log = new_log
+    #     # st.session_state.submitted_run = True
 
-                confirm_submission(new_log)
+    #     confirm_submission(new_log)
 
-                ####----- AFTER DIALOG WORKING --------------######
-            if "submitted_run" not in st.session_state:
-                st.session_state["submitted_run"] = False
-            if "pending_log" not in st.session_state:
-                st.session_state["pending_log"] = None
+    #     ####----- AFTER DIALOG WORKING --------------######
+    # if "submitted_run" not in st.session_state:
+    #     st.session_state["submitted_run"] = False
+    # if "pending_log" not in st.session_state:
+    #     st.session_state["pending_log"] = None
 
-            if st.session_state.get("submitted_run") and st.session_state.get(
-                "submitted_data_run"
-            ):
-                push.push_runner_data(st.session_state["submitted_data_run"])
-                st.success("✅ Your Run was successfully recorded! Latest entry:")
-                st.write(st.session_state["submitted_data_run"])
-                st.balloons()
-                # Reset state so it doesn't rerun again
-                st.session_state["submitted_run"] = False
-                st.session_state["submitted_data_run"] = None
+    # if st.session_state.get("submitted_run") and st.session_state.get(
+    #     "submitted_data_run"
+    # ):
+    #     push.push_runner_data(st.session_state["submitted_data_run"])
+    #     st.success("✅ Your Run was successfully recorded! Latest entry:")
+    #     st.write(st.session_state["submitted_data_run"])
+    #     st.balloons()
+    #     # Reset state so it doesn't rerun again
+    #     st.session_state["submitted_run"] = False
+    #     st.session_state["submitted_data_run"] = None
 
-    with st.expander("Log Other Activity"):
-        with st.form("activity_log_other", clear_on_submit=True, border=True):
-            time_stamp_ = datetime.now()
-            time_stamp = time_stamp_.strftime("%Y-%m-%d")
+    # with st.expander("Log Other Activity"):
+    #     with st.form("activity_log_other", clear_on_submit=True, border=True):
+    #         time_stamp_ = datetime.now()
+    #         time_stamp = time_stamp_.strftime("%Y-%m-%d")
 
-            # Activity list
-            act_selection_other = st.selectbox(
-                "Activity",
-                # sorted(
-                [
-                    "WeightTraining",
-                    "Yoga",
-                    "Cross Train",
-                    "Rest",
-                    "Pilates",
-                    "Walk",
-                ],
-                # ),
-                index=None,
-                placeholder="Select an activity",
-            )
+    #         # Activity list
+    #         act_selection_other = st.selectbox(
+    #             "Activity",
+    #             # sorted(
+    #             [
+    #                 "WeightTraining",
+    #                 "Yoga",
+    #                 "Cross Train",
+    #                 "Rest",
+    #                 "Pilates",
+    #                 "Walk",
+    #             ],
+    #             # ),
+    #             index=None,
+    #             placeholder="Select an activity",
+    #         )
 
-            hr_other = st.number_input("HR (bmp)", min_value=0, max_value=220)
+    #         hr_other = st.number_input("HR (bmp)", min_value=0, max_value=220)
 
-            duration_list = [
-                f"{h:02}:{m:02}:{s:02}"
-                for h in range(0, 10)
-                for m in (range(0, 59))
-                for s in (range(0, 59))
-            ]
+    #         duration_list = [
+    #             f"{h:02}:{m:02}:{s:02}"
+    #             for h in range(0, 10)
+    #             for m in (range(0, 59))
+    #             for s in (range(0, 59))
+    #         ]
 
-            # display_duration = [f"{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
-            value_duration = [
-                f"{h:02}:{m:02}:{s:02}"
-                for h in range(0, 10)
-                for m in range(0, 59)
-                for s in (range(0, 59))
-            ]
-            duration_map = dict(zip(duration_list, value_duration))
-            duration_display = st.selectbox(
-                "Select duration (hour:min:sec) *type in your pace and select",
-                duration_list,
-                index=0,
-            )
+    #         # display_duration = [f"{m:02}:{s:02}" for m in range(0, 15) for s in range(0, 60)]
+    #         value_duration = [
+    #             f"{h:02}:{m:02}:{s:02}"
+    #             for h in range(0, 10)
+    #             for m in range(0, 59)
+    #             for s in (range(0, 59))
+    #         ]
+    #         duration_map = dict(zip(duration_list, value_duration))
+    #         duration_display = st.selectbox(
+    #             "Select duration (hour:min:sec) *type in your pace and select",
+    #             duration_list,
+    #             index=0,
+    #         )
 
-            duration_other = duration_map[duration_display]
+    #         duration_other = duration_map[duration_display]
 
-            rpe_other = st.slider("RPE", 0, 10, 0)
-            # rpe2 = st.feedback(options="faces", key=int)
-            remarks_other = st.text_area(
-                "Remarks",
-                placeholder="How did the session feel?",
-                key="remarks_input_other",
-            )
+    #         rpe_other = st.slider("RPE", 0, 10, 0)
+    #         # rpe2 = st.feedback(options="faces", key=int)
+    #         remarks_other = st.text_area(
+    #             "Remarks",
+    #             placeholder="How did the session feel?",
+    #             key="remarks_input_other",
+    #         )
 
-            unique_key_other = f"{date}|{mem_selection}|{act_selection_other}"
-            # Every form must have a submit button.
+    #         unique_key_other = f"{date}|{mem_selection}|{act_selection_other}"
+    #         # Every form must have a submit button.
 
-            submitted_other = st.form_submit_button("Other: Submit Log", type="primary")
+    #         submitted_other = st.form_submit_button("Other: Submit Log", type="primary")
 
-            if submitted_other:
+    #         if submitted_other:
 
-                new_log_other = [
-                    unique_key_other,
-                    time_stamp,  # Convert datetime to ISO string
-                    date.isoformat(),  # Convert date to ISO string
-                    (
-                        act_selection_other if act_selection_other else ""
-                    ),  # Get first selected activity or empty
-                    None,  # dist
-                    None,  # pace
-                    hr_other,
-                    None,  # cad
-                    rpe_other,
-                    None,  # shoes
-                    remarks_other,
-                    (
-                        mem_selection if mem_selection else ""
-                    ),  # Get first selected member or empty
-                    duration_other,
-                ]
-                st.session_state.pending_log_other = new_log_other
-                # st.session_state.submitted_other = True
-                confirm_submission_other(new_log_other)
+    #             new_log_other = [
+    #                 unique_key_other,
+    #                 time_stamp,  # Convert datetime to ISO string
+    #                 date.isoformat(),  # Convert date to ISO string
+    #                 (
+    #                     act_selection_other if act_selection_other else ""
+    #                 ),  # Get first selected activity or empty
+    #                 None,  # dist
+    #                 None,  # pace
+    #                 hr_other,
+    #                 None,  # cad
+    #                 rpe_other,
+    #                 None,  # shoes
+    #                 remarks_other,
+    #                 (
+    #                     mem_selection if mem_selection else ""
+    #                 ),  # Get first selected member or empty
+    #                 duration_other,
+    #             ]
+    #             st.session_state.pending_log_other = new_log_other
+    #             # st.session_state.submitted_other = True
+    #             confirm_submission_other(new_log_other)
 
-                ####----- AFTER DIALOG OTHER WORKING --------------######
-            if "submitted_other" not in st.session_state:
-                st.session_state["submitted_other"] = False
-            if "pending_log_other" not in st.session_state:
-                st.session_state["pending_log_other"] = None
+    #             ####----- AFTER DIALOG OTHER WORKING --------------######
+    #         if "submitted_other" not in st.session_state:
+    #             st.session_state["submitted_other"] = False
+    #         if "pending_log_other" not in st.session_state:
+    #             st.session_state["pending_log_other"] = None
 
-            if st.session_state.get("submitted_other") and st.session_state.get(
-                "submitted_data_other"
-            ):
-                push.push_runner_data(st.session_state["submitted_data_other"])
-                st.success(
-                    "✅ Your Other Activity was successfully recorded! Latest entry:"
-                )
-                st.write(st.session_state["submitted_data_other"])
-                st.balloons()
-                # Reset state so it doesn't rerun again
-                st.session_state["submitted_other"] = False
-                st.session_state["submitted_data_other"] = None
+    #         if st.session_state.get("submitted_other") and st.session_state.get(
+    #             "submitted_data_other"
+    #         ):
+    #             push.push_runner_data(st.session_state["submitted_data_other"])
+    #             st.success(
+    #                 "✅ Your Other Activity was successfully recorded! Latest entry:"
+    #             )
+    #             st.write(st.session_state["submitted_data_other"])
+    #             st.balloons()
+    #             # Reset state so it doesn't rerun again
+    #             st.session_state["submitted_other"] = False
+    #             st.session_state["submitted_data_other"] = None
 
-    with st.expander("Edit Log"):
-        from data import edit
+    # with st.expander("Edit Log"):
 
-        edit.edit_log(full_df)
+    #     from data import edit
+
+    #     edit.edit_log(full_df)
 
     st.markdown(
         """
@@ -501,8 +500,13 @@ if tabs == "📓Log":  ##LOG
         unsafe_allow_html=True,
     )
 
+    # from data import edit
+
+    # edit.edit_log(full_df)
+
     with st.expander(
-        "Enter User Fields (*RPE, Shoes, Remarks, Type of Activity-for Run*)"
+        "Enter User Fields (*RPE, Shoes, Remarks, Type of Activity-for Run*)",
+        expanded=True,
     ):
         from data import user_field
 
@@ -829,16 +833,14 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         unsafe_allow_html=True,
     )
 
-    st.markdown(
-        """
+    st.markdown("""
     ##### 📋 Activity Type Abbreviations
 
     **AR** – Active Recovery | **CT** – Cross Train | **E** – Easy Run  
     **GA** – General Aerobic | **I** – Interval | **LSD** – Long Slow Distance  
     **LT** – Lactate Threshold | **MLR** – Medium Long Run | **MP** – Marathon Pace  
     **R** – Recovery Run | **S** – Speedwork | **STR** – Strength Training | **T** – Tempo
-    """
-    )
+    """)
 
     with st.expander("Base Building + SG Marathon 2026"):
         # with st.expander("View Training Program"):
