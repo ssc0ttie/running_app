@@ -47,11 +47,6 @@ def edit_user_fields(full_df):
             )
         )
 
-    # Ensure Date_of_Activity is datetime
-    full_df["Date_of_Activity"] = pd.to_datetime(
-        full_df["Date_of_Activity"], errors="coerce"
-    )
-
     # Filter rows with missing user-defined fields
     df_to_edit = full_df[
         ((full_df["RPE (1–10 scale)"] == 0) & (full_df["Activity"] != "Rest"))
