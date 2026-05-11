@@ -602,6 +602,11 @@ if tabs == "📊 Stats":  # STATS
         else:
             filtered_member_df = full_df[full_df["Member Name"] == selected_member]
 
+        menu = sorted(full_df["Menu"].dropna().unique())
+        selected_menu = st.selectbox(
+            "Select Menu",
+            menu,
+        )
     # -------------------WEEK FILTER  -----------------------#
     with col2:
         weeks = sorted(filtered_member_df["Week"].dropna().unique())

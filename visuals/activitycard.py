@@ -4,6 +4,7 @@ from streamlit_folium import st_folium
 import polyline
 from datetime import datetime
 import pandas as pd
+import numpy as np
 
 
 def format_duration(duration):
@@ -95,6 +96,10 @@ def create_activity_card(row, index):
     max_pace_str = format_max_pace(row["Max_Pace"])
     activity = str(row["Activity"])
     member = str(row["Member Name"])
+    menu = str(row["Menu"])
+
+    menu = row["Menu"] if row["Member Name"] == "Scott" else row["Menu_Other"]
+
     avatar = avtr.get_member_avatar_advanced(member)
 
     if hasattr(row["Date_of_Activity"], "strftime"):
@@ -149,33 +154,33 @@ def create_activity_card(row, index):
 """
 
     # Complete card HTML - put everything together
-    card_html_old = f"""
-    <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden;">
-        <div style="padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 24px;">🏃</span>
-                <span style="font-weight: 600; font-size: 22px; color: #333;">{member} 's: {activity}</span>
-            </div>
-            <div style="color: #666; font-size: 14px;">{date_str}</div>
-        </div>
-        {stats_html_3}
-  
-    """
+    # card_html_old = f"""
+    # <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden;">
+    #     <div style="padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+    #         <div style="display: flex; align-items: center; gap: 8px;">
+    #             <span style="font-size: 24px;">🏃</span>
+    #             <span style="font-weight: 600; font-size: 22px; color: #333;">{member} 's: {activity}</span>
+    #         </div>
+    #         <div style="color: #666; font-size: 14px;">{date_str}</div>
+    #     </div>
+    #     {stats_html_3}
 
-    card_html_1 = f"""
-    <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden;">
-        <div style="padding: 14px 20px; border-bottom: 1px solid #f0f0f0; background: #fafafa;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <span style="font-weight: 600; font-size: 18px; color: #333;">{member}</span>
-                    <span style="color: #999; margin: 0 6px;">•</span>
-                    <span style="font-size: 16px; color: #FC4C02;">{activity}</span>
-                </div>
-                <div style="color: #666; font-size: 12px;">{date_str}</div>
-            </div>
-        </div>
-        {stats_html_3}
-    """
+    # """
+
+    # card_html_1 = f"""
+    # <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden;">
+    #     <div style="padding: 14px 20px; border-bottom: 1px solid #f0f0f0; background: #fafafa;">
+    #         <div style="display: flex; justify-content: space-between; align-items: center;">
+    #             <div>
+    #                 <span style="font-weight: 600; font-size: 18px; color: #333;">{member}</span>
+    #                 <span style="color: #999; margin: 0 6px;">•</span>
+    #                 <span style="font-size: 16px; color: #FC4C02;">{activity}</span>
+    #             </div>
+    #             <div style="color: #666; font-size: 12px;">{date_str}</div>
+    #         </div>
+    #     </div>
+    #     {stats_html_3}
+    # """
 
     card_html = f"""
     <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden;">
@@ -188,6 +193,7 @@ def create_activity_card(row, index):
                     <div>
                         <div style="font-weight: 700; font-size: 18px; color: #333;">{member}</div>
                         <div style="font-size: 13px; color: #FC4C02; text-transform: uppercase; letter-spacing: 0.5px;">{activity}</div>
+                        <div style="font-size: 14px; color: #555; margin-top: 4px;">🍽️ {menu}</div>
                     </div>
                 </div>
                 <div style="color: #666; font-size: 13px;">{date_str}</div>
@@ -224,16 +230,12 @@ def create_activity_card(row, index):
 
             m.fit_bounds(bounds, padding=(20, 20))  # 20 pixels padding
 
-            m.get_root().html.add_child(
-                folium.Element(
-                    """
+            m.get_root().html.add_child(folium.Element("""
                 <style>
                     .leaflet-tile-pane { opacity: 0.4; }
                     .leaflet-container { background: transparent !important; }
                 </style>
-            """
-                )
-            )
+            """))
 
             folium.PolyLine(
                 coords,
@@ -261,32 +263,6 @@ def create_activity_card(row, index):
             st.error(f"Error loading map for activity on {date_str}: {e}")
 
     return card_html, map_object
-
-
-def display_strava_style_feed(df):
-    """
-    Display activities in a Strava-style narrative feed
-    """
-
-    # Sort by date (most recent first)
-    if "Date_of_Activity" in df.columns:
-        df = df.sort_values("Date_of_Activity", ascending=False).reset_index(drop=True)
-
-    # st.markdown("### 🏃 Recent Activities")
-
-    for index, row in df.iterrows():
-        # Create card HTML and map
-        card_html, map_obj = create_activity_card(row, index)
-
-        # Display the card using the same method as the test card
-        st.markdown(card_html, unsafe_allow_html=True)
-
-        # Display map if it exists
-        if map_obj:
-            st_folium(map_obj, width=None, height=250, key=f"activity_map_{index}")
-
-        # Add spacing
-        st.markdown("<br>", unsafe_allow_html=True)
 
 
 def display_strava_style_feed_test(df):
