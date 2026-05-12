@@ -58,13 +58,20 @@ def get_runner_data():
     # ---- Load week lookup ---- #
     week_lookup_data = sheet.get_worksheet_by_id(336401596).get_all_records()
     df_week = pd.DataFrame(week_lookup_data)[
-        ["Dates", "WEEK_Streamlit", "Activity_Others", "Activity_Scott"]
+        [
+            "Dates",
+            "WEEK_Streamlit",
+            "Activity_Others",
+            "Activity_Chona",
+            "Activity_Scott",
+        ]
     ]
     df_week.rename(
         columns={
             "Dates": "Date",
             "WEEK_Streamlit": "Week",
             "Activity_Others": "Menu_Other",
+            "Activity_Chona": "Menu_Chona",
             "Activity_Scott": "Menu",
         },
         inplace=True,
