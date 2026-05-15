@@ -582,7 +582,7 @@ if tabs == "📊 Stats":  # STATS
     stats.generate_matrix_member(filtered_df_full_activity)
 
     # -------------------MEMBER FILTER  -----------------------#
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
         members = sorted(full_df["Member Name"].dropna().unique())
@@ -622,6 +622,19 @@ if tabs == "📊 Stats":  # STATS
         else:
             filtered_df = filtered_member_df[
                 filtered_member_df["Week"].isin(selected_weeks)
+            ]
+    with col3:
+        event = sorted(filtered_member_df["Event"].dropna().unique())
+        event.insert(0, "All")
+        selected_event = st.multiselect(
+            "Select Event(s) to Compare", event, default=["All"]
+        )
+
+        if not selected_event or "All" in selected_event:
+            filtered_df = filtered_member_df
+        else:
+            filtered_df = filtered_member_df[
+                filtered_member_df["Event"].isin(selected_event)
             ]
     # with col3:
     #     with st.popover("⏱️ Open Race Predictor"):

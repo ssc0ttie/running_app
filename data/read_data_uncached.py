@@ -63,6 +63,7 @@ def get_runner_data():
             "WEEK_Streamlit",
             "Activity_Others",
             "Activity_Chona",
+            "Event",
             "Activity_Scott",
         ]
     ]
@@ -72,6 +73,7 @@ def get_runner_data():
             "WEEK_Streamlit": "Week",
             "Activity_Others": "Menu_Other",
             "Activity_Chona": "Menu_Chona",
+            "Event": "Event",
             "Activity_Scott": "Menu",
         },
         inplace=True,
