@@ -722,14 +722,14 @@ if tabs == "🗺️ Your Runs":  ##STR WORK
         else:
             st.write("Parent_UniqueKey column not found!")
 
-    st.write("### Sample UniqueKey from activities:")
-    st.write(filtered_df["UniqueKey"].tail(5).tolist())
+    # st.write("### Sample UniqueKey from activities:")
+    # st.write(filtered_df["UniqueKey"].tail(5).tolist())
 
-    st.write("### full_df UniqueKey samples:")
-    st.write(full_df["UniqueKey"].tail(10).tolist())
+    # st.write("### full_df UniqueKey samples:")
+    # st.write(full_df["UniqueKey"].tail(10).tolist())
 
-    st.write("### full_df columns:")
-    st.write(full_df.columns.tolist())
+    # st.write("### full_df columns:")
+    # st.write(full_df.columns.tolist())
 
 if tabs == "🏋🏻‍♂️ Str Training":  # REFERENCE
     from visuals import strength_ref as sref
