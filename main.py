@@ -737,134 +737,134 @@ if tabs == "🏋🏻‍♂️ Str Training":  # REFERENCE
     sref.general_str_ref()
 
 
-if tabs == "🎯 Remarks":  # REMARKS
-    from visuals import weekly_remarks as wr
-    from visuals import stats_table as stats
+# if tabs == "🎯 Remarks":  # REMARKS
+# from visuals import weekly_remarks as wr
+# from visuals import stats_table as stats
 
-    st.markdown(
-        """
-        <div style="
-            color:#3a3939;
-            font-size: 20px;
-            font-weight: 600;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-            🎯 Weekly Remarks
-        </div>
-    """,
-        unsafe_allow_html=True,
-    )
+# st.markdown(
+#     """
+#     <div style="
+#         color:#3a3939;
+#         font-size: 20px;
+#         font-weight: 600;
+#         border-bottom: 1px solid #ccc;
+#         padding-bottom: 4px;
+#         margin-top: 20px;
+#         margin-bottom: 10px;">
+#         🎯 Weekly Remarks
+#     </div>
+# """,
+#     unsafe_allow_html=True,
+# )
 
-### --- ACTIVATE ONLY DURING WEEKLY REVIEWS -----###
-# -- WEEKLY  CHART -- ##
-coach_df = (
-    full_df
-    if selected_weeks == "All"
-    else full_df[full_df["Week"].isin(selected_weeks)]
-)
+# ### --- ACTIVATE ONLY DURING WEEKLY REVIEWS -----###
+# # -- WEEKLY  CHART -- ##
+# coach_df = (
+#     full_df
+#     if selected_weeks == "All"
+#     else full_df[full_df["Week"].isin(selected_weeks)]
+# )
 
-list_weeks = sorted(
-    filtered_df["Week"].dropna().unique(),
-    key=lambda x: int("".join(filter(str.isdigit, x))),
-)
-# list_weeks = sorted(full_df["Week"].dropna().unique())
-latest_week = list_weeks[-1]
+# list_weeks = sorted(
+#     filtered_df["Week"].dropna().unique(),
+#     key=lambda x: int("".join(filter(str.isdigit, x))),
+# )
+# # list_weeks = sorted(full_df["Week"].dropna().unique())
+# latest_week = list_weeks[-1]
 
-latest_week = "W 3"
-coach_df = filtered_df[filtered_df["Week"] == (latest_week)]
+# latest_week = "W 3"
+# coach_df = filtered_df[filtered_df["Week"] == (latest_week)]
 
-st.markdown(f"""## 🏁 Week: {latest_week}""")
+# st.markdown(f"""## 🏁 Week: {latest_week}""")
 
-# st.write(filtered_df.columns)
+# # st.write(filtered_df.columns)
 
-# ####----WEEKLY SUMMARY TABLE --- ###
-stats.generate_matrix_coach(coach_df)
+# # ####----WEEKLY SUMMARY TABLE --- ###
+# stats.generate_matrix_coach(coach_df)
 
-wr.weekly_remarks()
+# wr.weekly_remarks()
 
-if tabs == "💗 HR Zones":  ##SCOTTS CORNER
+# if tabs == "💗 HR Zones":  ##SCOTTS CORNER
 
-    # with st.expander("Scott Program"):
-    #     st.markdown(
-    #         """
-    #             <div style="
-    #                 color:#3a3939;
-    #                 font-size: 20px;
-    #                 font-weight: 450;
-    #                 border-bottom: 1px solid #ccc;
-    #                 padding-bottom: 4px;
-    #                 margin-top: 20px;
-    #                 margin-bottom: 10px;">
-    #                 🗓️ Training Plan</div>
-    #         """,
-    #         unsafe_allow_html=True,
-    #     )
-    #     prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
-    #     components.iframe(
-    #         prog_sheet,
-    #         height=500,
-    #         width=600,
-    #     )
+# with st.expander("Scott Program"):
+#     st.markdown(
+#         """
+#             <div style="
+#                 color:#3a3939;
+#                 font-size: 20px;
+#                 font-weight: 450;
+#                 border-bottom: 1px solid #ccc;
+#                 padding-bottom: 4px;
+#                 margin-top: 20px;
+#                 margin-bottom: 10px;">
+#                 🗓️ Training Plan</div>
+#         """,
+#         unsafe_allow_html=True,
+#     )
+#     prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
+#     components.iframe(
+#         prog_sheet,
+#         height=500,
+#         width=600,
+#     )
 
-    # with st.expander("Chona Progaram"):
-    #     st.subheader("Chona")
-    #     prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
-    #     components.iframe(
-    #         prog_sheet,
-    #         height=500,
-    #         width=600,
-    #     )
+# with st.expander("Chona Progaram"):
+#     st.subheader("Chona")
+#     prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
+#     components.iframe(
+#         prog_sheet,
+#         height=500,
+#         width=600,
+#     )
 
-    ####CUSTOM ZONES####
-    col1, col2 = st.columns(2)
-    with col1:  ###SCOTT ZONES####
-        with st.expander("Your Zones : Scott"):
-            st.subheader(":blue[Scott]", divider=True)
-            st.markdown(
-                """
-                ### 🏃‍♂️ Pfitzinger Heart Rate Training Zones
-                ### As of July 14, 2025 : Transition Week 11
+# ####CUSTOM ZONES####
+# col1, col2 = st.columns(2)
+# with col1:  ###SCOTT ZONES####
+#     with st.expander("Your Zones : Scott"):
+#         st.subheader(":blue[Scott]", divider=True)
+#         st.markdown(
+#             """
+#             ### 🏃‍♂️ Pfitzinger Heart Rate Training Zones
+#             ### As of July 14, 2025 : Transition Week 11
 
-                Your Resting HR: **55 bpm**  
-                Your Max HR: **192 bpm** as of 16-Jul-2025  
-                Heart Rate Reserve (HRR): **136 bpm**
+#             Your Resting HR: **55 bpm**
+#             Your Max HR: **192 bpm** as of 16-Jul-2025
+#             Heart Rate Reserve (HRR): **136 bpm**
 
-                **🏷️ Zones**
-                - 🟢 Zone 2: Recovery / Easy ➡️**Target HR: 118-130 bpm**  🔥RPE : **2-4**
-                - 🔵 Zone 2.5–3: Aerobic / General ➡️ **Target HR: 130-140 bpm**  🔥RPE : **3-5**
-                - 🟡 Zone 3: Long Run ➡️ **Target HR: 135-145 bpm**  🔥RPE : **3-6**
-                - 🔶 Zone 4: Marathon Pace ➡️ **Target HR: 145-155**  🔥RPE : **5-7**
-                - 🔴 Zone 4+: Threshold / Tempo ➡️ **Target HR: 156-170 bpm**  🔥RPE : **7-8**
-                - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 171-187 bpm**   🔥RPE : **9-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
-                """,
-                unsafe_allow_html=True,
-            )
-    with col2:  ###CHONA ZONES ####
-        with st.expander("Your Zones : Chona"):
-            st.subheader(":green[Chona]", divider=True)
-            st.markdown(
-                """
-                    ### 🏃‍♂️ Effort-Based Zones
-                    ### As of July 14, 2025 : Transition Week 11
+#             **🏷️ Zones**
+#             - 🟢 Zone 2: Recovery / Easy ➡️**Target HR: 118-130 bpm**  🔥RPE : **2-4**
+#             - 🔵 Zone 2.5–3: Aerobic / General ➡️ **Target HR: 130-140 bpm**  🔥RPE : **3-5**
+#             - 🟡 Zone 3: Long Run ➡️ **Target HR: 135-145 bpm**  🔥RPE : **3-6**
+#             - 🔶 Zone 4: Marathon Pace ➡️ **Target HR: 145-155**  🔥RPE : **5-7**
+#             - 🔴 Zone 4+: Threshold / Tempo ➡️ **Target HR: 156-170 bpm**  🔥RPE : **7-8**
+#             - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 171-187 bpm**   🔥RPE : **9-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
+#             """,
+#             unsafe_allow_html=True,
+#         )
+# with col2:  ###CHONA ZONES ####
+#     with st.expander("Your Zones : Chona"):
+#         st.subheader(":green[Chona]", divider=True)
+#         st.markdown(
+#             """
+#                 ### 🏃‍♂️ Effort-Based Zones
+#                 ### As of July 14, 2025 : Transition Week 11
 
-                    Your Resting HR: **56 bpm**  
-                    Your Max HR: **190 bpm** as of 16-Jul-2025  
-                    Heart Rate Reserve (HRR): **134 bpm**
+#                 Your Resting HR: **56 bpm**
+#                 Your Max HR: **190 bpm** as of 16-Jul-2025
+#                 Heart Rate Reserve (HRR): **134 bpm**
 
-                    **🏷️ Zones**
-                    - 🟢 Zone 2: Recovery / Easy ➡️**Target HR: 140-150 bpm**  🔥RPE : **2-4**
-                    - 🔵 Zone 2.5–3: Aerobic / General ➡️ **Target HR: 150-160 bpm**  🔥RPE : **3-5**
-                    - 🟡 Zone 3: Long Run ➡️ **Target HR: 145-165 bpm**  🔥RPE : **3-6**
-                    - 🔶 Zone 4: Marathon Pace ➡️ **Target HR: TBD**  🔥RPE : **5-7**
-                    - 🔴 Zone 4+: Threshold / Tempo ➡️ **Target HR: 165-175 bpm**  🔥RPE : **7-8**
-                    - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 178-190 bpm**   🔥RPE : **8-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
+#                 **🏷️ Zones**
+#                 - 🟢 Zone 2: Recovery / Easy ➡️**Target HR: 140-150 bpm**  🔥RPE : **2-4**
+#                 - 🔵 Zone 2.5–3: Aerobic / General ➡️ **Target HR: 150-160 bpm**  🔥RPE : **3-5**
+#                 - 🟡 Zone 3: Long Run ➡️ **Target HR: 145-165 bpm**  🔥RPE : **3-6**
+#                 - 🔶 Zone 4: Marathon Pace ➡️ **Target HR: TBD**  🔥RPE : **5-7**
+#                 - 🔴 Zone 4+: Threshold / Tempo ➡️ **Target HR: 165-175 bpm**  🔥RPE : **7-8**
+#                 - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 178-190 bpm**   🔥RPE : **8-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
 
-                    ---
-                    """,
-                unsafe_allow_html=True,
-            )
+#                 ---
+#                 """,
+#             unsafe_allow_html=True,
+#         )
 
 
 if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
