@@ -5,3 +5,7 @@ notebooks/strava.ipynb
 main.py
 scripts/test_scott.py
 scripts/diagnosesheet.py
+main.py
+output.csv
+view_fulldf.csv
+zones_df_output.csv

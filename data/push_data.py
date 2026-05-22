@@ -4,6 +4,7 @@ import streamlit as st
 import pandas as pd
 from data import read_data_uncached as rd
 from data import strava as strav
+import numpy as np
 
 
 def get_gsheet_client():
@@ -21,38 +22,86 @@ def get_gsheet_client():
 def get_runner_data():
     client = get_gsheet_client()
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
+    worksheet = sheet.get_worksheet_by_id(1611308583)
+    sheet_data = worksheet.get_all_values()
 
-    # ---- Load main/historical worksheet (READS EVERYTHING AS STRING)---- #
-    worksheet = sheet.get_worksheet_by_id(1611308583)  # or use get_worksheet_by_id(gid)
-    sheet = worksheet.get_all_values()
-    return sheet
+    return sheet_data
 
 
 def get_existing_uniquekeys_from_sheet():
-    sheet_data = get_runner_data()  # returns list of lists
+    """Get existing UniqueKeys from main activities sheet"""
+    sheet_data = get_runner_data()
     if not sheet_data or len(sheet_data) < 2:
-        return set()  # empty sheet
+        return set()
 
     header = sheet_data[0]
     try:
-        uniquekey_idx = header.index("UniqueKey")  # find the column index
+        uniquekey_idx = header.index("UniqueKey")
     except ValueError:
         raise ValueError("UniqueKey column not found in sheet")
 
-    # Skip header row, collect all keys
     existing_keys = {row[uniquekey_idx] for row in sheet_data[1:]}
     return existing_keys
 
 
-def push_runner_data(data):
-    gsclient = get_gsheet_client()
-    client = gsclient
+def get_existing_zone_keys_from_sheet():
+    """Get existing Zone_UniqueKeys to avoid duplicates"""
+    client = get_gsheet_client()
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
-    newsource_worksheet = sheet.get_worksheet_by_id(
-        1611308583
-    )  # or use get_worksheet_by_id(gid)
 
-    newsource_worksheet.append_row(data)
+    try:
+        try:
+            zone_worksheet = sheet.worksheet("Zone_Data")
+        except gspread.WorksheetNotFound:
+            # Create new worksheet with your schema
+            zone_worksheet = sheet.add_worksheet(
+                title="Zone_Data", rows="10000", cols="20"
+            )
+            # Add headers matching your pattern
+            headers = [
+                "Zone_UniqueKey",
+                "Parent_UniqueKey",
+                "Date_of_Activity",
+                "Member Name",
+                "Activity",
+                "Avg_HR",
+                "Zone_Type",
+                "Zone",
+                "Zone_Name",
+                "Min_Value",
+                "Max_Value",
+                "Time_In_Zone",
+                "Percentage",
+            ]
+            zone_worksheet.append_row(headers)
+            return set()
+
+        existing_data = zone_worksheet.get_all_values()
+        if len(existing_data) > 1:
+            header = existing_data[0]
+            try:
+                key_idx = header.index("Zone_UniqueKey")
+                return {row[key_idx] for row in existing_data[1:] if len(row) > key_idx}
+            except ValueError:
+                return set()
+        return set()
+
+    except Exception as e:
+        st.warning(f"Could not access zone worksheet: {e}")
+        return set()
+
+
+def push_runner_data(data, worksheet_name="main"):
+    """Push data to specified worksheet"""
+    client = get_gsheet_client()
+    sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
+
+    if worksheet_name == "main":
+        worksheet = sheet.get_worksheet_by_id(1611308583)
+    else:
+        worksheet = sheet.worksheet(worksheet_name)
+
+    worksheet.append_row(data)
 
 
 def format_activity_for_sheet(activity_dict):
@@ -76,25 +125,21 @@ def push_strava_data_to_sheet(strava_df):
         success_count = 0
         error_count = 0
 
-        # Load existing keys once
         existing_keys = get_existing_uniquekeys_from_sheet()
 
         for index, row in strava_df.iterrows():
             try:
                 unique_key = str(row["UniqueKey"])
 
-                # Skip if already exists
                 if unique_key in existing_keys:
                     st.warning(f"Skipping duplicate row with UniqueKey: {unique_key}")
                     continue
 
-                # Convert all values to gspread-compatible types
-                ################# ADD COLUMN TO BE PUSHED TO GSHEETS FROM STRAVA API ######
                 row_data = [
                     unique_key,
-                    str(row["TimeStamp"]),  # Date to string
-                    str(row["Date_of_Activity"]),  # Date to string
-                    str(row.get("Activity", "")),  # user defined Activity
+                    str(row["TimeStamp"]),
+                    str(row["Date_of_Activity"]),
+                    str(row.get("Activity", "")),
                     float(row.get("Distance", 0)),
                     str(row.get("Pace", None)),
                     int(row.get("HR (bpm)", 0)),
@@ -111,10 +156,8 @@ def push_strava_data_to_sheet(strava_df):
                     int(row.get("Elevation_Gained", None)),
                 ]
 
-                push_runner_data(row_data)
+                push_runner_data(row_data, worksheet_name="main")
                 success_count += 1
-
-                # Add to existing_keys set so the same run isn’t re-added
                 existing_keys.add(unique_key)
 
             except Exception as e:
@@ -127,3 +170,75 @@ def push_strava_data_to_sheet(strava_df):
     except Exception as e:
         st.error(f"Error in push process: {e}")
         return 0, len(strava_df)
+
+
+def push_zone_data_to_sheet(zones_df, parent_unique_key, activity_row_data):
+    """
+    Push zone distribution data to Google Sheets with proper linking.
+
+    Args:
+        zones_df: DataFrame with zone data
+        parent_unique_key: The UniqueKey from main activities sheet
+        activity_row_data: Dict with Date, Member Name, Activity, Avg_HR
+    """
+    try:
+        success_count = 0
+        error_count = 0
+
+        existing_zone_keys = get_existing_zone_keys_from_sheet()
+
+        for index, row in zones_df.iterrows():
+            try:
+                # Convert all values to native Python types
+                zone_key = f"{parent_unique_key}_{row['Type']}_{row['Zone']}"
+
+                if zone_key in existing_zone_keys:
+                    continue
+
+                # Helper function to convert any value to native Python type
+                def to_native(val):
+                    if pd.isna(val):
+                        return ""
+                    if isinstance(val, (np.int64, np.int32, np.int16, np.int8)):
+                        return int(val)
+                    if isinstance(val, (np.float64, np.float32)):
+                        return float(val)
+                    if isinstance(val, pd.Timestamp):
+                        return str(val)
+                    return val
+
+                # Prepare row data with converted types
+                row_data = [
+                    str(zone_key),  # Zone_UniqueKey
+                    str(parent_unique_key),  # Parent_UniqueKey
+                    str(activity_row_data["Date"]),  # Date_of_Activity
+                    str(activity_row_data["Member Name"]),  # Member Name
+                    str(activity_row_data["Activity"]),  # Activity
+                    (
+                        int(activity_row_data["Avg_HR"])
+                        if activity_row_data["Avg_HR"]
+                        else ""
+                    ),  # Avg_HR
+                    str(row["Type"]),  # Zone_Type (HR or Pace)
+                    str(row["Zone"]),  # Zone (Z1, Z2, etc.)
+                    str(row["Zone Name"]),  # Zone_Name
+                    str(to_native(row.get("Min", ""))),  # Min_Value
+                    str(to_native(row.get("Max", ""))),  # Max_Value
+                    str(row.get("Time", "")),  # Time_In_Zone
+                    str(row.get("Percentage", "")),  # Percentage
+                ]
+
+                push_runner_data(row_data, worksheet_name="Zone_Data")
+                success_count += 1
+                existing_zone_keys.add(zone_key)
+
+            except Exception as e:
+                st.error(f"Error pushing zone row {index}: {e}")
+                error_count += 1
+                continue
+
+        return success_count, error_count
+
+    except Exception as e:
+        st.error(f"Error in zone push process: {e}")
+        return 0, len(zones_df) if zones_df is not None else 0
