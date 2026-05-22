@@ -139,8 +139,8 @@ def create_strava_training_log(df_activities, metric="Distance"):
     min_metric = running_data["Metric_Value"].min()
 
     # MUCH LARGER bubble size range - aggressive sizing to fill gaps
-    min_bubble_size = 60  # Minimum bubble size
-    max_bubble_size = 120  # Maximum bubble size
+    min_bubble_size = 50  # Minimum bubble size
+    max_bubble_size = 100  # Maximum bubble size
 
     # Choose colorscale based on metric - single hue gradients
     if metric == "Distance":

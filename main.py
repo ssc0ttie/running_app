@@ -330,11 +330,20 @@ if tabs == "📊 Stats":  # STATS
     # -------------------EVENT FILTER  -----------------------#
     with col3:
         event = sorted(filtered_df["Event"].dropna().unique())
+        if not filtered_df.empty and "Date_of_Activity" in filtered_df.columns:
+            # Get the event from the most recent activity
+            latest_activity = filtered_df.loc[filtered_df["Date_of_Activity"].idxmax()]
+            latest_event = latest_activity["Event"]
+
+            # Set default to the latest event (not "All")
+            default_event = [latest_event] if latest_event in event else ["All"]
+        else:
+            default_event = ["All"]
+
         event.insert(0, "All")
         selected_event = st.multiselect(
-            "Select Event(s) to Compare", event, default=["All"]
+            "Select Event(s) to Compare", event, default=default_event
         )
-
         if not selected_event or "All" in selected_event:
             filtered_df = filtered_df
         else:
@@ -490,10 +499,12 @@ if tabs == "📊 Stats":  # STATS
         "Average Pace 🚄", value=metric_pace, label_visibility="visible", border=True
     )
 
-    ######### TRAINING LOG ############
-    from visuals import traininglog_calendar
+    ######### TRAINING CALENDAR ############
 
-    traininglog_calendar.create_training_log_section(filtered_df)
+    with st.expander("View Calendar Log - *landscape for best exp", expanded=False):
+        from visuals import traininglog_calendar
+
+        traininglog_calendar.create_training_log_section(filtered_df)
 
     ###########CHARTS###########
     from visuals import sunburst as sb
