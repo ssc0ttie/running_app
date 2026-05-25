@@ -616,7 +616,7 @@ if tabs == "📘 Reference":  ##STR WORK
     ref.ref_tab()
 
 if tabs == "🗺️ Your Runs":  ##STR WORK
-    from data.read_data_uncached_for_recent import get_runner_data
+    from data.read_data_cached_for_recent import get_runner_data
 
     if st.session_state.get("just_submitted", False):
         df = get_runner_data()  # Uncached for fresh data after submission

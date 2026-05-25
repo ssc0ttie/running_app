@@ -7,6 +7,19 @@ import datetime
 import numpy as np
 
 
+@st.cache_resource
+def get_gsheet_client():
+    scope = [
+        "https://spreadsheets.google.com/feeds",
+        "https://www.googleapis.com/auth/drive",
+    ]
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(
+        st.secrets["google_sheets"], scope
+    )
+    client = gspread.authorize(creds)
+    return client
+
+
 def get_gsheet_client():
     scope = [
         "https://spreadsheets.google.com/feeds",
@@ -20,8 +33,7 @@ def get_gsheet_client():
 
 
 ### -- CACHED: Load all runner data with TTL -- ###
-
-
+@st.cache_data(ttl=120)  # refresh every 5 minutes
 def get_runner_data():
     client = get_gsheet_client()
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
