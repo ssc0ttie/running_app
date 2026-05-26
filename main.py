@@ -76,7 +76,7 @@ with col1:
                 st.error("Wrong passcode!")
 
             # Radio button that shows/hides based on authentication
-        options = ["🗓️ Program", "🗺️ Your Runs", "📓Log"]
+        options = ["🗓️ Program", "🗺️ Your Runs", "📊 Stats", "📓Log"]
 
         if st.session_state.authenticated:
             options.append("🏋🏻‍♂️ Str Training")
@@ -84,7 +84,7 @@ with col1:
             options.append("📓Log")
             options.append("🎯 Remarks")
             options.append("🔄 Strava Sync")
-            options.append("📊 Stats"),  # Add the hidden option
+            # options.append("📊 Stats"),  # Add the hidden option
 
         if st.session_state.memberverified:
             options.append("📊 Stats")
@@ -559,7 +559,16 @@ if tabs == "📊 Stats":  # STATS
 
 if tabs == "🗓️ Program":  ##TRAINING PLAN ##
 
-    # st.header("🗓️💪 Your Training Plan", divider="blue")
+    with st.popover("💡 Activity Abbreviations"):
+        st.markdown("""
+    ##### 📋 Activity Type Abbreviations
+
+    **AR** – Active Recovery | **CT** – Cross Train | **E** – Easy Run
+    **GA** – General Aerobic | **I** – Interval | **LSD** – Long Slow Distance
+    **LT** – Lactate Threshold | **MLR** – Medium Long Run | **MP** – Marathon Pace
+    **R** – Recovery Run | **S** – Speedwork | **STR** – Strength Training | **T** – Tempo
+    """)
+
     st.markdown(
         """
         <div style="
@@ -574,15 +583,6 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     """,
         unsafe_allow_html=True,
     )
-
-    st.markdown("""
-    ##### 📋 Activity Type Abbreviations
-
-    **AR** – Active Recovery | **CT** – Cross Train | **E** – Easy Run
-    **GA** – General Aerobic | **I** – Interval | **LSD** – Long Slow Distance
-    **LT** – Lactate Threshold | **MLR** – Medium Long Run | **MP** – Marathon Pace
-    **R** – Recovery Run | **S** – Speedwork | **STR** – Strength Training | **T** – Tempo
-    """)
 
     with st.expander("Base Building + SG Marathon 2026"):
         # with st.expander("View Training Program"):
