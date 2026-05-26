@@ -5,7 +5,6 @@ from datetime import datetime
 
 # In strava.py
 import time
-from data.token_storage import get_stored_tokens, update_stored_tokens
 
 
 ### ORIGINAL SCRIPT ##### ############## ############## ############## ############## ############## ##############
