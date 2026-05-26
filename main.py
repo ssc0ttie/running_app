@@ -76,14 +76,15 @@ with col1:
                 st.error("Wrong passcode!")
 
             # Radio button that shows/hides based on authentication
-        options = ["🗓️ Program", "🗺️ Your Runs", "📓Log", "📊 Stats"]
+        options = ["🗓️ Program", "🗺️ Your Runs", "📓Log"]
 
         if st.session_state.authenticated:
             options.append("🏋🏻‍♂️ Str Training")
             options.append("💗 HR Zones")
             options.append("📓Log")
             options.append("🎯 Remarks")
-            options.append("🔄 Strava Sync")  # Add the hidden option
+            options.append("🔄 Strava Sync")
+            options.append("📊 Stats"),  # Add the hidden option
 
         if st.session_state.memberverified:
             options.append("📊 Stats")
@@ -157,7 +158,7 @@ st.text("")
 
 #########################################################################
 
-if tabs != "🗓️ Program":
+if tabs != "🗓️ Program" and tabs != "🗺️ Your Runs":
 
     if st.session_state.get("just_submitted", False):
         df = pulluc.get_runner_data()  # Uncached for fresh data after submission
@@ -616,17 +617,17 @@ if tabs == "📘 Reference":  ##STR WORK
     ref.ref_tab()
 
 if tabs == "🗺️ Your Runs":  ##STR WORK
-    from data.read_data_cached_for_recent import get_runner_data
+    from data import read_data_cached_for_recent
 
-    if st.session_state.get("just_submitted", False):
-        df = get_runner_data()  # Uncached for fresh data after submission
-        st.session_state["just_submitted"] = False
-    else:
-        df = get_runner_data()  # Cached for normal viewing
-        if df is None:
-            # Fallback to empty dataframe or previous data
-            df = pd.DataFrame()
-
+    # if st.session_state.get("just_submitted", False):
+    #     df = get_runner_data()  # Uncached for fresh data after submission
+    #     st.session_state["just_submitted"] = False
+    # else:
+    #     df = get_runner_data()  # Cached for normal viewing
+    #     if df is None:
+    #         # Fallback to empty dataframe or previous data
+    #         df = pd.DataFrame()
+    df = read_data_cached_for_recent.get_runner_data()
     full_df = pd.DataFrame(df)
 
     #############################################################################
@@ -720,18 +721,18 @@ if tabs == "🗺️ Your Runs":  ##STR WORK
     # Display activity cards with zones
     acard.display_strava_style_feed_test(filtered_df, zones_data)
 
-    st.write(f"Columns in filtered_df: {filtered_df.columns.tolist()}")
-    if "UniqueKey" not in filtered_df.columns:
-        st.error("UniqueKey column not found! Zones will not match.")
-        # acard.display_strava_style_feed_test(filtered_df)
+    # st.write(f"Columns in filtered_df: {filtered_df.columns.tolist()}")
+    # if "UniqueKey" not in filtered_df.columns:
+    #     st.error("UniqueKey column not found! Zones will not match.")
+    #     # acard.display_strava_style_feed_test(filtered_df)
 
-    # In the Your Runs tab, after loading both dataframes
-    if zones_data is not None and not zones_data.empty:
-        st.write("### Sample Parent_UniqueKey from zones_data:")
-        if "Parent_UniqueKey" in zones_data.columns:
-            st.write(zones_data["Parent_UniqueKey"].head(5).tolist())
-        else:
-            st.write("Parent_UniqueKey column not found!")
+    # # # In the Your Runs tab, after loading both dataframes
+    # if zones_data is not None and not zones_data.empty:
+    #     st.write("### Sample Parent_UniqueKey from zones_data:")
+    #     if "Parent_UniqueKey" in zones_data.columns:
+    #         st.write(zones_data["Parent_UniqueKey"].head(5).tolist())
+    #     else:
+    #         st.write("Parent_UniqueKey column not found!")
 
     # st.write("### Sample UniqueKey from activities:")
     # st.write(filtered_df["UniqueKey"].tail(5).tolist())
@@ -747,135 +748,134 @@ if tabs == "🏋🏻‍♂️ Str Training":  # REFERENCE
 
     sref.general_str_ref()
 
+if tabs == "🎯 Remarks":  # REMARKS
+    from visuals import weekly_remarks as wr
+    from visuals import stats_table as stats
 
-# if tabs == "🎯 Remarks":  # REMARKS
-# from visuals import weekly_remarks as wr
-# from visuals import stats_table as stats
+    st.markdown(
+        """
+        <div style="
+            color:#3a3939;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;">
+            🎯 Weekly Remarks
+        </div>
+    """,
+        unsafe_allow_html=True,
+    )
 
-# st.markdown(
-#     """
-#     <div style="
-#         color:#3a3939;
-#         font-size: 20px;
-#         font-weight: 600;
-#         border-bottom: 1px solid #ccc;
-#         padding-bottom: 4px;
-#         margin-top: 20px;
-#         margin-bottom: 10px;">
-#         🎯 Weekly Remarks
-#     </div>
-# """,
-#     unsafe_allow_html=True,
-# )
+    ### --- ACTIVATE ONLY DURING WEEKLY REVIEWS -----###
+    # -- WEEKLY  CHART -- ##
+    coach_df = (
+        full_df
+        if selected_weeks == "All"
+        else full_df[full_df["Week"].isin(selected_weeks)]
+    )
 
-# ### --- ACTIVATE ONLY DURING WEEKLY REVIEWS -----###
-# # -- WEEKLY  CHART -- ##
-# coach_df = (
-#     full_df
-#     if selected_weeks == "All"
-#     else full_df[full_df["Week"].isin(selected_weeks)]
-# )
+    list_weeks = sorted(
+        filtered_df["Week"].dropna().unique(),
+        key=lambda x: int("".join(filter(str.isdigit, x))),
+    )
+    # list_weeks = sorted(full_df["Week"].dropna().unique())
+    latest_week = list_weeks[-1]
 
-# list_weeks = sorted(
-#     filtered_df["Week"].dropna().unique(),
-#     key=lambda x: int("".join(filter(str.isdigit, x))),
-# )
-# # list_weeks = sorted(full_df["Week"].dropna().unique())
-# latest_week = list_weeks[-1]
+    latest_week = "W 3"
+    coach_df = filtered_df[filtered_df["Week"] == (latest_week)]
 
-# latest_week = "W 3"
-# coach_df = filtered_df[filtered_df["Week"] == (latest_week)]
+    st.markdown(f"""## 🏁 Week: {latest_week}""")
 
-# st.markdown(f"""## 🏁 Week: {latest_week}""")
+    # st.write(filtered_df.columns)
 
-# # st.write(filtered_df.columns)
+    # ####----WEEKLY SUMMARY TABLE --- ###
+    stats.generate_matrix_coach(coach_df)
 
-# # ####----WEEKLY SUMMARY TABLE --- ###
-# stats.generate_matrix_coach(coach_df)
+    wr.weekly_remarks()
 
-# wr.weekly_remarks()
+if tabs == "💗 HR Zones":  ##SCOTTS CORNER
 
-# if tabs == "💗 HR Zones":  ##SCOTTS CORNER
+    with st.expander("Scott Program"):
+        st.markdown(
+            """
+                <div style="
+                    color:#3a3939;
+                    font-size: 20px;
+                    font-weight: 450;
+                    border-bottom: 1px solid #ccc;
+                    padding-bottom: 4px;
+                    margin-top: 20px;
+                    margin-bottom: 10px;">
+                    🗓️ Training Plan</div>
+            """,
+            unsafe_allow_html=True,
+        )
+        prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
+        components.iframe(
+            prog_sheet,
+            height=500,
+            width=600,
+        )
 
-# with st.expander("Scott Program"):
-#     st.markdown(
-#         """
-#             <div style="
-#                 color:#3a3939;
-#                 font-size: 20px;
-#                 font-weight: 450;
-#                 border-bottom: 1px solid #ccc;
-#                 padding-bottom: 4px;
-#                 margin-top: 20px;
-#                 margin-bottom: 10px;">
-#                 🗓️ Training Plan</div>
-#         """,
-#         unsafe_allow_html=True,
-#     )
-#     prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
-#     components.iframe(
-#         prog_sheet,
-#         height=500,
-#         width=600,
-#     )
+    with st.expander("Chona Progaram"):
+        st.subheader("Chona")
+        prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
+        components.iframe(
+            prog_sheet,
+            height=500,
+            width=600,
+        )
 
-# with st.expander("Chona Progaram"):
-#     st.subheader("Chona")
-#     prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
-#     components.iframe(
-#         prog_sheet,
-#         height=500,
-#         width=600,
-#     )
+    ####CUSTOM ZONES####
+    col1, col2 = st.columns(2)
+    with col1:  ###SCOTT ZONES####
+        with st.expander("Your Zones : Scott"):
+            st.subheader(":blue[Scott]", divider=True)
+            st.markdown(
+                """
+                ### 🏃‍♂️ Pfitzinger Heart Rate Training Zones
+                ### As of July 14, 2025 : Transition Week 11
 
-# ####CUSTOM ZONES####
-# col1, col2 = st.columns(2)
-# with col1:  ###SCOTT ZONES####
-#     with st.expander("Your Zones : Scott"):
-#         st.subheader(":blue[Scott]", divider=True)
-#         st.markdown(
-#             """
-#             ### 🏃‍♂️ Pfitzinger Heart Rate Training Zones
-#             ### As of July 14, 2025 : Transition Week 11
+                Your Resting HR: **55 bpm**
+                Your Max HR: **192 bpm** as of 16-Jul-2025
+                Heart Rate Reserve (HRR): **136 bpm**
 
-#             Your Resting HR: **55 bpm**
-#             Your Max HR: **192 bpm** as of 16-Jul-2025
-#             Heart Rate Reserve (HRR): **136 bpm**
+                **🏷️ Zones**
+                - 🟢 Zone 2: Recovery / Easy ➡️**Target HR: 118-130 bpm**  🔥RPE : **2-4**
+                - 🔵 Zone 2.5–3: Aerobic / General ➡️ **Target HR: 130-140 bpm**  🔥RPE : **3-5**
+                - 🟡 Zone 3: Long Run ➡️ **Target HR: 135-145 bpm**  🔥RPE : **3-6**
+                - 🔶 Zone 4: Marathon Pace ➡️ **Target HR: 145-155**  🔥RPE : **5-7**
+                - 🔴 Zone 4+: Threshold / Tempo ➡️ **Target HR: 156-170 bpm**  🔥RPE : **7-8**
+                - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 171-187 bpm**   🔥RPE : **9-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
+                """,
+                unsafe_allow_html=True,
+            )
+    with col2:  ###CHONA ZONES ####
+        with st.expander("Your Zones : Chona"):
+            st.subheader(":green[Chona]", divider=True)
+            st.markdown(
+                """
+                    ### 🏃‍♂️ Effort-Based Zones
+                    ### As of July 14, 2025 : Transition Week 11
 
-#             **🏷️ Zones**
-#             - 🟢 Zone 2: Recovery / Easy ➡️**Target HR: 118-130 bpm**  🔥RPE : **2-4**
-#             - 🔵 Zone 2.5–3: Aerobic / General ➡️ **Target HR: 130-140 bpm**  🔥RPE : **3-5**
-#             - 🟡 Zone 3: Long Run ➡️ **Target HR: 135-145 bpm**  🔥RPE : **3-6**
-#             - 🔶 Zone 4: Marathon Pace ➡️ **Target HR: 145-155**  🔥RPE : **5-7**
-#             - 🔴 Zone 4+: Threshold / Tempo ➡️ **Target HR: 156-170 bpm**  🔥RPE : **7-8**
-#             - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 171-187 bpm**   🔥RPE : **9-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
-#             """,
-#             unsafe_allow_html=True,
-#         )
-# with col2:  ###CHONA ZONES ####
-#     with st.expander("Your Zones : Chona"):
-#         st.subheader(":green[Chona]", divider=True)
-#         st.markdown(
-#             """
-#                 ### 🏃‍♂️ Effort-Based Zones
-#                 ### As of July 14, 2025 : Transition Week 11
+                    Your Resting HR: **56 bpm**
+                    Your Max HR: **190 bpm** as of 16-Jul-2025
+                    Heart Rate Reserve (HRR): **134 bpm**
 
-#                 Your Resting HR: **56 bpm**
-#                 Your Max HR: **190 bpm** as of 16-Jul-2025
-#                 Heart Rate Reserve (HRR): **134 bpm**
+                    **🏷️ Zones**
+                    - 🟢 Zone 2: Recovery / Easy ➡️**Target HR: 140-150 bpm**  🔥RPE : **2-4**
+                    - 🔵 Zone 2.5–3: Aerobic / General ➡️ **Target HR: 150-160 bpm**  🔥RPE : **3-5**
+                    - 🟡 Zone 3: Long Run ➡️ **Target HR: 145-165 bpm**  🔥RPE : **3-6**
+                    - 🔶 Zone 4: Marathon Pace ➡️ **Target HR: TBD**  🔥RPE : **5-7**
+                    - 🔴 Zone 4+: Threshold / Tempo ➡️ **Target HR: 165-175 bpm**  🔥RPE : **7-8**
+                    - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 178-190 bpm**   🔥RPE : **8-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
 
-#                 **🏷️ Zones**
-#                 - 🟢 Zone 2: Recovery / Easy ➡️**Target HR: 140-150 bpm**  🔥RPE : **2-4**
-#                 - 🔵 Zone 2.5–3: Aerobic / General ➡️ **Target HR: 150-160 bpm**  🔥RPE : **3-5**
-#                 - 🟡 Zone 3: Long Run ➡️ **Target HR: 145-165 bpm**  🔥RPE : **3-6**
-#                 - 🔶 Zone 4: Marathon Pace ➡️ **Target HR: TBD**  🔥RPE : **5-7**
-#                 - 🔴 Zone 4+: Threshold / Tempo ➡️ **Target HR: 165-175 bpm**  🔥RPE : **7-8**
-#                 - 🟣 Zone 5: VO₂ Max ➡️ **Target HR: 178-190 bpm**   🔥RPE : **8-10**                   ⭐⭐⭐☆ – Use sparingly; high injury risk if overused
-
-#                 ---
-#                 """,
-#             unsafe_allow_html=True,
-#         )
+                    ---
+                    """,
+                unsafe_allow_html=True,
+            )
 
 
 if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
@@ -893,7 +893,7 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
         if st.button("🔄 Sync to Google Sheets", type="primary"):
             st.session_state.sync_triggered = True
 
-    # Fetch Strava data
+    # # Fetch Strava data
     import data.fetch_strava as fs
     import data.strava as strav
 
@@ -914,6 +914,8 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
             "Days to look back for zone analysis", 2, 365, 2, key="zone_days_back"
         )
 
+    ### export sample ####
+    # zones_df.to_csv("zones_df_output.csv", index=False)
     with col2:
         if st.button("🔄 Calculate Zones", type="primary", key="calc_zones"):
             st.session_state.calc_zones_triggered = True
@@ -921,11 +923,22 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
     if st.session_state.get("calc_zones_triggered", False):
         with st.spinner("Fetching and processing activities..."):
             import data.fetch_strava as fs
-
-            # Use the working function that returns dictionaries
-            activities = fs.fetch_all_activities_old(days_back_zones)
+            import data.strava as strav
 
             if activities and len(activities) > 0:
+                # =========================================================
+                # STEP 1: Create ONE StravaAPI client per athlete (outside the loop)
+                # =========================================================
+                athlete_clients = {}
+                for name, creds in st.secrets["users"].items():
+                    athlete_clients[name] = strav.StravaAPI(
+                        client_id=creds["client_id"],
+                        client_secret=creds["client_secret"],
+                        access_token=creds["access_token"],
+                        refresh_token=creds["refresh_token"],
+                    )
+                    print(f"✅ Created client for {name}")
+
                 # Collect all zone data
                 all_zone_data = []
 
@@ -941,183 +954,123 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
                     # Only process activities with heart rate and distance
                     if act.get("has_heartrate") and act.get("distance", 0) > 0:
                         try:
-                            # Get the Strava client for this user
-                            for name, creds in st.secrets["users"].items():
-                                if act.get("athlete_name") == name:
-                                    strava = strav.StravaAPI(
-                                        client_id=creds["client_id"],
-                                        client_secret=creds["client_secret"],
-                                        access_token=creds["access_token"],
-                                        refresh_token=creds["refresh_token"],
+                            # Get the athlete name
+                            athlete_name = act.get("athlete_name")
+
+                            # Reuse the existing client for this athlete
+                            strava = athlete_clients.get(athlete_name)
+
+                            if not strava:
+                                st.warning(
+                                    f"No client found for athlete: {athlete_name}"
+                                )
+                                continue
+
+                            # Use the authenticated StravaAPI class (handles token refresh automatically)
+                            streams = None
+                            response = strava.make_authenticated_request(
+                                f"/activities/{act['id']}/streams",
+                                params={
+                                    "keys": "time,heartrate,velocity_smooth",
+                                    "key_by_type": "true",
+                                },
+                            )
+
+                            if response and response.status_code == 200:
+                                streams_data = response.json()
+
+                                # Convert to expected format for your zone functions
+                                class StreamWrapper:
+                                    def __init__(self, data):
+                                        self.data = data
+
+                                streams = {}
+                                if "heartrate" in streams_data:
+                                    streams["heartrate"] = StreamWrapper(
+                                        streams_data["heartrate"]["data"]
+                                    )
+                                if "time" in streams_data:
+                                    streams["time"] = StreamWrapper(
+                                        streams_data["time"]["data"]
+                                    )
+                                if "velocity_smooth" in streams_data:
+                                    streams["velocity_smooth"] = StreamWrapper(
+                                        streams_data["velocity_smooth"]["data"]
                                     )
 
-                                    # Get detailed activity information (may include streams)
-                                    # If your get_activity_detail doesn't include streams, try:
-                                    # First, check if the activity already has streams
-                                    streams = None
+                            if streams and "heartrate" in streams:
+                                # Calculate HR zones
+                                hr_zones = calculate_hr_zones_from_streams(
+                                    streams, athlete_name=athlete_name
+                                )
 
-                                    # Try to get streams using a direct API call since your class doesn't have it
-                                    import requests
-
-                                    url = f"https://www.strava.com/api/v3/activities/{act['id']}/streams"
-                                    params = {
-                                        "keys": "time,heartrate,velocity_smooth",
-                                        "key_by_type": "true",
-                                    }
-                                    headers = {
-                                        "Authorization": f'Bearer {creds["access_token"]}'
-                                    }
-
-                                    response = requests.get(
-                                        url, params=params, headers=headers
-                                    )
-
-                                    if response.status_code == 200:
-                                        streams_data = response.json()
-
-                                        # Convert to expected format for your zone functions
-                                        class StreamWrapper:
-                                            def __init__(self, data):
-                                                self.data = data
-
-                                        streams = {}
-                                        if "heartrate" in streams_data:
-                                            streams["heartrate"] = StreamWrapper(
-                                                streams_data["heartrate"]["data"]
-                                            )
-                                        if "time" in streams_data:
-                                            streams["time"] = StreamWrapper(
-                                                streams_data["time"]["data"]
-                                            )
-                                        if "velocity_smooth" in streams_data:
-                                            streams["velocity_smooth"] = StreamWrapper(
-                                                streams_data["velocity_smooth"]["data"]
-                                            )
-
-                                    athlete_name = act.get("athlete_name")
-
-                                    if streams and "heartrate" in streams:
-                                        # Calculate HR zones
-
-                                        hr_zones = calculate_hr_zones_from_streams(
-                                            streams, athlete_name=athlete_name
-                                        )
-
-                                        if hr_zones:
-                                            # Format date
-                                            start_date = act.get("start_date_local", "")
-                                            if start_date and "T" in start_date:
-                                                date_part = start_date.split("T")[0]
-                                            else:
-                                                date_part = (
-                                                    str(start_date)[:10]
-                                                    if start_date
-                                                    else ""
-                                                )
-
-                                            # Calculate average HR for this activity
-                                            avg_hr = int(
-                                                act.get("average_heartrate", 0)
-                                            )
-                                            sport_type = act.get("sport_type", "Run")
-                                            athlete_name = act.get("athlete_name", name)
-
-                                            # Build parent UniqueKey
-                                            parent_unique_key = f"{date_part}|{athlete_name}|{sport_type}|{avg_hr}"
-                                            # DEBUG: Print the key being created
-                                            print(
-                                                f"Created Parent_UniqueKey: {parent_unique_key}"
-                                            )
-
-                                            for zone in hr_zones:
-                                                all_zone_data.append(
-                                                    {
-                                                        "Date": str(
-                                                            date_part
-                                                        ),  # Convert to string
-                                                        "Activity": sport_type,
-                                                        "Athlete": str(athlete_name),
-                                                        "Type": "Heart Rate",
-                                                        "Zone": str(zone["zone"]),
-                                                        "Zone Name": str(
-                                                            zone["zone_name"]
-                                                        ),
-                                                        "Min": int(
-                                                            zone["min_hr"]
-                                                        ),  # Convert to int
-                                                        "Max": int(
-                                                            zone["max_hr"]
-                                                        ),  # Convert to int
-                                                        "Time": str(
-                                                            zone["time_formatted"]
-                                                        ),
-                                                        "Percentage": f"{float(zone['percentage'])}%",  # Convert to float then string
-                                                        "Parent_UniqueKey": str(
-                                                            parent_unique_key
-                                                        ),
-                                                        "Avg_HR": int(
-                                                            avg_hr
-                                                        ),  # Convert to int
-                                                    }
-                                                )
-
-                                        # Calculate Pace zones (only for runs)
-                                        if (
-                                            act.get("sport_type") == "Run"
-                                            and act.get("distance", 0) > 0
-                                            and "velocity_smooth" in streams
-                                        ):
-                                            # Pace zones section - same fix
-
-                                            pace_zones = (
-                                                calculate_pace_zones_from_streams(
-                                                    streams, athlete_name=athlete_name
-                                                )
-                                            )
-                                            if pace_zones:
-                                                start_date = act.get(
-                                                    "start_date_local", ""
-                                                )
-                                                if start_date and "T" in start_date:
-                                                    date_part = start_date.split("T")[0]
-                                                else:
-                                                    date_part = (
-                                                        str(start_date)[:10]
-                                                        if start_date
-                                                        else ""
-                                                    )
-
-                                                for zone in pace_zones:
-                                                    all_zone_data.append(
-                                                        {
-                                                            "Date": date_part,
-                                                            "Activity": sport_type,
-                                                            "Athlete": athlete_name,
-                                                            "Type": "Pace",
-                                                            "Zone": zone["zone"],
-                                                            "Zone Name": zone[
-                                                                "zone_name"
-                                                            ],
-                                                            "Min": zone.get(
-                                                                "min_pace", "-"
-                                                            ),
-                                                            "Max": zone.get(
-                                                                "max_pace", "-"
-                                                            ),
-                                                            "Time": zone[
-                                                                "time_formatted"
-                                                            ],
-                                                            "Percentage": f"{zone['percentage']}%",
-                                                            # NEW fields for parent linking
-                                                            "Parent_UniqueKey": parent_unique_key,
-                                                            "Avg_HR": avg_hr,
-                                                        }
-                                                    )
+                                if hr_zones:
+                                    # Format date
+                                    start_date = act.get("start_date_local", "")
+                                    if start_date and "T" in start_date:
+                                        date_part = start_date.split("T")[0]
                                     else:
-                                        st.warning(
-                                            f"No stream data for activity {act['id']}"
+                                        date_part = (
+                                            str(start_date)[:10] if start_date else ""
                                         )
-                                    break  # Exit the user loop
+
+                                    # Calculate average HR for this activity
+                                    raw_hr = act.get("average_heartrate", 0)
+                                    avg_hr = int(round(raw_hr))
+                                    sport_type = act.get("sport_type", "Run")
+
+                                    # Build parent UniqueKey
+                                    parent_unique_key = f"{date_part}|{athlete_name}|{sport_type}|{avg_hr}"
+
+                                    for zone in hr_zones:
+                                        all_zone_data.append(
+                                            {
+                                                "Date": str(date_part),
+                                                "Activity": sport_type,
+                                                "Athlete": str(athlete_name),
+                                                "Type": "Heart Rate",
+                                                "Zone": str(zone["zone"]),
+                                                "Zone Name": str(zone["zone_name"]),
+                                                "Min": int(zone["min_hr"]),
+                                                "Max": int(zone["max_hr"]),
+                                                "Time": str(zone["time_formatted"]),
+                                                "Percentage": f"{float(zone['percentage'])}%",
+                                                "Parent_UniqueKey": str(
+                                                    parent_unique_key
+                                                ),
+                                                "Avg_HR": int(avg_hr),
+                                            }
+                                        )
+
+                                # Calculate Pace zones (only for runs)
+                                if (
+                                    act.get("sport_type") == "Run"
+                                    and act.get("distance", 0) > 0
+                                    and "velocity_smooth" in streams
+                                ):
+                                    pace_zones = calculate_pace_zones_from_streams(
+                                        streams, athlete_name=athlete_name
+                                    )
+                                    if pace_zones:
+                                        for zone in pace_zones:
+                                            all_zone_data.append(
+                                                {
+                                                    "Date": date_part,
+                                                    "Activity": sport_type,
+                                                    "Athlete": athlete_name,
+                                                    "Type": "Pace",
+                                                    "Zone": zone["zone"],
+                                                    "Zone Name": zone["zone_name"],
+                                                    "Min": zone.get("min_pace", "-"),
+                                                    "Max": zone.get("max_pace", "-"),
+                                                    "Time": zone["time_formatted"],
+                                                    "Percentage": f"{zone['percentage']}%",
+                                                    "Parent_UniqueKey": parent_unique_key,
+                                                    "Avg_HR": avg_hr,
+                                                }
+                                            )
+                            else:
+                                st.warning(f"No stream data for activity {act['id']}")
 
                         except Exception as e:
                             st.warning(
@@ -1172,10 +1125,6 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
                 st.info("No activities found in the selected date range.")
 
             st.session_state.calc_zones_triggered = False
-
-    ### export sample ####
-    # zones_df.to_csv("zones_df_output.csv", index=False)
-
     ############## BEFORE PUSH ####################
 
     def clean_activity_data(act):
@@ -1228,15 +1177,6 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
         # Convert m/s to min/km
         pace_seconds_per_km = 1000 / speed_mps
 
-        # hours = int(pace_seconds_per_km // 3600)
-        # minutes = int((pace_seconds_per_km % 3600) // 60)
-        # seconds = int(pace_seconds_per_km % 60)
-
-        # if hours > 0:
-        #     return f"{hours}:{minutes:02d}:{seconds:02d}"
-        # else:
-        #     return f"{hours}:{minutes:02d}:{seconds:02d}"
-
         return pace_seconds_per_km / 86400
 
     def convert_speed_to_pace_string(speed_mps):
@@ -1261,12 +1201,6 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
         if total_seconds <= 0:
             return "00:00:00"
 
-        # hours = int(total_seconds // 3600)
-        # minutes = int((total_seconds % 3600) // 60)
-        # seconds = int(total_seconds % 60)
-
-        # return f"{hours}:{minutes:02d}:{seconds:02d}"
-
         return total_seconds / 86400
 
     def convert_seconds_to_time_string(total_seconds):
@@ -1280,76 +1214,10 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
 
         return f"{hours:02}:{minutes:02}:{seconds:02}"
 
-    def fetch_zones_for_single_activity(activity_id):
-        """Fetch and calculate zones for a single activity"""
-        users = st.secrets["users"]
-        import data.strava as strav
-
-        for name, creds in users.items():
-            try:
-                # Recreate Strava client
-                strava = strav.StravaAPI(
-                    client_id=creds["client_id"],
-                    client_secret=creds["client_secret"],
-                    access_token=creds["access_token"],
-                    refresh_token=creds["refresh_token"],
-                )
-
-                # Get athlete profile for max HR
-                profile = strava.get_athlete_profile()
-                athlete_max_hr = profile.get("max_heart_rate") if profile else None
-
-                # Fetch streams
-                streams = strava.get_activity_streams(
-                    activity_id, types=["heartrate", "velocity_smooth", "time"]
-                )
-
-                if not streams:
-                    st.warning(f"No stream data available for activity {activity_id}")
-                    return None
-
-                # Get activity details for max HR
-                try:
-                    activity = strava.get_activity(activity_id)
-                    activity_max_hr = (
-                        activity.get("max_heartrate") if activity else None
-                    )
-                except:
-                    activity_max_hr = None
-
-                # Calculate zones
-                hr_zones = calculate_hr_zones_from_streams(
-                    streams, athlete_name=athlete_name
-                )
-                pace_zones = calculate_pace_zones_from_streams(
-                    streams, athlete_name=athlete_name
-                )
-
-                return {
-                    "hr_zones": hr_zones if hr_zones else [],
-                    "pace_zones": pace_zones if pace_zones else [],
-                    "max_hr": activity_max_hr or athlete_max_hr,
-                    "activity_id": activity_id,
-                }
-
-            except Exception as e:
-                st.error(f"Error fetching zones for activity {activity_id}: {e}")
-                return None
-
-        return None
-
     ############  Before Sync ###########
     if activities:
         cleaned_activities = [clean_activity_data(act) for act in activities]
         strava_df = pd.DataFrame(cleaned_activities)
-
-        # Define user mapping dictionary so athlete name
-        USER_MAPPING = {
-            29563579: "Scott",
-            # Add more users here as needed
-            # 12345678: "John",
-            # 87654321: "Sarah",
-        }
 
         # Apply conversions
         # Now apply conversions - values are guaranteed to be numbers
@@ -1423,24 +1291,61 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
             # Reset the trigger
             st.session_state.sync_triggered = False
 
+        ############################### ORIGINAL #######################################
+        # # Push zone data if available
+        # if "zones_df" in locals() and not zones_df.empty:
+        #     # Get parent info from the first row
+        #     parent_key = zones_df.iloc[0]["Parent_UniqueKey"]
+
+        #     activity_row_data = {
+        #         "Date": zones_df.iloc[0]["Date"],
+        #         "Member Name": zones_df.iloc[0]["Athlete"],
+        #         "Activity": zones_df.iloc[0]["Activity"],
+        #         "Avg_HR": zones_df.iloc[0]["Avg_HR"],
+        #     }
+
+        #     with st.spinner("Pushing zone data to Google Sheets..."):
+        #         import data.push_data as push_data
+
+        #         zone_success, zone_errors = push_data.push_zone_data_to_sheet(
+        #             zones_df, parent_key, activity_row_data
+        #         )
+
+        #     if zone_success > 0:
+        #         st.success(f"✅ Successfully pushed {zone_success} zone records!")
+        #     if zone_errors > 0:
+        #         st.error(f"❌ Failed to push {zone_errors} zone records")
+
+        ############################### ^^^^^^^ ORIGINAL ^^^#######################################
         # Push zone data if available
         if "zones_df" in locals() and not zones_df.empty:
-            # Get parent info from the first row
-            parent_key = zones_df.iloc[0]["Parent_UniqueKey"]
+            # Group by Parent_UniqueKey
+            grouped = zones_df.groupby("Parent_UniqueKey")
 
-            activity_row_data = {
-                "Date": zones_df.iloc[0]["Date"],
-                "Member Name": zones_df.iloc[0]["Athlete"],
-                "Activity": zones_df.iloc[0]["Activity"],
-                "Avg_HR": zones_df.iloc[0]["Avg_HR"],
-            }
+            total_success = 0
+            total_errors = 0
 
-            with st.spinner("Pushing zone data to Google Sheets..."):
+            for parent_key, group_df in grouped:
+                # Get activity data from the first row of this group
+                first_row = group_df.iloc[0]
+
+                activity_row_data = {
+                    "Date": first_row["Date"],
+                    "Member Name": first_row["Athlete"],
+                    "Activity": first_row["Activity"],
+                    "Avg_HR": first_row["Avg_HR"],
+                }
+
+                st.write(f"📊 Pushing {len(group_df)} zones for {parent_key}")
+
                 zone_success, zone_errors = push.push_zone_data_to_sheet(
-                    zones_df, parent_key, activity_row_data
+                    group_df, parent_key, activity_row_data
                 )
 
-            if zone_success > 0:
-                st.success(f"✅ Successfully pushed {zone_success} zone records!")
-            if zone_errors > 0:
-                st.error(f"❌ Failed to push {zone_errors} zone records")
+                total_success += zone_success
+                total_errors += zone_errors
+
+            if total_success > 0:
+                st.success(f"✅ Successfully pushed {total_success} zone records!")
+            if total_errors > 0:
+                st.error(f"❌ Failed to push {total_errors} zone records")

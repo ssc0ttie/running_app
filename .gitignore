@@ -9,3 +9,5 @@ main.py
 output.csv
 view_fulldf.csv
 zones_df_output.csv
+output_getrunnerdata.csv
+data/runner_data.xlsx
