@@ -53,7 +53,8 @@ with st.sidebar:
 
 selected_user = st.session_state.current_user
 # Your main app content
-st.title(f"Welcome, {st.session_state.current_user}! 🏃‍♂️")
+st.subheader(f"Welcome, {st.session_state.current_user}! 🏃‍♂️")
+st.markdown(":blue[*Need to switch accounts ? Tap the » icon in the top-left corner*]")
 
 # Rest of your tabs and content...
     
