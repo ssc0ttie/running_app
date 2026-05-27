@@ -52,18 +52,15 @@ with st.sidebar:
     st.info("💡 Tip: Click the '⋮' menu in the top-right to switch between light/dark theme")
 
 selected_user = st.session_state.current_user
-# Your main app content
-st.subheader(f"Welcome, {st.session_state.current_user}! 🏃‍♂️")
-st.markdown(":blue[*Need to switch accounts ? Tap the » icon in the top-left corner*]")
+
 
 # Rest of your tabs and content...
     
 import numpy as np
 from visuals import racedaycounter as rdc
+# Your main app content
 
 Welcome_msg = "The boulder will roll back down again — you already know that. You just have to keep showing up. And you did. That's enough."
-
-st.text("")
 
 st.markdown(
     f"""
@@ -76,7 +73,9 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
+st.text("")
+st.subheader(f"Welcome, {st.session_state.current_user}! 🏃‍♂️")
+st.markdown(":blue[*Need to switch accounts ? Tap the » icon in the top-left corner*]")
 col1, col2 = st.columns(2)
 
 with col2:
