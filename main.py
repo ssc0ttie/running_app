@@ -117,7 +117,6 @@ with col2:
                 <li>📊 <strong>Stats</strong>: Track your progress.</li>
                 <li>🗓️ <strong>Program</strong>: Your marathon plan.</li>
                 <li>🗺️ <strong> Your Runs</strong>: View Recent Runs.</li>
-                <li>💗 <strong> HR Zones</strong>: View HR Zones.</li>
             </ul>
             <p><strong>PS:</strong> If it lags, don't worry — it's just *thinking really hard*. 🧠💻</p>
             """,
@@ -149,7 +148,7 @@ with col1:
                 st.error("Wrong passcode!")
 
             # Radio button that shows/hides based on authentication
-        options = ["🗓️ Program", "🗺️ Your Runs", "📊 Stats", "📓Log"]
+        options = ["🗓️ Program", "🗺️ Your Runs", "📊 Stats"]
 
         if st.session_state.coachauthenticated:
             options.append("🏋🏻‍♂️ Str Training")
@@ -366,18 +365,26 @@ if tabs == "📊 Stats":  # STATS
         members_count = len(members)
 
         members.insert(0, "All")  # Add 'All' option at the top
-        default_mem = selected_user
+        
+        
+        if selected_member == "Guest":
+            default_mem = "All"
+        else:
+            default_mem = selected_user
+        
+
         selected_member = st.selectbox(
             "Select Member to Filter", members, index=members.index(default_mem)
         )
 
+        
 
         # selected_member = "Scott"
 
         # Filter the DataFrame
 
         # Apply filtering
-        if selected_member == "All":
+        if selected_member == "All" or selected_member == "Guest" :
             filtered_member_df = full_df
         else:
             filtered_member_df = full_df[full_df["Member Name"] == selected_member]
@@ -407,7 +414,7 @@ if tabs == "📊 Stats":  # STATS
     # -------------------EVENT FILTER  -----------------------#
     with col3:
         event = sorted(filtered_df["Event"].dropna().unique())
-        if not filtered_df.empty and "Date_of_Activity" in filtered_df.columns:
+        if not filtered_df.empty and "Date_of_Activity" in filtered_df.columns and selected_user == "Scott":
             # Get the event from the most recent activity
             latest_activity = filtered_df.loc[filtered_df["Date_of_Activity"].idxmax()]
             latest_event = latest_activity["Event"]
