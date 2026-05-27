@@ -39,6 +39,7 @@ st.markdown(
 col1, col2 = st.columns(2)
 
 with col2:
+    st.sidebar.info("💡 Tip: Click the '⋮' menu in the top-right to switch between light/dark theme")
     with st.popover("💡 How to Use This Page"):
         st.markdown(
             """
@@ -293,9 +294,12 @@ if tabs == "📊 Stats":  # STATS
         members_count = len(members)
 
         members.insert(0, "All")  # Add 'All' option at the top
+        default_mem = "All"
         selected_member = st.selectbox(
-            "Select Member to Filter", members, index=members_count
+            "Select Member to Filter", members, index=members.index(default_mem)
         )
+
+
         # selected_member = "Scott"
 
         # Filter the DataFrame
