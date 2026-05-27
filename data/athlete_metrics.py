@@ -12,11 +12,11 @@ ATHLETE_METRICS = {
         "pace_10k": 4.90,
     },
     "Chona": {
-        "max_hr": 175,
-        "threshold_hr": 155,
-        "threshold_pace": 5.00,  # 5:00 min/km
-        "pace_5k": 4.30,
-        "pace_10k": 4.45,
+        "max_hr": 195,
+        "threshold_hr": 171,
+        "threshold_pace": 6.5,  # 5:00 min/km
+        "pace_5k": 6.15,
+        "pace_10k": 6.8,
     },
 }
 
