@@ -9,6 +9,15 @@ from data import read_data_uncached as pulluc
 from zoneinfo import ZoneInfo
 import traceback
 
+userlist = ["Scott", "Chona", "Aiza", "Fraulein", "Alvin", "Lead", "Maxine", "Guest"]
+
+import streamlit as st
+
+# Initialize session state for current user (no login required)
+if "current_user" not in st.session_state:
+    st.session_state.current_user = "Scott"  # Default user
+
+# Set page config
 st.set_page_config(
     page_title="StillHere",
     page_icon="🪨",
@@ -16,6 +25,38 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Sidebar with member selector
+with st.sidebar:
+    st.markdown("### 🏃‍♂️ Member")
+    
+    # Member selector dropdown
+    users = userlist
+    selected_member = st.selectbox(
+        "Select Member",
+        users,
+        index=users.index(st.session_state.current_user) if st.session_state.current_user in users else 0,
+        key="member_selector",
+        label_visibility="collapsed"
+    )
+    
+    # Update session state if changed
+    if selected_member != st.session_state.current_user:
+        st.session_state.current_user = selected_member
+        st.rerun()
+    
+    st.divider()
+    
+    # Display current user
+    st.markdown(f"**Current:** {st.session_state.current_user}")
+    
+    st.info("💡 Tip: Click the '⋮' menu in the top-right to switch between light/dark theme")
+
+selected_user = st.session_state.current_user
+# Your main app content
+st.title(f"Welcome, {st.session_state.current_user}! 🏃‍♂️")
+
+# Rest of your tabs and content...
+    
 import numpy as np
 from visuals import racedaycounter as rdc
 
@@ -35,11 +76,10 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-
 col1, col2 = st.columns(2)
 
 with col2:
-    st.sidebar.info("💡 Tip: Click the '⋮' menu in the top-right to switch between light/dark theme")
+    
     with st.popover("💡 How to Use This Page"):
         st.markdown(
             """
@@ -294,7 +334,7 @@ if tabs == "📊 Stats":  # STATS
         members_count = len(members)
 
         members.insert(0, "All")  # Add 'All' option at the top
-        default_mem = "All"
+        default_mem = selected_user
         selected_member = st.selectbox(
             "Select Member to Filter", members, index=members.index(default_mem)
         )
@@ -587,33 +627,51 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     """,
         unsafe_allow_html=True,
     )
+    
 
-    with st.expander("Base Building + SG Marathon 2026"):
-        # with st.expander("View Training Program"):
-        prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
-        components.iframe(
-            prog_sheet,
-            height=500,
-            width=1600,
-        )
+    # Define program URLs for each member
+    
 
-    with st.expander("Scott Program"):
-        prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
-        components.iframe(
-            prog_sheet,
-            height=500,
-            width=1600,
-        )
+    PROGRAM_URLS = {
+    "Scott": {
+        "base": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true",
+        "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
+    },
+    "Chona": {
+        "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
+        # If Chona has a base program, add it here too
+    },
+        "All": {
+        "base": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
+        # If Chona has a base program, add it here too
+    }
+}
+    selected_user = st.session_state.current_user
 
-    with st.expander("Chona Program"):
-        # st.subheader("Chona")
-        prog_sheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
-        components.iframe(
-            prog_sheet,
-            height=500,
-            width=1600,
-        )
 
+    # Show expanders based on selected member
+    if selected_user == "Scott":
+        with st.expander("📅 Scott's Personal Program", expanded=True):
+            components.iframe(
+                PROGRAM_URLS["Scott"]["personal"],
+                height=500,
+                width=1600,
+            )
+    elif selected_user == "Chona":
+        with st.expander("📅 Chona's Program", expanded=True):
+            components.iframe(
+                PROGRAM_URLS["Chona"]["personal"],
+                height=500,
+                width=1600,
+            )
+    else:
+        # All other users (Aiza, Fraulein, Alvin, Lead, Maxine, Guest)
+        with st.expander("🏋️ Base Building + SG Marathon 2026", expanded=True):
+            components.iframe(
+                PROGRAM_URLS["All"]["base"],
+                height=500,
+                width=1600,
+            )
 
 if tabs == "📘 Reference":  ##STR WORK
     from visuals import referencetab as ref
@@ -647,14 +705,21 @@ if tabs == "🗺️ Your Runs":  ##STR WORK
         members_count = len(members)
 
         members.insert(0, "All")
-        default_mem = "All"
+        
+        if selected_member == "Guest":
+            default_mem = "All"
+        else:
+            default_mem = selected_user
+        
         selected_member = st.selectbox(
             "Select Member to Filter",
             members,
             index=members.index(default_mem),
         )
 
-        if selected_member == "All":
+            
+
+        if selected_member == "All" or selected_member == "Guest":
             filtered_member_df = full_df
         else:
             filtered_member_df = full_df[full_df["Member Name"] == selected_member]
