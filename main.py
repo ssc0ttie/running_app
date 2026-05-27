@@ -11,19 +11,47 @@ import traceback
 
 userlist = ["Scott", "Chona", "Aiza", "Fraulein", "Alvin", "Lead", "Maxine", "Guest"]
 
-import streamlit as st
+# Initialize session state
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+if "current_user" not in st.session_state:
+    st.session_state.current_user = None
+
+# === LOGIN CHECK ===
+if not st.session_state.authenticated:
+    # Use wide layout for login page
+    st.set_page_config(page_title="StillHere", page_icon="🪨", layout="wide")
+    
+    st.title("🪨 StillHere")
+    st.markdown("### Select your profile to continue")
+    
+    users = userlist
+    
+    selected_user = st.selectbox("Select Member", [""] + users, index=0)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("Login", type="primary", use_container_width=True):
+            if selected_user:
+                st.session_state.authenticated = True
+                st.session_state.current_user = selected_user
+                st.rerun()
+            else:
+                st.error("Please select a user first")
+    
+    st.stop()
 
 # Initialize session state for current user (no login required)
-if "current_user" not in st.session_state:
-    st.session_state.current_user = "Scott"  # Default user
+# if "current_user" not in st.session_state:
+#     st.session_state.current_user = "Scott"  # Default user
 
 # Set page config
-st.set_page_config(
-    page_title="StillHere",
-    page_icon="🪨",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
+# st.set_page_config(
+#     page_title="StillHere",
+#     page_icon="🪨",
+#     layout="wide",
+#     initial_sidebar_state="expanded",
+# )
 
 # Sidebar with member selector
 with st.sidebar:
@@ -96,10 +124,14 @@ with col2:
             unsafe_allow_html=True,
         )
 with col1:
+    # Initialize session state
+    if "coachauthenticated" not in st.session_state:
+        st.session_state.coachauthenticated = False
+
     with st.popover("Coach"):
         # Initialize session state
         if "authenticated" not in st.session_state:
-            st.session_state.authenticated = False
+            st.session_state.coachauthenticated = False
 
         if "memberverified" not in st.session_state:
             st.session_state.memberverified = False
@@ -109,17 +141,17 @@ with col1:
 
         if st.button("Submit"):
             if passcode == "8465":  # Your secret passcode
-                st.session_state.authenticated = True
+                st.session_state.coachauthenticated = True
             elif passcode == "0525":  # Your secret passcode
                 st.session_state.memberverified = True
             else:
-                st.session_state.authenticated = False
+                st.session_state.coachauthenticated = False
                 st.error("Wrong passcode!")
 
             # Radio button that shows/hides based on authentication
         options = ["🗓️ Program", "🗺️ Your Runs", "📊 Stats", "📓Log"]
 
-        if st.session_state.authenticated:
+        if st.session_state.coachauthenticated:
             options.append("🏋🏻‍♂️ Str Training")
             options.append("💗 HR Zones")
             options.append("📓Log")
