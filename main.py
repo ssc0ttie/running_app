@@ -9,7 +9,7 @@ from data import read_data_uncached as pulluc
 from zoneinfo import ZoneInfo
 import traceback
 
-userlist = ["Scott", "Chona", "Aiza", "Fraulein", "Alvin", "Lead", "Maxine", "Guest"]
+userlist = [ "Guest","Scott", "Chona", "Aiza", "Fraulein", "Alvin", "Lead", "Maxine"]
 
 # Initialize session state
 if "authenticated" not in st.session_state:
@@ -148,7 +148,7 @@ with col1:
                 st.error("Wrong passcode!")
 
             # Radio button that shows/hides based on authentication
-        options = ["🗓️ Program", "🗺️ Your Runs", "📊 Stats"]
+        options = ["🗓️ Program", "🗺️ Your Runs", "📊 Stats","📓Log"]
 
         if st.session_state.coachauthenticated:
             options.append("🏋🏻‍♂️ Str Training")
