@@ -397,7 +397,7 @@ def main():
                 }
                 
                 # Get activities from Supabase - use correct column names
-                activities_url = f"{supabase_url}/rest/v1/activities?select=id,activity_id,athlete_name,start_date,average_heartrate&athlete_name=eq.{athlete_name}&order=start_date.desc&limit=50"
+                activities_url = f"{supabase_url}/rest/v1/activities?select=id,athlete_name,start_date,average_heartrate&athlete_name=eq.{athlete_name}&order=start_date.desc&limit=50"
                 response = requests.get(activities_url, headers=headers)
                 
                 if response.status_code == 200:
@@ -406,7 +406,7 @@ def main():
                     
                     for act in activities:
                         # Get Strava activity ID (try both possible column names)
-                        strava_id = act.get('activity_id') or act.get('id')
+                        strava_id = act.get('id')
                         if not strava_id:
                             continue
                         
