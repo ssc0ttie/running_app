@@ -397,6 +397,7 @@ def main():
                 }
                 
                 # Get activities from Supabase - use correct column names
+                # Fix: Use correct column names with proper quoting
                 activities_url = f"{supabase_url}/rest/v1/activities?select=id,\"Member Name\",\"Date_of_Activity\",\"HR (bpm)\"&\"Member Name\"=eq.{athlete_name}&order=Date_of_Activity.desc&limit=50"
                 response = requests.get(activities_url, headers=headers)
                 
@@ -411,7 +412,7 @@ def main():
                             continue
                         
                         # Get average HR for this activity
-                        avg_hr = act.get('average_heartrate', 0)
+                        avg_hr = act.get('HR (bpm)', 0)
                         if avg_hr is None:
                             avg_hr = 0
                         
@@ -425,7 +426,7 @@ def main():
                             hr_zones = calculate_hr_zones_from_streams(streams, athlete_name)
                             
                             if hr_zones:
-                                start_date = act.get('start_date', '').split('T')[0] if act.get('start_date') else ''
+                                start_date = act.get('Date_of_Activity', '').split('T')[0] if act.get('Date_of_Activity') else ''
                                 
                                 for zone in hr_zones:
                                     all_zones.append({
@@ -448,7 +449,7 @@ def main():
                                 pace_zones = calculate_pace_zones_from_streams(streams, athlete_name)
                                 
                                 if pace_zones:
-                                    start_date = act.get('start_date', '').split('T')[0] if act.get('start_date') else ''
+                                    start_date = act.get('Date_of_Activity', '').split('T')[0] if act.get('Date_of_Activity') else ''
                                     
                                     for zone in pace_zones:
                                         all_zones.append({
