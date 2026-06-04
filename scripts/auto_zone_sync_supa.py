@@ -89,6 +89,24 @@ class StravaAPI:
         else:
             print(f"    ❌ Stream fetch failed: {response.status_code}")
             return None
+    
+    def get_athlete_profile(self):
+        """Get athlete profile to verify connection"""
+        headers = {"Authorization": f"Bearer {self.access_token}"}
+        response = requests.get(f"{self.base_url}/athlete", headers=headers)
+        
+        # If token expired, refresh and retry
+        if response.status_code == 401:
+            print("    ⚠️ Token expired, refreshing...")
+            if self.refresh_access_token():
+                headers = {"Authorization": f"Bearer {self.access_token}"}
+                response = requests.get(f"{self.base_url}/athlete", headers=headers)
+        
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print(f"    ❌ Profile fetch failed: {response.status_code}")
+            return None
 
 
 def get_athlete_metrics():
@@ -361,14 +379,14 @@ def main():
             )
             
             # Fetch athlete profile to verify connection
-            response = strava.get_activity_streams(1)  # Test connection
-            if response is None:
+            profile = strava.get_athlete_profile()
+            if profile is None:
                 print(f"  ⚠️ Could not connect for {athlete_name}, skipping")
                 continue
             
-            # Fetch activities (you'll need to implement get_activities)
-            # For now, we assume activities are already in Supabase
-            # We'll query activities from Supabase instead
+            print(f"  ✅ Connected as {profile.get('firstname', athlete_name)}")
+            
+            # Query activities from Supabase
             supabase_url = os.environ.get("SUPABASE_URL")
             supabase_key = os.environ.get("SUPABASE_KEY")
             
@@ -378,8 +396,8 @@ def main():
                     "Authorization": f"Bearer {supabase_key}"
                 }
                 
-                # Get activities from Supabase
-                activities_url = f"{supabase_url}/rest/v1/activities?select=id,activity_id,athlete_name,start_date&athlete_name=eq.{athlete_name}&order=start_date.desc&limit=50"
+                # Get activities from Supabase - use correct column names
+                activities_url = f"{supabase_url}/rest/v1/activities?select=id,activity_id,athlete_name,start_date,average_heartrate&athlete_name=eq.{athlete_name}&order=start_date.desc&limit=50"
                 response = requests.get(activities_url, headers=headers)
                 
                 if response.status_code == 200:
@@ -387,12 +405,17 @@ def main():
                     print(f"  📊 Found {len(activities)} activities in Supabase")
                     
                     for act in activities:
-                        # Get Strava activity ID
+                        # Get Strava activity ID (try both possible column names)
                         strava_id = act.get('activity_id') or act.get('id')
                         if not strava_id:
                             continue
                         
-                        print(f"    📈 Processing activity {strava_id}...")
+                        # Get average HR for this activity
+                        avg_hr = act.get('average_heartrate', 0)
+                        if avg_hr is None:
+                            avg_hr = 0
+                        
+                        print(f"    📈 Processing activity {strava_id} (Avg HR: {avg_hr})...")
                         
                         # Fetch streams
                         streams = strava.get_activity_streams(strava_id)
@@ -402,11 +425,13 @@ def main():
                             hr_zones = calculate_hr_zones_from_streams(streams, athlete_name)
                             
                             if hr_zones:
+                                start_date = act.get('start_date', '').split('T')[0] if act.get('start_date') else ''
+                                
                                 for zone in hr_zones:
                                     all_zones.append({
-                                        "Parent_UniqueKey": f"{act.get('start_date', '').split('T')[0]}|{athlete_name}|Run|{zone.get('avg_hr', 0)}",
-                                        "Zone_UniqueKey": f"{act.get('start_date', '').split('T')[0]}|{athlete_name}|Run|{zone.get('avg_hr', 0)}_HeartRate_{zone['zone']}",
-                                        "Date_of_Activity": act.get('start_date', '').split('T')[0],
+                                        "Parent_UniqueKey": f"{start_date}|{athlete_name}|Run|{int(avg_hr)}",
+                                        "Zone_UniqueKey": f"{start_date}|{athlete_name}|Run|{int(avg_hr)}_HeartRate_{zone['zone']}",
+                                        "Date_of_Activity": start_date,
                                         "Member Name": athlete_name,
                                         "Activity": "Run",
                                         "Zone_Type": "Heart Rate",
@@ -423,11 +448,13 @@ def main():
                                 pace_zones = calculate_pace_zones_from_streams(streams, athlete_name)
                                 
                                 if pace_zones:
+                                    start_date = act.get('start_date', '').split('T')[0] if act.get('start_date') else ''
+                                    
                                     for zone in pace_zones:
                                         all_zones.append({
-                                            "Parent_UniqueKey": f"{act.get('start_date', '').split('T')[0]}|{athlete_name}|Run|0",
-                                            "Zone_UniqueKey": f"{act.get('start_date', '').split('T')[0]}|{athlete_name}|Run|0_Pace_{zone['zone']}",
-                                            "Date_of_Activity": act.get('start_date', '').split('T')[0],
+                                            "Parent_UniqueKey": f"{start_date}|{athlete_name}|Run|{int(avg_hr)}",
+                                            "Zone_UniqueKey": f"{start_date}|{athlete_name}|Run|{int(avg_hr)}_Pace_{zone['zone']}",
+                                            "Date_of_Activity": start_date,
                                             "Member Name": athlete_name,
                                             "Activity": "Run",
                                             "Zone_Type": "Pace",
@@ -441,11 +468,18 @@ def main():
                             
                             total_activities_processed += 1
                             time.sleep(1)  # Rate limiting
+                        else:
+                            print(f"      ⚠️ No stream data for activity {strava_id}")
                 else:
                     print(f"  ❌ Failed to fetch activities: {response.status_code}")
+                    print(f"     Response: {response.text[:200]}")
+            else:
+                print("  ❌ Supabase credentials not available")
             
         except Exception as e:
             print(f"  ❌ Error processing {athlete_name}: {e}")
+            import traceback
+            traceback.print_exc()
     
     # Push zones to Supabase
     if all_zones:
