@@ -233,9 +233,17 @@ def create_strava_training_log(df_activities, metric="Distance"):
                 hover_text = f"<b>{matching_date.strftime('%A, %B %d, %Y')}</b><br>"
                 hover_text += f"<b>{activity_name}</b><br>"
                 hover_text += f"{metric}: {metric_label}<br>"
-                if hr_value and pd.notna(hr_value):
-                    hover_text += f"❤️ HR: {hr_value:.0f} bpm"
 
+                # if hr_value and pd.notna(hr_value):
+                #     hover_text += f"❤️ HR: {hr_value:.0f} bpm"
+                
+                # Handle HR value safely
+                if hr_value and pd.notna(hr_value):
+                    try:
+                        hr_float = float(hr_value)
+                        hover_text += f"❤️ HR: {hr_float:.0f} bpm"
+                    except (ValueError, TypeError):
+                        hover_text += f"❤️ HR: {hr_value} bpm"
                 # Append bubble data (metric stays inside)
                 x_positions.append(day_idx)
                 y_positions.append(y_pos)

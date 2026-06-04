@@ -4,6 +4,8 @@ import streamlit.components.v1 as components
 import time as tm
 from datetime import time, datetime
 import data.push_data as push
+import data.push_supa as pushsupa
+
 from data import read_data_cached as pullc
 from data import read_data_uncached as pulluc
 from zoneinfo import ZoneInfo
@@ -41,17 +43,7 @@ if not st.session_state.authenticated:
     
     st.stop()
 
-# Initialize session state for current user (no login required)
-# if "current_user" not in st.session_state:
-#     st.session_state.current_user = "Scott"  # Default user
 
-# Set page config
-# st.set_page_config(
-#     page_title="StillHere",
-#     page_icon="🪨",
-#     layout="wide",
-#     initial_sidebar_state="expanded",
-# )
 
 # Sidebar with member selector
 with st.sidebar:
@@ -285,8 +277,16 @@ if tabs == "📓Log":  ##LOG
         expanded=True,
     ):
         from data import user_field
+        from data import read_data_cached_for_recent
 
-        user_field.edit_user_fields(full_df)
+        # """DEPRECATED: Use edit_user_fields_supa() instead"""
+        # user_field.edit_user_fields(full_df)
+
+        df = read_data_cached_for_recent.get_runner_data()
+        full_df = pd.DataFrame(df)
+        
+        user_field.edit_user_fields_supa(full_df,selected_user)
+        
 
     # with st.expander(
     #     "Bulk Enter User Fields (*RPE, Shoes, Remarks, Type of Activity-for Run*)"
@@ -804,14 +804,19 @@ if tabs == "🗺️ Your Runs":  ##STR WORK
     zones_data = None
     try:
         import data.push_data as push
+        import data.push_supa as pushsupa
         import gspread
+        import data.read_data_cached
 
-        client = push.get_gsheet_client()
-        sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
+
+        # client = push.get_gsheet_client()
+        # sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
 
         try:
-            zone_worksheet = sheet.worksheet("Zone_Data")
-            zone_records = zone_worksheet.get_all_values()
+            # zone_worksheet = sheet.worksheet("Zone_Data")
+            # zone_records = zone_worksheet.get_all_values()
+
+            zone_records = data.read_data_cached.get_zones()
 
             if len(zone_records) > 1:
                 headers = zone_records[0]
@@ -820,13 +825,25 @@ if tabs == "🗺️ Your Runs":  ##STR WORK
                 zones_data["Percentage"] = (
                     zones_data["Percentage"].astype(str).str.replace("%", "")
                 )
+            if 'HR (bpm)' in zones_data.columns:
+                zones_data['HR (bpm)'] = pd.to_numeric(zones_data['HR (bpm)'], errors='coerce')
+
+
         except gspread.WorksheetNotFound:
             st.info("Zone data not available yet. Run Strava Sync to calculate zones.")
 
     except Exception as e:
         st.warning(f"Could not load zone data: {e}")
 
-    # Display activity cards with zones
+    #Handle numerics
+    if 'HR (bpm)' in filtered_df.columns:
+        filtered_df['HR (bpm)'] = pd.to_numeric(filtered_df['HR (bpm)'], errors='coerce')
+    if 'Cadence (steps/min)' in filtered_df.columns:
+        filtered_df['Cadence (steps/min)'] = pd.to_numeric(filtered_df['Cadence (steps/min)'], errors='coerce')
+    if 'Max_HR' in filtered_df.columns:
+        filtered_df['Max_HR'] = pd.to_numeric(filtered_df['Max_HR'], errors='coerce')
+
+        
     acard.display_strava_style_feed_test(filtered_df, zones_data)
 
     # st.write(f"Columns in filtered_df: {filtered_df.columns.tolist()}")
@@ -1006,6 +1023,7 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
     import data.strava as strav
 
     activities = fs.fetch_all_activities_old(days_back)
+
 
     ### export sample ####
     # sample_extract_df = pd.DataFrame(activities)
@@ -1201,6 +1219,7 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
                     st.subheader("📊 Zone Distribution Data")
 
                     # Display the dataframe
+                    st.write("zones data to be pushed")
                     st.dataframe(zones_df, use_container_width=True, hide_index=True)
 
                     # Add download button
@@ -1370,23 +1389,28 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
         strava_df["Duration"] = strava_df["Duration"].apply(
             convert_seconds_to_time_string
         )
+        strava_df.rename(columns={'Duration': 'Duration_Other'}, inplace=True)
+        # strava_df["Duration_Other"] = strava_df["Duration"]
+
 
         strava_df["UniqueKey"] = (
             strava_df[["Date_of_Activity", "Member Name", "Activity", "HR (bpm)"]]
             .astype(str)
             .agg("|".join, axis=1)
         )
+        st.write("strava_df to be pushed")
         st.dataframe(strava_df)
 
         ######SYNC ACTIVATION#########
         if st.session_state.get("sync_triggered", False):
-            # from data import push_data
+            
 
             st.divider()
             st.subheader("🔄 Syncing to Google Sheets...")
 
             with st.spinner("Pushing activities to Google Sheets..."):
-                success_count, error_count = push.push_strava_data_to_sheet(strava_df)
+                # success_count, error_count = push.push_strava_data_to_sheet(strava_df)
+                success_count, error_count = pushsupa.push_activity_data_to_supabase(strava_df)
 
             if success_count > 0:
                 st.success(
@@ -1454,7 +1478,10 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
 
                     st.write(f"📊 Pushing {len(group_df)} zones for {parent_key}")
 
-                    zone_success, zone_errors = push.push_zone_data_to_sheet(
+                    # zone_success, zone_errors = push.push_zone_data_to_sheet(
+                    #     group_df, parent_key, activity_row_data
+                    # )
+                    zone_success, zone_errors = pushsupa.push_zone_data_to_supabase(
                         group_df, parent_key, activity_row_data
                     )
 

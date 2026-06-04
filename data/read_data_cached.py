@@ -27,10 +27,18 @@ def get_runner_data():
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
 
     # ---- Load main/historical worksheet (READS EVERYTHING AS STRING)---- #
-    worksheet = sheet.get_worksheet_by_id(1508007696)  # or use get_worksheet_by_id(gid)
-    data = worksheet.get_all_values()
+    # worksheet = sheet.get_worksheet_by_id(1508007696)  # or use get_worksheet_by_id(gid)
+    # data = worksheet.get_all_values()
 
+    ### SUPABASE TEST ######
+    data=get_activities_hist()
+    ### SUPABASE TEST ######
+
+# ### DEBUG : display historical
+#     st.write("display historical")
     df_hist = pd.DataFrame(data)
+    
+
 
     # RENAME HEADERS#
     df_hist.rename(
@@ -52,6 +60,10 @@ def get_runner_data():
         },
         inplace=True,
     )
+
+# ### DEBUG : display historical
+#     st.write("display historical")
+    # st.dataframe(df_hist)
 
     #######DATA CLEANUP######
 
@@ -78,11 +90,23 @@ def get_runner_data():
         },
         inplace=True,
     )
-    df_week["Date"] = pd.to_datetime(df_week["Date"])
+    # df_week["Date"] = pd.to_timedelta(df_week["Date"], errors="coerce")
+    
+    # ### DEBUG : display weekname ref
+#     st.write("display weekname ref")
+    # st.dataframe(df_week)
 
     # ---- Load week lookup --- THIS IS THE MAIN DATA SINCE June 2025- #
-    new_logs_data = sheet.get_worksheet_by_id(1611308583).get_all_records()
+    # new_logs_data = sheet.get_worksheet_by_id(1611308583).get_all_records()
+    
+    ### SUPABASE TEST ######
+    new_logs_data = get_activities()
+    ### SUPABASE TEST ######
     df_new = pd.DataFrame(new_logs_data)
+
+# ### DEBUG : display historical
+#     st.write("display all final activities ")
+    # st.dataframe(df_new)
 
     # Convert pace to timedelta
     for df in [df_hist, df_new]:
@@ -138,6 +162,11 @@ def get_runner_data():
         + df["Activity"].astype(str)
     )
 
+### DEBUG SUPABASE TEST debug######
+    # st.success(f"[{df.info}]")
+    # st.dataframe(df)
+#     st.write("display all activities from supabase")
+### SUPABASE TEST ######
     return df
 
 
@@ -147,3 +176,106 @@ def get_worksheet_object():
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
     worksheet = sheet.get_worksheet_by_id(1611308583)  # Your worksheet ID
     return worksheet
+
+
+
+
+######### -- SUPA BASE ----- #################
+# --- Database functions ---
+import supabase_client
+@st.cache_data(ttl=600) 
+def get_activities():
+    
+    try:
+        supabase=supabase_client.init_connection()
+        # response = supabase.table("activities").select("*").execute()
+        # st.success(f"✅ Successfully extracted {len(response.data)} activities from Supabase")
+        
+        all_data = []
+        page_size = 1000
+        start = 0
+        
+        while True:
+            response = supabase.table("activities")\
+                .select("*")\
+                .range(start, start + page_size - 1)\
+                .execute()
+            
+            if not response.data:
+                break
+                
+            all_data.extend(response.data)
+            start += page_size
+            
+            # # Optional: Add a small delay to avoid rate limiting
+            # time.sleep(0.1)
+    
+        return all_data
+    
+    except Exception as e:
+        st.error(f"Error fetching activities: {e}")
+        return []
+        
+def get_activities_hist():
+    
+    try:
+        supabase=supabase_client.init_connection()
+        # response = supabase.table("zones").select("*").execute()
+        # st.success(f"✅ Successfully extracted {len(response.data)} act hist from Supabase")
+        
+        all_data = []
+        page_size = 1000
+        start = 0
+        
+        while True:
+            response = supabase.table("activity_history")\
+                .select("*")\
+                .range(start, start + page_size - 1)\
+                .execute()
+            
+            if not response.data:
+                break
+                
+            all_data.extend(response.data)
+            start += page_size
+            
+            # # Optional: Add a small delay to avoid rate limiting
+            # time.sleep(0.1)
+    
+        return all_data
+    
+    except Exception as e:
+        st.error(f"Error fetching activity history: {e}")
+        return []
+# --- Database functions ---
+def get_zones():
+    
+    try:
+        supabase=supabase_client.init_connection()
+        # response = supabase.table("zones").select("*").execute()
+        # st.success(f"✅ Successfully extracted {len(response.data)} zones from Supabase")
+        
+        all_data = []
+        page_size = 1000
+        start = 0
+        
+        while True:
+            response = supabase.table("zones")\
+                .select("*")\
+                .range(start, start + page_size - 1)\
+                .execute()
+            
+            if not response.data:
+                break
+                
+            all_data.extend(response.data)
+            start += page_size
+            
+            # # Optional: Add a small delay to avoid rate limiting
+            # time.sleep(0.1)
+    
+        return all_data
+    
+    except Exception as e:
+        st.error(f"Error fetching activities: {e}")
+        return []

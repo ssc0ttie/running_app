@@ -1,0 +1,31 @@
+name: Strava Zone Sync
+
+on:
+  schedule:
+    - cron: "30 6,12,18,0 * * *"  # 30 minutes past the hour
+
+  workflow_dispatch:
+
+jobs:
+  sync-zones:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: pip install pandas requests supabase
+      
+      - name: Run zone sync
+        env:
+          STRAVA_USERS: ${{ secrets.STRAVA_USERS }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          DAYS_BACK: "90"
+        run: |
+          python scripts/auto_zone_sync_supa.py
