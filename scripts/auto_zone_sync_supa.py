@@ -571,6 +571,7 @@ def main():
                         
                         # Get activity data (this becomes activity_row_data)
                         start_date = act.get('Date_of_Activity', '')
+                        act_type = act.get('Activity', '')
                         avg_hr = act.get('HR (bpm)', 0)
                         
                         # Convert avg_hr to int
@@ -580,7 +581,7 @@ def main():
                             avg_hr = 0
                         
                         # Build parent_unique_key (matching your manual function)
-                        parent_unique_key = f"{start_date}|{athlete_name}|Run|{avg_hr}"
+                        parent_unique_key = f"{start_date}|{athlete_name}|{act_type}|{avg_hr}"
                         
                         activity_row_data = {
                             "Date": start_date,
@@ -608,7 +609,7 @@ def main():
                                         "Parent_UniqueKey": parent_unique_key,
                                         "Date_of_Activity": start_date,
                                         "Member Name": athlete_name,
-                                        "Activity": "Run",
+                                        "Activity": act_type,
                                         "Avg_HR": avg_hr,
                                         "Zone_Type": "Heart Rate",
                                         "Zone": zone["zone"],
@@ -632,7 +633,7 @@ def main():
                                             "Parent_UniqueKey": parent_unique_key,
                                             "Date_of_Activity": start_date,
                                             "Member Name": athlete_name,
-                                            "Activity": "Run",
+                                            "Activity": act_type,
                                             "Avg_HR": avg_hr,
                                             "Zone_Type": "Pace",
                                             "Zone": zone["zone"],
