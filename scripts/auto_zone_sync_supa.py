@@ -555,7 +555,8 @@ def main():
                 }
                 
                 # Get activities - increase limit as needed
-                activities_url = f"{supabase_url}/rest/v1/activities?select=id,\"Member Name\",\"Date_of_Activity\",\"HR (bpm)\"&\"Member Name\"=eq.{athlete_name}&order=Date_of_Activity.desc&limit=10"
+                # ✅ Correct query - includes Activity column
+                activities_url = f"{supabase_url}/rest/v1/activities?select=id,\"Member Name\",\"Date_of_Activity\",\"HR (bpm)\",\"Activity\"&\"Member Name\"=eq.{athlete_name}&order=Date_of_Activity.desc&limit=10"
                 
                 response = requests.get(activities_url, headers=headers)
                 
