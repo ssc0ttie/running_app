@@ -183,7 +183,7 @@ def get_worksheet_object():
 ######### -- SUPA BASE ----- #################
 # --- Database functions ---
 import supabase_client
-@st.cache_data(ttl=600) 
+@st.cache_data(ttl=120) 
 def get_activities():
     
     try:

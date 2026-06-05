@@ -342,16 +342,15 @@ def edit_user_fields_supa(full_df,member_name):
         )
 
         # RPE
+        # Use it for RPE
+            # Use it for RPE
+        cleaned_rpe = clean_supabase_value(selected_row["RPE (1–10 scale)"], 0)
+
         edited_rpe = st.slider(
             "RPE (1–10 scale)",
             min_value=0,
             max_value=10,
-            value=(
-                int(selected_row["RPE (1–10 scale)"])
-                if pd.notna(selected_row["RPE (1–10 scale)"])
-                else 0
-            ),
-
+            value=cleaned_rpe,
         )
 
         # Shoe
@@ -431,3 +430,21 @@ def edit_user_fields_supa(full_df,member_name):
     if st.button("🔄 Refresh App"):
         st.rerun()
 
+
+def clean_supabase_value(value, default=0):
+    """Clean PostgreSQL literal values from Supabase"""
+    if value is None or value == "":
+        return default
+    
+    value_str = str(value)
+    
+    # Handle PostgreSQL cast format: '0'::double precision
+    if "::" in value_str:
+        value_str = value_str.split("::")[0]
+        value_str = value_str.strip("'").strip('"')
+    
+    # Try to convert to number
+    try:
+        return int(float(value_str))
+    except (ValueError, TypeError):
+        return default
