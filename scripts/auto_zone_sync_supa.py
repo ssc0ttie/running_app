@@ -603,7 +603,7 @@ def main():
                 
                 # Get activities - increase limit as needed
                 # ✅ Correct query - includes Activity column
-                activities_url = f"{supabase_url}/rest/v1/activities?select=id,\"Member Name\",\"Date_of_Activity\",\"HR (bpm)\",\"Activity\"&\"Member Name\"=eq.{athlete_name}&order=Date_of_Activity.desc&limit=100"
+                activities_url = f"{supabase_url}/rest/v1/activities?select=id,\"Member Name\",\"UniqueKey\",\"Date_of_Activity\",\"HR (bpm)\",\"Activity\"&\"Member Name\"=eq.{athlete_name}&order=Date_of_Activity.desc&limit=100"
                 
                 response = requests.get(activities_url, headers=headers)
                 
@@ -621,6 +621,7 @@ def main():
                         start_date = act.get('Date_of_Activity', '')
                         act_type = act.get('Activity', '')
                         avg_hr = act.get('HR (bpm)', 0)
+                        uniq_key = act.get('UniqueKey','')
                         
                         # Convert avg_hr to int
                         try:
@@ -629,7 +630,7 @@ def main():
                             avg_hr = 0
                         
                         # Build parent_unique_key (matching your manual function)
-                        parent_unique_key = f"{start_date}|{athlete_name}|{act_type}|{avg_hr}"
+                        parent_unique_key = uniq_key
                         
                         activity_row_data = {
                             "Date": start_date,
