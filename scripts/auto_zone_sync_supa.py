@@ -387,8 +387,8 @@ def main():
             print(f"  ✅ Connected as {profile.get('firstname', athlete_name)}")
             
             # Query activities from Supabase
-            supabase_url = os.environ.get("url")
-            supabase_key = os.environ.get("key")
+            supabase_url = os.environ.get("SUPABASE_URL")
+            supabase_key = os.environ.get("SUPABASE_KEY")
             
             if supabase_url and supabase_key:
                 headers = {
