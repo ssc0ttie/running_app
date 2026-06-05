@@ -347,8 +347,58 @@ def calculate_pace_zones_from_streams(streams, athlete_name=None):
 #     except Exception as e:
 #         print(f"  ❌ Error: {e}")
 #         return 0, len(records)
+
+# #### last ####
+# def push_zones_to_supabase(zones_df):
+#     """Push zone data to Supabase with upsert (update if exists, insert if not)."""
+#     supabase_url = os.environ.get("SUPABASE_URL")
+#     supabase_key = os.environ.get("SUPABASE_KEY")
+    
+#     if not supabase_url or not supabase_key:
+#         print("❌ Supabase credentials missing")
+#         return 0, len(zones_df) if zones_df is not None else 0
+    
+#     headers = {
+#         "apikey": supabase_key,
+#         "Authorization": f"Bearer {supabase_key}",
+#         "Content-Type": "application/json",
+#         "Prefer": "resolution=merge-duplicates"  # ← This tells Supabase to upsert
+#     }
+
+
+    
+#     records = zones_df.to_dict(orient='records')
+    
+#     if not records:
+#         return 0, 0
+    
+#     url = f"{supabase_url}/rest/v1/zones"
+    
+#     try:
+#         # Use upsert with on_conflict parameter
+#         response = requests.post(
+#             url, 
+#             headers=headers, 
+#             json=records,
+#             params={"on_conflict": "zones.Zone_UniqueKey"}  # ← This is the key fix
+#         )
+        
+#         if response.status_code in [200, 201]:
+#             print(f"  ✅ Pushed/Updated {len(records)} zone records")
+#             return len(records), 0
+#         else:
+#             print(f"  ❌ Push failed: {response.status_code} - {response.text}")
+#             return 0, len(records)
+#     except Exception as e:
+#         print(f"  ❌ Error: {e}")
+#         return 0, len(records)
+
+
+
+from supabase import create_client
+
 def push_zones_to_supabase(zones_df):
-    """Push zone data to Supabase with upsert (update if exists, insert if not)."""
+    """Push zone data using supabase client (same as manual function)."""
     supabase_url = os.environ.get("SUPABASE_URL")
     supabase_key = os.environ.get("SUPABASE_KEY")
     
@@ -356,34 +406,31 @@ def push_zones_to_supabase(zones_df):
         print("❌ Supabase credentials missing")
         return 0, len(zones_df) if zones_df is not None else 0
     
-    headers = {
-        "apikey": supabase_key,
-        "Authorization": f"Bearer {supabase_key}",
-        "Content-Type": "application/json"
-    }
+    supabase = create_client(supabase_url, supabase_key)
     
     records = zones_df.to_dict(orient='records')
     
     if not records:
         return 0, 0
     
-    url = f"{supabase_url}/rest/v1/zones"
-    
     try:
-        # Use upsert with on_conflict parameter
-        response = requests.post(
-            url, 
-            headers=headers, 
-            json=records,
-            params={"on_conflict": "Zone_UniqueKey"}  # ← This is the key fix
-        )
+        # This is your manual function's working approach
+        response = supabase.table("zones").upsert(
+            records, 
+            on_conflict="Zone_UniqueKey",
+            ignore_duplicates=False  # Set to True to skip duplicates without error
+        ).execute()
         
-        if response.status_code in [200, 201]:
-            print(f"  ✅ Pushed/Updated {len(records)} zone records")
-            return len(records), 0
+        success_count = len(response.data) if response.data else 0
+        error_count = len(records) - success_count
+        
+        if error_count == 0:
+            print(f"  ✅ Pushed {success_count} zone records")
         else:
-            print(f"  ❌ Push failed: {response.status_code} - {response.text}")
-            return 0, len(records)
+            print(f"  ⚠️ Pushed {success_count}, skipped {error_count} duplicates")
+        
+        return success_count, error_count
+        
     except Exception as e:
         print(f"  ❌ Error: {e}")
         return 0, len(records)
