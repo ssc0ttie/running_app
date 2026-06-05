@@ -347,9 +347,8 @@ def calculate_pace_zones_from_streams(streams, athlete_name=None):
 #     except Exception as e:
 #         print(f"  ❌ Error: {e}")
 #         return 0, len(records)
-
 def push_zones_to_supabase(zones_df):
-    """Push zone data to Supabase using upsert (same as manual function)."""
+    """Push zone data to Supabase with upsert (update if exists, insert if not)."""
     supabase_url = os.environ.get("SUPABASE_URL")
     supabase_key = os.environ.get("SUPABASE_KEY")
     
@@ -363,7 +362,6 @@ def push_zones_to_supabase(zones_df):
         "Content-Type": "application/json"
     }
     
-    # Convert DataFrame to records
     records = zones_df.to_dict(orient='records')
     
     if not records:
@@ -372,16 +370,16 @@ def push_zones_to_supabase(zones_df):
     url = f"{supabase_url}/rest/v1/zones"
     
     try:
-        # Use upsert with conflict handling
+        # Use upsert with on_conflict parameter
         response = requests.post(
             url, 
             headers=headers, 
             json=records,
-            params={"on_conflict": "Zone_UniqueKey"}
+            params={"on_conflict": "Zone_UniqueKey"}  # ← This is the key fix
         )
         
         if response.status_code in [200, 201]:
-            print(f"  ✅ Pushed {len(records)} zone records")
+            print(f"  ✅ Pushed/Updated {len(records)} zone records")
             return len(records), 0
         else:
             print(f"  ❌ Push failed: {response.status_code} - {response.text}")

@@ -24,7 +24,6 @@ import pandas as pd
 # Import modules supa
 from data.fetch_strava_automation_supa import fetch_all_activities
 from data.push_supa import push_activity_data_to_supabase
-from data.push_supa import push_zone_data_to_supabase
 
 
 
