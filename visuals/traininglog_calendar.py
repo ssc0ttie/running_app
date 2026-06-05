@@ -316,10 +316,10 @@ def create_strava_training_log(df_activities, metric="Distance"):
 
     # Update layout
     fig.update_layout(
-        title=dict(
-            text=f" Training Log : {metric}",
-            font=dict(size=18, weight="bold", color="#2b2b2b"),
-        ),
+        # title=dict(
+        #     text=f" Training Log : {metric}",
+        #     font=dict(size=18, weight="bold", color="#2b2b2b"),
+        # ),
         xaxis=dict(
             title="",
             tickmode="array",
@@ -353,6 +353,7 @@ def create_strava_training_log(df_activities, metric="Distance"):
         height=max(600, len(weeks) * 160),
         margin=dict(l=50, r=50, t=50, b=60),  # Increased bottom margin for labels
         hoverlabel=dict(bgcolor="white", font_size=12, font_family="Arial"),
+
     )
 
     return fig
@@ -361,31 +362,69 @@ def create_strava_training_log(df_activities, metric="Distance"):
 def create_training_log_section(data):
     """Training log with view selector for Distance vs Duration"""
     # st.markdown("---")
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([1,3])
+    # with col1:
+    #     st.markdown(
+    #         """
+    #         <div style="
+    #             color:#3a3939;
+    #             font-size: 20px;
+    #             font-weight: 600;
+    #             border-bottom: 1px solid #ccc;
+    #             padding-bottom: 4px;
+    #             margin-top: 20px;
+    #             margin-bottom: 10px;">
+    #             📅 Training Calendar
+    #         </div>
+    #     """,
+    #         unsafe_allow_html=True,
+    #     )
+    col1, col2 = st.columns([1, 3])
+
+
+
     with col1:
         st.markdown(
             """
             <div style="
-                color:#3a3939;
-                font-size: 20px;
-                font-weight: 600;
-                border-bottom: 1px solid #ccc;
-                padding-bottom: 4px;
-                margin-top: 20px;
-                margin-bottom: 10px;">
-                📅 Training Calendar
+                display: flex;
+                align-items: left;
+                justify-content: left;
+                height: 100%;
+            ">
+                <div style="
+                    font-weight: 600;
+                    font-size: 16px;
+                    color: #3a3939;
+                    background: #f0f2f6;
+                    padding: 8px 16px;
+                    border-radius: 20px;
+                    display: inline-block;
+                ">
+                    📅 Training Log
+                </div>
             </div>
-        """,
+            """,
             unsafe_allow_html=True,
         )
+        
+
     with col2:
-        # View selector - Distance or Duration
         view_metric = st.radio(
             "Select View:",
             ["Distance", "Duration"],
             horizontal=True,
             key="training_log_view",
+            label_visibility="collapsed",
         )
+    # with col2:
+    #     view_metric = st.radio(
+    #         "Select View:",
+    #         ["Distance", "Duration"],
+    #         horizontal=True,
+    #         key="training_log_view",
+    #         label_visibility="collapsed",
+    #     )
 
     if data.empty:
         st.info("No activities to display in training log.")
@@ -395,7 +434,7 @@ def create_training_log_section(data):
     fig = create_strava_training_log(data, metric=view_metric)
 
     # Fixed height container (this actually works!)
-    with st.container(height=600):
+    with st.container(height=510):
         st.plotly_chart(
             fig, use_container_width=True, key=f"training_log_{view_metric}"
         )

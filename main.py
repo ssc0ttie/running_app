@@ -492,6 +492,8 @@ if tabs == "📊 Stats":  # STATS
         unsafe_allow_html=True,
     )
 
+
+
     # filtered_df_all_activity = filtered_df
     # filter non running activity
 
@@ -545,7 +547,7 @@ if tabs == "📊 Stats":  # STATS
     hours = total_seconds // 3600
     minutes = (total_seconds % 3600) // 60
     seconds = total_seconds % 60
-    metric_movingtime = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+    metric_movingtime = f"{hours:02d}:{minutes:02d}"
 
     # NUMBER OF RUNS
     metric_number_runs = int(filtered_df_all_run["Activity"].count())
@@ -560,37 +562,88 @@ if tabs == "📊 Stats":  # STATS
     metric_tillrace = (datetime(2025, 12, 7) - datetime.today()).days
 
     # Display metrics in columns
-    col0, col1, col2, col3 = st.columns(4)
+    # col0, col1, col2, col3 = st.columns(4)
 
-    col0.metric(
-        "Runs 🏃‍♀️‍➡️",
-        value=metric_number_runs,
-        label_visibility="visible",
-        border=True,
-    )
-    col1.metric(
-        "Total Distance 🏃💨KⓂ️",
-        value=metric_distance,
-        label_visibility="visible",
-        border=True,
-    )
-    col2.metric(
-        "Moving Time ⏱️",
-        value=metric_movingtime,
-        label_visibility="visible",
-        border=True,
-    )
-    col3.metric(
-        "Average Pace 🚄", value=metric_pace, label_visibility="visible", border=True
-    )
+    col0, col1 = st.columns([1,4])
+
+    # col0.metric(
+    #     "Runs 🏃‍♀️‍➡️",
+    #     value=metric_number_runs,
+    #     label_visibility="visible",
+    #     border=True,
+    # )
+    # col1.metric(
+    #     "Total Distance 🏃💨KⓂ️",
+    #     value=metric_distance,
+    #     label_visibility="visible",
+    #     border=True,
+    # )
+    # col2.metric(
+    #     "Moving Time ⏱️",
+    #     value=metric_movingtime,
+    #     label_visibility="visible",
+    #     border=True,
+    # )
+    # col3.metric(
+    #     "Average Pace 🚄", value=metric_pace, label_visibility="visible", border=True
+    # )
+    with col0:
+        
+        st.markdown(
+            """
+            <style>
+            @media (min-width: 1200px) {
+                div[data-testid="stMetric"] {
+                    height: 130px !important;
+                }
+            }
+            @media (min-width: 768px) and (max-width: 1199px) {
+                div[data-testid="stMetric"] {
+                    height: 130px !important;
+                }
+            }
+            @media (max-width: 767px) {
+                div[data-testid="stMetric"] {
+                    height: 100px !important;
+                }
+            }
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.metric(
+            "Runs 🏃‍♀️‍➡️",
+            value=metric_number_runs,
+            label_visibility="visible",
+            border=True,
+        )
+        st.metric(
+            "Total Distance 🏃💨KⓂ️",
+            value=metric_distance,
+            label_visibility="visible",
+            border=True,
+        )
+        st.metric(
+            "Moving Time ⏱️",
+            value=metric_movingtime,
+            label_visibility="visible",
+            border=True,
+        )
+        st.metric(
+            "Average Pace 🚄", value=metric_pace, label_visibility="visible", border=True
+        )
+
 
     ######### TRAINING CALENDAR ############
 
-    with st.expander("View Calendar Log", expanded=True):
+    # with st.expander("View Calendar Log", expanded=True):
+    with col1:
         from visuals import traininglog_calendar
 
         traininglog_calendar.create_training_log_section(filtered_df)
 
+
+    
     ###########CHARTS###########
     from visuals import sunburst as sb
     from visuals import combochart as cb
