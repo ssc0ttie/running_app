@@ -1231,18 +1231,18 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
                         mime="text/csv",
                     )
 
-                    # Summary statistics
-                    st.divider()
-                    st.subheader("📈 Summary")
+                    # # Summary statistics
+                    # st.divider()
+                    # st.subheader("📈 Summary")
 
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        st.metric("Total Activities", len(activities))
-                    with col2:
-                        st.metric("Zone Records", len(zones_df))
-                    with col3:
-                        unique_activities = zones_df["Activity"].nunique()
-                        st.metric("Unique Activities", unique_activities)
+                    # col1, col2, col3 = st.columns(3)
+                    # with col1:
+                    #     st.metric("Total Activities", len(activities))
+                    # with col2:
+                    #     st.metric("Zone Records", len(zones_df))
+                    # with col3:
+                    #     unique_activities = zones_df["Activity"].nunique()
+                    #     st.metric("Unique Activities", unique_activities)
 
                 else:
                     st.warning(
@@ -1451,44 +1451,44 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
         ############################### ^^^^^^^ ORIGINAL ^^^#######################################
         
 
-        # Push zone data if available
-    if st.button("Sync Zones", type="primary", key="sync_zones"):
-        st.session_state.sync_zones_triggered = True
+    #     # Push zone data if available
+    # if st.button("Sync Zones", type="primary", key="sync_zones"):
+    #     st.session_state.sync_zones_triggered = True
 
-    if st.session_state.get("sync_zones_triggered", False):
-        with st.spinner("Fetching and processing activities..."):
+    # if st.session_state.get("sync_zones_triggered", False):
+    #     with st.spinner("Fetching and processing activities..."):
     
-            if "zones_df" in locals() and not zones_df.empty:
-                # Group by Parent_UniqueKey
-                grouped = zones_df.groupby("Parent_UniqueKey")
+    #         if "zones_df" in locals() and not zones_df.empty:
+    #             # Group by Parent_UniqueKey
+    #             grouped = zones_df.groupby("Parent_UniqueKey")
 
-                total_success = 0
-                total_errors = 0
+    #             total_success = 0
+    #             total_errors = 0
 
-                for parent_key, group_df in grouped:
-                    # Get activity data from the first row of this group
-                    first_row = group_df.iloc[0]
+    #             for parent_key, group_df in grouped:
+    #                 # Get activity data from the first row of this group
+    #                 first_row = group_df.iloc[0]
 
-                    activity_row_data = {
-                        "Date": first_row["Date"],
-                        "Member Name": first_row["Athlete"],
-                        "Activity": first_row["Activity"],
-                        "Avg_HR": first_row["Avg_HR"],
-                    }
+    #                 activity_row_data = {
+    #                     "Date": first_row["Date"],
+    #                     "Member Name": first_row["Athlete"],
+    #                     "Activity": first_row["Activity"],
+    #                     "Avg_HR": first_row["Avg_HR"],
+    #                 }
 
-                    st.write(f"📊 Pushing {len(group_df)} zones for {parent_key}")
+    #                 st.write(f"📊 Pushing {len(group_df)} zones for {parent_key}")
 
-                    # zone_success, zone_errors = push.push_zone_data_to_sheet(
-                    #     group_df, parent_key, activity_row_data
-                    # )
-                    zone_success, zone_errors = pushsupa.push_zone_data_to_supabase(
-                        group_df, parent_key, activity_row_data
-                    )
+    #                 # zone_success, zone_errors = push.push_zone_data_to_sheet(
+    #                 #     group_df, parent_key, activity_row_data
+    #                 # )
+    #                 zone_success, zone_errors = pushsupa.push_zone_data_to_supabase(
+    #                     group_df, parent_key, activity_row_data
+    #                 )
 
-                    total_success += zone_success
-                    total_errors += zone_errors
+    #                 total_success += zone_success
+    #                 total_errors += zone_errors
 
-                if total_success > 0:
-                    st.success(f"✅ Successfully pushed {total_success} zone records!")
-                if total_errors > 0:
-                    st.error(f"❌ Failed to push {total_errors} zone records")
+    #             if total_success > 0:
+    #                 st.success(f"✅ Successfully pushed {total_success} zone records!")
+    #             if total_errors > 0:
+    #                 st.error(f"❌ Failed to push {total_errors} zone records")

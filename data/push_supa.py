@@ -7,8 +7,8 @@ import numpy as np
 @st.cache_resource
 def init_supabase():
     try:
-        supabase_url  = st.secrets["supabase"]["SUPABASE_URL"]
-        supabase_key  = st.secrets["supabase"]["SUPABASE_KEY"]
+        supabase_url  = st.secrets["supabase"]["url"]
+        supabase_key  = st.secrets["supabase"]["key"]
         return create_client(supabase_url, supabase_key)
     except Exception as e:
         st.error(f"Connection error: {e}")
