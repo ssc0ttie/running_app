@@ -556,6 +556,7 @@ def main():
                 
                 # Get activities - increase limit as needed
                 activities_url = f"{supabase_url}/rest/v1/activities?select=id,\"Member Name\",\"Date_of_Activity\",\"HR (bpm)\"&\"Member Name\"=eq.{athlete_name}&order=Date_of_Activity.desc&limit=10"
+                
                 response = requests.get(activities_url, headers=headers)
                 
                 if response.status_code == 200:
@@ -600,7 +601,7 @@ def main():
                             if hr_zones:
                                 for zone in hr_zones:
                                     # Use the same zone_key format as your manual function
-                                    zone_key = f"{parent_unique_key}_HeartRate_{zone['zone']}"
+                                    zone_key = f"{parent_unique_key}_Heart Rate_{zone['zone']}"
                                     
                                     all_zones.append({
                                         "Zone_UniqueKey": zone_key,
