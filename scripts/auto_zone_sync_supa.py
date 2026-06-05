@@ -356,7 +356,7 @@ def main():
     print("=" * 70)
     
     # Get days back (default 90 for zone calculations)
-    days_back = int(os.environ.get("DAYS_BACK", "90"))
+    days_back = int(os.environ.get("DAYS_BACK", "2"))
     print(f"📅 Analyzing activities from the last {days_back} days")
     
     # Get users from environment
@@ -387,8 +387,8 @@ def main():
             print(f"  ✅ Connected as {profile.get('firstname', athlete_name)}")
             
             # Query activities from Supabase
-            supabase_url = os.environ.get("SUPABASE_URL")
-            supabase_key = os.environ.get("SUPABASE_KEY")
+            supabase_url = os.environ.get("url")
+            supabase_key = os.environ.get("key")
             
             if supabase_url and supabase_key:
                 headers = {
