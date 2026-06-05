@@ -395,7 +395,7 @@ def main():
     print("=" * 70)
     
     # Get days back (default 90 for zone calculations)
-    days_back = int(os.environ.get("DAYS_BACK", "2"))
+    days_back = int(os.environ.get("DAYS_BACK", "100"))
     print(f"📅 Analyzing activities from the last {days_back} days")
     
     # Get users from environment
@@ -556,7 +556,7 @@ def main():
                 
                 # Get activities - increase limit as needed
                 # ✅ Correct query - includes Activity column
-                activities_url = f"{supabase_url}/rest/v1/activities?select=id,\"Member Name\",\"Date_of_Activity\",\"HR (bpm)\",\"Activity\"&\"Member Name\"=eq.{athlete_name}&order=Date_of_Activity.desc&limit=10"
+                activities_url = f"{supabase_url}/rest/v1/activities?select=id,\"Member Name\",\"Date_of_Activity\",\"HR (bpm)\",\"Activity\"&\"Member Name\"=eq.{athlete_name}&order=Date_of_Activity.desc&limit=100"
                 
                 response = requests.get(activities_url, headers=headers)
                 
