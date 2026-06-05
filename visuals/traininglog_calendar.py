@@ -401,7 +401,7 @@ def create_training_log_section(data):
                     border-radius: 20px;
                     display: inline-block;
                 ">
-                    📅 Training Log
+                    📅 Training Calendar
                 </div>
             </div>
             """,
