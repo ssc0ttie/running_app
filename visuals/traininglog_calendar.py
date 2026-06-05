@@ -379,7 +379,7 @@ def create_training_log_section(data):
     #     """,
     #         unsafe_allow_html=True,
     #     )
-    col1, col2 = st.columns([1, 3])
+    col1, col2 = st.columns(2)
 
 
 
