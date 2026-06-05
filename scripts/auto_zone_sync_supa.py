@@ -315,7 +315,7 @@ def calculate_pace_zones_from_streams(streams, athlete_name=None):
 
 
 def push_zones_to_supabase(zones_df):
-    """Push zone data to Supabase"""
+    """Push zone data to Supabase using upsert to handle duplicates"""
     supabase_url = os.environ.get("SUPABASE_URL")
     supabase_key = os.environ.get("SUPABASE_KEY")
     
@@ -326,13 +326,13 @@ def push_zones_to_supabase(zones_df):
     headers = {
         "apikey": supabase_key,
         "Authorization": f"Bearer {supabase_key}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Prefer": "resolution=merge-duplicates"  # This tells Supabase to update on conflict
     }
     
-    # Convert DataFrame to records
     records = zones_df.to_dict(orient='records')
     
-    # Use upsert to avoid duplicates
+    # Use POST with merge-duplicates header instead of upsert
     url = f"{supabase_url}/rest/v1/zones"
     
     try:
@@ -347,8 +347,6 @@ def push_zones_to_supabase(zones_df):
     except Exception as e:
         print(f"  ❌ Error: {e}")
         return 0, len(records)
-
-
 def main():
     print("=" * 70)
     print(f"🚀 STRAVA ZONE SYNC - PRODUCTION")
@@ -398,7 +396,7 @@ def main():
                 
                 # Get activities from Supabase - use correct column names
                 # Fix: Use correct column names with proper quoting
-                activities_url = f"{supabase_url}/rest/v1/activities?select=id,\"Member Name\",\"Date_of_Activity\",\"HR (bpm)\"&\"Member Name\"=eq.{athlete_name}&order=Date_of_Activity.desc&limit=50"
+                activities_url = f"{supabase_url}/rest/v1/activities?select=id,\"Member Name\",\"Date_of_Activity\",\"HR (bpm)\"&\"Member Name\"=eq.{athlete_name}&order=Date_of_Activity.desc&limit=5"
                 response = requests.get(activities_url, headers=headers)
                 
                 if response.status_code == 200:
