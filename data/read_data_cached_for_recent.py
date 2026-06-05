@@ -7,7 +7,7 @@ import datetime
 import numpy as np
 
 
-@st.cache_resource
+# @st.cache_resource
 def get_gsheet_client():
     scope = [
         "https://spreadsheets.google.com/feeds",
@@ -21,7 +21,7 @@ def get_gsheet_client():
 
 
 ### -- CACHED: Load all runner data with TTL -- ###
-@st.cache_data(ttl=120)  # refresh every 5 minutes
+# @st.cache_data(ttl=120)  # refresh every 5 minutes
 def get_runner_data():
     client = get_gsheet_client()
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
@@ -87,7 +87,7 @@ def get_worksheet_object():
 ######### -- SUPA BASE ----- #################
 # --- Database functions ---
 import supabase_client
-@st.cache_data(ttl=600) 
+# @st.cache_data(ttl=600) 
 def get_activities():
     
     try:

@@ -139,8 +139,8 @@ def create_strava_training_log(df_activities, metric="Distance"):
     min_metric = running_data["Metric_Value"].min()
 
     # MUCH LARGER bubble size range - aggressive sizing to fill gaps
-    min_bubble_size = 50  # Minimum bubble size
-    max_bubble_size = 100  # Maximum bubble size
+    min_bubble_size = 30  # Minimum bubble size
+    max_bubble_size = 60  # Maximum bubble size
 
     # Choose colorscale based on metric - single hue gradients
     if metric == "Distance":
@@ -266,7 +266,7 @@ def create_strava_training_log(df_activities, metric="Distance"):
                 size=sizes,
                 color=colors,
                 colorscale=colorscale,
-                showscale=True,
+                showscale=False,
                 colorbar=dict(
                     title=color_title,
                     thickness=15,
@@ -274,7 +274,7 @@ def create_strava_training_log(df_activities, metric="Distance"):
                     x=1.02,
                     tickformat=".0f",
                 ),
-                line=dict(width=2.5, color="white"),
+                line=dict(width=1.5, color="white"),
                 sizemode="diameter",
                 sizeref=1.0,
                 sizemin=4,
@@ -283,7 +283,7 @@ def create_strava_training_log(df_activities, metric="Distance"):
             text=texts,  # Metric label inside bubble
             textposition="middle center",
             textfont=dict(
-                size=text_sizes,
+                size=10,
                 color="white",
                 weight="bold",
                 family="Arial",
@@ -305,7 +305,7 @@ def create_strava_training_log(df_activities, metric="Distance"):
                 text=label_texts,
                 textposition="middle center",
                 textfont=dict(
-                    size=label_sizes,
+                    size=10,
                     color="#555",
                     family="Arial",
                 ),
@@ -345,13 +345,13 @@ def create_strava_training_log(df_activities, metric="Distance"):
             gridwidth=1,
             showline=True,
             linecolor="#ccc",
-            tickfont=dict(size=16),
+            tickfont=dict(size=10),
             fixedrange=False,
         ),
         plot_bgcolor="#faf7f2",
         paper_bgcolor="#faf7f2",
         height=max(600, len(weeks) * 160),
-        margin=dict(l=100, r=100, t=100, b=120),  # Increased bottom margin for labels
+        margin=dict(l=50, r=50, t=50, b=60),  # Increased bottom margin for labels
         hoverlabel=dict(bgcolor="white", font_size=12, font_family="Arial"),
     )
 

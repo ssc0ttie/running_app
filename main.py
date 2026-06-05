@@ -7,7 +7,7 @@ import data.push_data as push
 import data.push_supa as pushsupa
 
 from data import read_data_cached as pullc
-from data import read_data_uncached as pulluc
+# from data import read_data_uncached as pulluc
 from zoneinfo import ZoneInfo
 import traceback
 
@@ -24,12 +24,26 @@ if not st.session_state.authenticated:
     # Use wide layout for login page
     st.set_page_config(page_title="StillHere", page_icon="🪨", layout="wide")
     
-    st.title("🪨 StillHere")
-    st.markdown("### Select your profile to continue")
+    st.subheader("🪨 StillHere",anchor=False)
+    Welcome_msg = "The boulder will roll back down again — you already know that. You just have to keep showing up. And you did. That's enough."
+
+    st.markdown(
+        f"""
+        <div style="text-align: center; padding: 0.75rem; border-radius: 0.5rem;
+                    background-color: rgba(0, 0, 0, 0); border-left: 2px solid #8b5a2b; margin-bottom: 1rem;">
+            <p style="font-size: 1rem; color: #3b2f2a; font-style: italic; margin: 0;">
+                {Welcome_msg}
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.text("")
+    # st.markdown("##### Select your profile to continue")
     
     users = userlist
     
-    selected_user = st.selectbox("Select Member", [""] + users, index=0)
+    selected_user = st.selectbox("Select your profile to continue", [""]+users, index=0)
     
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -47,7 +61,7 @@ if not st.session_state.authenticated:
 
 # Sidebar with member selector
 with st.sidebar:
-    st.markdown("### 🏃‍♂️ Member")
+    st.markdown("### 🏃‍♂️ Profile")
     
     # Member selector dropdown
     users = userlist
@@ -80,20 +94,7 @@ import numpy as np
 from visuals import racedaycounter as rdc
 # Your main app content
 
-Welcome_msg = "The boulder will roll back down again — you already know that. You just have to keep showing up. And you did. That's enough."
 
-st.markdown(
-    f"""
-    <div style="text-align: center; padding: 0.75rem; border-radius: 0.5rem;
-                background-color: rgba(0, 0, 0, 0); border-left: 4px solid #8b5a2b; margin-bottom: 1rem;">
-        <p style="font-size: 1.1rem; color: #3b2f2a; font-style: italic; margin: 0;">
-            {Welcome_msg}
-        </p>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-st.text("")
 st.subheader(f"Welcome, {st.session_state.current_user}! 🏃‍♂️")
 st.markdown(":blue[*Need to switch accounts ? Tap the » icon in the top-left corner*]")
 col1, col2 = st.columns(2)
@@ -105,10 +106,10 @@ with col2:
             """
             <p>Welcome! Here's how to navigate this page:</p>
             <ul>
-                <li>📓 <strong>Logs</strong>: Edit / Log your training.</li>
-                <li>📊 <strong>Stats</strong>: Track your progress.</li>
-                <li>🗓️ <strong>Program</strong>: Your marathon plan.</li>
+                <li>🗓️ <strong>Program</strong>: Your marathon training plan.</li>
                 <li>🗺️ <strong> Your Runs</strong>: View Recent Runs.</li>
+                <li>📊 <strong>Stats</strong>: Track your weekly progress.</li>
+                <li>📓 <strong>Logs</strong>: Edit your training entries.</li>
             </ul>
             <p><strong>PS:</strong> If it lags, don't worry — it's just *thinking really hard*. 🧠💻</p>
             """,
@@ -225,7 +226,7 @@ st.text("")
 if tabs != "🗓️ Program" and tabs != "🗺️ Your Runs":
 
     if st.session_state.get("just_submitted", False):
-        df = pulluc.get_runner_data()  # Uncached for fresh data after submission
+        df = pullc.get_runner_data()  # Uncached for fresh data after submission
         st.session_state["just_submitted"] = False
     else:
         df = pullc.get_runner_data()  # Cached for normal viewing
@@ -585,7 +586,7 @@ if tabs == "📊 Stats":  # STATS
 
     ######### TRAINING CALENDAR ############
 
-    with st.expander("View Calendar Log - *landscape for best exp", expanded=False):
+    with st.expander("View Calendar Log", expanded=True):
         from visuals import traininglog_calendar
 
         traininglog_calendar.create_training_log_section(filtered_df)

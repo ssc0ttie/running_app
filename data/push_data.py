@@ -2,7 +2,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import streamlit as st
 import pandas as pd
-from data import read_data_uncached as rd
+# from data import read_data_uncached as rd
 from data import strava as strav
 import numpy as np
 
