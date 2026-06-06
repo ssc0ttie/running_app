@@ -155,7 +155,17 @@ def main():
                     f"/activities/{strava_id}/streams",
                     params={"keys": "time,heartrate,velocity_smooth", "key_by_type": "true"}
                 )
-                
+                # DEBUG: Print response status
+                print(f"      🔍 Stream response status: {response.status_code if response else 'None'}")
+
+                if response and response.status_code == 200:
+                    streams_data = response.json()
+                    print(f"      🔍 Streams available: {list(streams_data.keys())}")
+                    # ... rest of processing
+                else:
+                    print(f"      ⚠️ No stream data for activity {strava_id} (status: {response.status_code if response else 'No response'})")
+
+
                 if response and response.status_code == 200:
                     streams_data = response.json()
                     
