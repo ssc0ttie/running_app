@@ -58,7 +58,7 @@ def clean_activity_data(act):
         "HR (bpm)": to_float(act.get("average_heartrate")),
         "Cadence (steps/min)": to_float(act.get("average_cadence")) * 2,
         "Member Name": to_str(act.get("athlete_name", "Unknown")),
-        "Duration": to_float(act.get("moving_time")),
+        "Duration_Other": to_float(act.get("moving_time")),
         "Map_Polyline": act.get("map", {}).get("summary_polyline"),
         "Max_Pace": to_float(act.get("max_speed")),
         "Max_HR": to_float(act.get("max_heartrate")),
@@ -145,10 +145,10 @@ def main():
     )
 
     # Convert Duration
-    strava_df["Duration"] = pd.to_numeric(
-        strava_df["Duration"], errors="coerce"
+    strava_df["Duration_Other"] = pd.to_numeric(
+        strava_df["Duration_Other"], errors="coerce"
     ).fillna(0)
-    strava_df["Duration"] = strava_df["Duration"].apply(convert_seconds_to_time_string)
+    strava_df["Duration_Other"] = strava_df["Duration_Other"].apply(convert_seconds_to_time_string)
 
     # Create UniqueKey
     strava_df["UniqueKey"] = (
