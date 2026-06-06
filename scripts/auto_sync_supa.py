@@ -17,8 +17,7 @@ warnings.filterwarnings("ignore")
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Import modules
-from data.fetch_strava_automation import fetch_all_activities
+
 import pandas as pd
 
 # Import modules supa
