@@ -147,8 +147,6 @@ def push_activity_data_to_supabase(df):
         print("❌ Supabase client initialization failed!")
         return 0, len(df)
     
-    print(f"🔍 Supabase client created successfully")
-    
     try:
         existing_keys = get_existing_activity_keys()
         print(f"🔍 Found {len(existing_keys)} existing activity keys")
@@ -161,18 +159,48 @@ def push_activity_data_to_supabase(df):
                 print(f"⏭️ Skipping existing: {unique_key}")
                 continue
             
-            # Debug first row
-            if index == 0:
-                print(f"🔍 Sample row data: {row.to_dict()}")
-            
-            # Convert row to dict and fix date types
+            # Convert row to dict
             row_dict = row.to_dict()
             
-            for key, value in row_dict.items():
-                if hasattr(value, 'isoformat'):
-                    row_dict[key] = value.isoformat()
-                elif pd.isna(value):
-                    row_dict[key] = None
+            # Convert numeric fields to strings (schema expects text)
+            string_fields = [
+                "HR (bpm)",
+                "Cadence (steps/min)",
+                "RPE (1–10 scale)",
+                "Max_HR",
+                "Shoe",
+                "Remarks",
+                "Duration_Other",
+                "Strava_Base_Activity",
+                "Map_Polyline",
+                "Max_Pace"
+            ]
+            
+            for field in string_fields:
+                if field in row_dict and row_dict[field] is not None:
+                    row_dict[field] = str(row_dict[field])
+                elif field in row_dict and pd.isna(row_dict[field]):
+                    row_dict[field] = None
+            
+            # Handle date columns
+            date_fields = ["TimeStamp", "Date_of_Activity"]
+            for field in date_fields:
+                if field in row_dict and hasattr(row_dict[field], 'isoformat'):
+                    row_dict[field] = row_dict[field].isoformat()
+                elif field in row_dict and pd.isna(row_dict[field]):
+                    row_dict[field] = None
+            
+            # Handle numeric fields that should stay numeric
+            if "Distance" in row_dict and pd.notna(row_dict["Distance"]):
+                row_dict["Distance"] = float(row_dict["Distance"])
+            
+            if "Elevation_Gained" in row_dict and pd.notna(row_dict["Elevation_Gained"]):
+                row_dict["Elevation_Gained"] = float(row_dict["Elevation_Gained"])
+            
+            # Handle Pace (time without time zone)
+            if "Pace" in row_dict and row_dict["Pace"] and row_dict["Pace"] != "00:00:00":
+                # Keep as string, Supabase will convert to time
+                pass
             
             new_rows.append(row_dict)
         
@@ -181,14 +209,16 @@ def push_activity_data_to_supabase(df):
         if not new_rows:
             return 0, 0
         
+        # Use upsert
         response = supabase.table("activities")\
-            .upsert(new_rows, on_conflict="UniqueKey", ignore_duplicates=True)\
+            .upsert(new_rows, on_conflict="UniqueKey", ignore_duplicates=False)\
             .execute()
         
         success_count = len(response.data) if response.data else 0
         error_count = len(new_rows) - success_count
         
-        print(f"🔍 Insert result: {success_count} success, {error_count} errors")
+        if error_count > 0:
+            print(f"⚠️ {error_count} rows failed. Check Supabase logs for details.")
         
         return success_count, error_count
         
