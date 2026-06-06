@@ -163,8 +163,8 @@ def main():
     for member, count in member_counts.items():
         print(f"   • {member}: {count} activities")
 
-    # Push to Google Sheets
-    print("\n📤 Pushing to Google Sheets...")
+    # Push to Supabase
+    print("\n📤 Pushing to Supabase...")
     success_count, error_count = push_activity_data_to_supabase(strava_df)
 
     print("\n" + "=" * 70)
