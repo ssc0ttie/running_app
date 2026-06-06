@@ -159,9 +159,17 @@ def main():
                 )
                 # DEBUG: Print response status
                 print(f"      🔍 Stream response status: {response.status_code if response else 'None'}")
+
+                # if response and response.status_code == 200:
+                #     streams_data = response.json()
+                #     print(f"      🔍 Streams available: {list(streams_data.keys())}")
+                #     # ... rest of processing
+                # else:
+                #     print(f"      ⚠️ No stream data for activity {strava_id} (status: {response.status_code if response else 'No response'})")
+
+
                 if response and response.status_code == 200:
                     streams_data = response.json()
-                    print(f"      🔍 Streams available: {list(streams_data.keys())}")
                     
                     # Convert to expected format (same as UI)
                     class StreamWrapper:
@@ -222,10 +230,8 @@ def main():
                                 print(f"      ✅ Pushed {success} zone records")
                     
                     time.sleep(1)  # Rate limiting
-                elif response:
-                    print(f"      ⚠️ No stream data for activity {strava_id} (status: {response.status_code})")
                 else:
-                    print(f"      ⚠️ No response for activity {strava_id}")
+                    print(f"      ⚠️ No stream data available")
                     
         except Exception as e:
             print(f"  ❌ Error processing {athlete_name}: {e}")
