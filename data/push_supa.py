@@ -4,14 +4,39 @@ from supabase import create_client
 import pandas as pd
 import numpy as np
 
-@st.cache_resource
+# @st.cache_resource
+# In data/push_supa.py
+import os
+from supabase import create_client
+
 def init_supabase():
+    """Initialize Supabase client - works in both Streamlit and GitHub Actions"""
+    supabase_url = None
+    supabase_key = None
+    
+    # Try Streamlit secrets first (for Streamlit Cloud)
     try:
-        supabase_url  = st.secrets["supabase"]["url"]
-        supabase_key  = st.secrets["supabase"]["key"]
+        import streamlit as st
+        if "supabase" in st.secrets:
+            supabase_url = st.secrets["supabase"]["url"]
+            supabase_key = st.secrets["supabase"]["key"]
+    except:
+        pass
+    
+    # Fall back to environment variables (for GitHub Actions)
+    if not supabase_url:
+        supabase_url = os.environ.get("SUPABASE_URL")
+    if not supabase_key:
+        supabase_key = os.environ.get("SUPABASE_KEY")
+    
+    if not supabase_url or not supabase_key:
+        print("❌ Supabase credentials not found")
+        return None
+    
+    try:
         return create_client(supabase_url, supabase_key)
     except Exception as e:
-        st.error(f"Connection error: {e}")
+        print(f"❌ Supabase connection error: {e}")
         return None
 
 # ============================================================
