@@ -64,39 +64,97 @@ def get_existing_zone_keys():
 # ============================================================
 # STEP 3: Push activity data (replaces push_strava_data_to_sheet)
 # ============================================================
+# def push_activity_data_to_supabase(df):
+#     """Push Strava activity data to Supabase."""
+#     supabase = init_supabase()
+    
+#     try:
+#         existing_keys = get_existing_activity_keys()
+        
+#         new_rows = []
+#         for _, row in df.iterrows():
+#             unique_key = str(row["UniqueKey"])
+            
+#             if unique_key in existing_keys:
+#                 st.warning(f"Skipping duplicate: {unique_key}")
+#                 continue
+            
+#             # Convert row to dict and fix date types
+#             row_dict = row.to_dict()
+            
+#             # Convert date objects to strings (JSON serializable)
+#             for key, value in row_dict.items():
+#                 if hasattr(value, 'isoformat'):  # datetime/date objects
+#                     row_dict[key] = value.isoformat()
+#                 elif pd.isna(value):  # Handle NaN/None
+#                     row_dict[key] = None
+            
+#             new_rows.append(row_dict)
+        
+#         if not new_rows:
+#             st.info("No new activities to push")
+#             return 0, 0
+        
+#         # Bulk insert
+#         # response = supabase.table("activities").insert(new_rows).execute()
+        
+#         response = supabase.table("activities")\
+#             .upsert(new_rows, on_conflict="UniqueKey", ignore_duplicates=True)\
+#             .execute()
+        
+#         success_count = len(response.data) if response.data else 0
+#         error_count = len(new_rows) - success_count
+        
+#         return success_count, error_count
+        
+#     except Exception as e:
+#         st.error(f"Error pushing - supa activities: {e}")
+#         return 0, len(df)
+
+
+
+
 def push_activity_data_to_supabase(df):
     """Push Strava activity data to Supabase."""
     supabase = init_supabase()
     
+    if supabase is None:
+        print("❌ Supabase client initialization failed!")
+        return 0, len(df)
+    
+    print(f"🔍 Supabase client created successfully")
+    
     try:
         existing_keys = get_existing_activity_keys()
+        print(f"🔍 Found {len(existing_keys)} existing activity keys")
         
         new_rows = []
-        for _, row in df.iterrows():
+        for index, row in df.iterrows():
             unique_key = str(row["UniqueKey"])
             
             if unique_key in existing_keys:
-                st.warning(f"Skipping duplicate: {unique_key}")
+                print(f"⏭️ Skipping existing: {unique_key}")
                 continue
+            
+            # Debug first row
+            if index == 0:
+                print(f"🔍 Sample row data: {row.to_dict()}")
             
             # Convert row to dict and fix date types
             row_dict = row.to_dict()
             
-            # Convert date objects to strings (JSON serializable)
             for key, value in row_dict.items():
-                if hasattr(value, 'isoformat'):  # datetime/date objects
+                if hasattr(value, 'isoformat'):
                     row_dict[key] = value.isoformat()
-                elif pd.isna(value):  # Handle NaN/None
+                elif pd.isna(value):
                     row_dict[key] = None
             
             new_rows.append(row_dict)
         
-        if not new_rows:
-            st.info("No new activities to push")
-            return 0, 0
+        print(f"🔍 {len(new_rows)} new rows to insert")
         
-        # Bulk insert
-        # response = supabase.table("activities").insert(new_rows).execute()
+        if not new_rows:
+            return 0, 0
         
         response = supabase.table("activities")\
             .upsert(new_rows, on_conflict="UniqueKey", ignore_duplicates=True)\
@@ -105,10 +163,14 @@ def push_activity_data_to_supabase(df):
         success_count = len(response.data) if response.data else 0
         error_count = len(new_rows) - success_count
         
+        print(f"🔍 Insert result: {success_count} success, {error_count} errors")
+        
         return success_count, error_count
         
     except Exception as e:
-        st.error(f"Error pushing - supa activities: {e}")
+        print(f"❌ Error in push_activity_data_to_supabase: {e}")
+        import traceback
+        traceback.print_exc()
         return 0, len(df)
 # ============================================================
 # STEP 4: Push zone data (replaces push_zone_data_to_sheet)
