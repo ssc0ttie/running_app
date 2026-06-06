@@ -19,7 +19,9 @@ jobs:
           python-version: '3.10'
       
       - name: Install dependencies
-        run: pip install pandas requests supabase
+        run: |
+          pip install --upgrade pip
+          pip install pandas requests supabase streamlit
       
       - name: Run zone sync
         env:
