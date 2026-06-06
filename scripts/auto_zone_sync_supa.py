@@ -43,7 +43,7 @@ def init_supabase_automation():
     return create_client(supabase_url, supabase_key)
 
 
-def fetch_activities_from_supabase(athlete_name, supabase_url, supabase_key, limit=100):
+def fetch_activities_from_supabase(athlete_name, supabase_url, supabase_key, limit=5):
     """Fetch activities for a specific athlete from Supabase"""
     headers = {
         "apikey": supabase_key,
@@ -116,7 +116,7 @@ def main():
             print(f"  ✅ Connected as {profile.get('firstname', athlete_name)}")
             
             # Fetch activities from Supabase
-            activities = fetch_activities_from_supabase(athlete_name, supabase_url, supabase_key, limit=100)
+            activities = fetch_activities_from_supabase(athlete_name, supabase_url, supabase_key, limit=5)
             print(f"  📊 Found {len(activities)} activities in Supabase")
             
             for act in activities:
