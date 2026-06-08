@@ -223,7 +223,7 @@ def edit_user_fields_supa(full_df,member_name):
     """
     from data.push_supa import update_activity_in_supabase  # Add this import
 
-    full_df = full_df[(full_df["Member Name"] == member_name)]
+    # full_df = full_df[(full_df["Member Name"] == member_name)]
     # Ensure Date_of_Activity is datetime
     full_df["Date_of_Activity"] = pd.to_datetime(
         full_df["Date_of_Activity"], errors="coerce"

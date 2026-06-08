@@ -286,7 +286,14 @@ if tabs == "📓Log":  ##LOG
         df = read_data_cached_for_recent.get_runner_data()
         full_df = pd.DataFrame(df)
         
-        user_field.edit_user_fields_supa(full_df,selected_user)
+
+        if selected_user == "Guest":
+            filtered_member_df = full_df
+            selected_user = "All"
+        else:
+            filtered_member_df = full_df[full_df["Member Name"] == selected_user]
+        
+        user_field.edit_user_fields_supa(filtered_member_df,selected_user)
         
 
     # with st.expander(
@@ -316,50 +323,73 @@ if tabs == "📊 Stats":  # STATS
     """,
         unsafe_allow_html=True,
     )
-
-    ### --- Capture Year --- ####
-    full_df["Date_of_Activity"] = pd.to_datetime(
-        full_df["Date_of_Activity"], errors="coerce"
-    )
-    full_df["year"] = full_df["Date_of_Activity"].dt.year
-
-    _years = sorted(full_df["Date_of_Activity"].dt.year.dropna().unique().tolist())
-    _years.insert(0, "All Time")
-    last_index = len(_years) - 1
-
-    selected_year = st.selectbox("Select Year to Filter", _years, index=last_index)
-
-    ### All activity - but not filtered from app selections
-
-    # Apply filtering with all years
-    if selected_year == "All Time":
-        filtered_member_df = full_df
-    else:
-        full_df = full_df[full_df["year"] == selected_year]
-
-    filtered_df_full_activity = full_df[
-        ~full_df["Activity"].isin(
-            [
-                "Rest",
-                "Cross Train",
-                "Strength Training",
-                "WeightTraining",
-                "Yoga",
-                0,
-                "",
-                "Walk",
-                "Pilates",
-                "Ride",
-                "Cooldown",
-                "Warm up",
+    ### FILTER RUNS ONLY ###
+    full_df = full_df[
+                ~full_df["Activity"].isin(
+                    [
+                        "Rest",
+                        "Cross Train",
+                        "Strength Training",
+                        "WeightTraining",
+                        "Yoga",
+                        0,
+                        "",
+                        "Walk",
+                        "Pilates",
+                        "Ride",
+                        "Cooldown",
+                        "Warm up",
+                    ]
+                )
             ]
-        )
-    ]
 
-    stats.generate_matrix_member(filtered_df_full_activity)
+   
+    stats.generate_matrix_member(full_df)
+
+    st.markdown(
+        f"""
+    <div style="
+        color:#3a3939;
+        font-size: 20px;
+        font-weight: 600;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 8px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;">
+        📊 Overview & Stats: &nbsp;
+    </div>
+    """,
+        unsafe_allow_html=True,
+    )
+
 
     # -------------------MEMBER FILTER  -----------------------#
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col4:
+         ### --- Capture Year --- ####
+        full_df["Date_of_Activity"] = pd.to_datetime(
+            full_df["Date_of_Activity"], errors="coerce"
+        )
+        full_df["year"] = full_df["Date_of_Activity"].dt.year
+
+        _years = sorted(full_df["Date_of_Activity"].dt.year.dropna().unique().tolist())
+        _years.insert(0, "All Time")
+        last_index = len(_years) - 1
+
+        selected_year = st.selectbox("Select Year to Filter", _years, index=last_index)
+
+        ### All activity - but not filtered from app selections
+
+        # Apply filtering with all years
+        if selected_year == "All Time":
+            filtered_member_df = full_df
+        else:
+            full_df = full_df[full_df["year"] == selected_year]
+
+        
 
     with col1:
         members = sorted(full_df["Member Name"].dropna().unique())
@@ -456,42 +486,7 @@ if tabs == "📊 Stats":  # STATS
     #         rp.race_predictor(filtered_df)
 
     #########################--- ALL TIME STATS TABLE ----#######################
-    st.markdown(
-        f"""
-    <div style="
-        color:#3a3939;
-        font-size: 20px;
-        font-weight: 600;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 8px;
-        margin-top: 20px;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;">
-        📊 Overview & Stats: &nbsp;
-        <span style="
-            background-color: #f0f2f6;
-            color: #31333F;
-            padding: 2px 12px;
-            border-radius: 15px;
-            font-size: 18px;
-            border: 1px solid #d1d5db;">
-            {selected_member}
-        </span>
-                <span style="
-            background-color: #f0f2f6;
-            color: #31333F;
-            padding: 2px 12px;
-            border-radius: 15px;
-            font-size: 18px;
-            border: 1px solid #d1d5db;">
-            {selected_year}
-        </span>
-    </div>
-    """,
-        unsafe_allow_html=True,
-    )
-
+    
 
 
     # filtered_df_all_activity = filtered_df
@@ -1285,18 +1280,6 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
                         mime="text/csv",
                     )
 
-                    # # Summary statistics
-                    # st.divider()
-                    # st.subheader("📈 Summary")
-
-                    # col1, col2, col3 = st.columns(3)
-                    # with col1:
-                    #     st.metric("Total Activities", len(activities))
-                    # with col2:
-                    #     st.metric("Zone Records", len(zones_df))
-                    # with col3:
-                    #     unique_activities = zones_df["Activity"].nunique()
-                    #     st.metric("Unique Activities", unique_activities)
 
                 else:
                     st.warning(
@@ -1477,33 +1460,6 @@ if tabs == "🔄 Strava Sync":  ##strava sync plus cleanup before push
             # Reset the trigger
             st.session_state.sync_triggered = False
 
-        ############################### ORIGINAL #######################################
-        # # Push zone data if available
-        # if "zones_df" in locals() and not zones_df.empty:
-        #     # Get parent info from the first row
-        #     parent_key = zones_df.iloc[0]["Parent_UniqueKey"]
-
-        #     activity_row_data = {
-        #         "Date": zones_df.iloc[0]["Date"],
-        #         "Member Name": zones_df.iloc[0]["Athlete"],
-        #         "Activity": zones_df.iloc[0]["Activity"],
-        #         "Avg_HR": zones_df.iloc[0]["Avg_HR"],
-        #     }
-
-        #     with st.spinner("Pushing zone data to Google Sheets..."):
-        #         import data.push_data as push_data
-
-        #         zone_success, zone_errors = push_data.push_zone_data_to_sheet(
-        #             zones_df, parent_key, activity_row_data
-        #         )
-
-        #     if zone_success > 0:
-        #         st.success(f"✅ Successfully pushed {zone_success} zone records!")
-        #     if zone_errors > 0:
-        #         st.error(f"❌ Failed to push {zone_errors} zone records")
-
-        ############################### ^^^^^^^ ORIGINAL ^^^#######################################
-        
 
         # Push zone data if available
     if st.button("Sync Zones", type="primary", key="sync_zones"):
