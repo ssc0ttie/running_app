@@ -234,7 +234,7 @@ if tabs != "🗓️ Program" and tabs != "🗺️ Your Runs":
             # Fallback to empty dataframe or previous data
             df = pd.DataFrame()
 
-    #############################################################################
+#############################################################################
 
     full_df = pd.DataFrame(df)
 
@@ -556,32 +556,10 @@ if tabs == "📊 Stats":  # STATS
     # Days till race
     metric_tillrace = (datetime(2025, 12, 7) - datetime.today()).days
 
-    # Display metrics in columns
-    # col0, col1, col2, col3 = st.columns(4)
 
     col0, col1 = st.columns([1,4])
 
-    # col0.metric(
-    #     "Runs 🏃‍♀️‍➡️",
-    #     value=metric_number_runs,
-    #     label_visibility="visible",
-    #     border=True,
-    # )
-    # col1.metric(
-    #     "Total Distance 🏃💨KⓂ️",
-    #     value=metric_distance,
-    #     label_visibility="visible",
-    #     border=True,
-    # )
-    # col2.metric(
-    #     "Moving Time ⏱️",
-    #     value=metric_movingtime,
-    #     label_visibility="visible",
-    #     border=True,
-    # )
-    # col3.metric(
-    #     "Average Pace 🚄", value=metric_pace, label_visibility="visible", border=True
-    # )
+
     with col0:
         
         st.markdown(
@@ -640,13 +618,13 @@ if tabs == "📊 Stats":  # STATS
 
     
     ###########CHARTS###########
-    from visuals import sunburst as sb
+    from visuals import bubble as sb
     from visuals import combochart as cb
     from visuals import table as mt
-    from visuals import line_polar as lp
+    # from visuals import line_polar as lp
     from visuals import donut as dt
     from visuals import wordcloud as wc
-    from visuals import mappolyline as poly
+    # from visuals import mappolyline as poly
 
     # -----COMBO CHART WEEKLY-------#
     # st.subheader("📅🏃‍♂️ Weekly Distance vs. Pace", divider="gray")
@@ -687,7 +665,6 @@ if tabs == "📊 Stats":  # STATS
         with col3:
             st.markdown("##### 🏃💬 Runner's Word Cloud")
             wc.generate_wordcloud_new(filtered_df_withnonrun)
-
 
 if tabs == "🗓️ Program":  ##TRAINING PLAN ##
 
@@ -769,14 +746,6 @@ if tabs == "📘 Reference":  ##STR WORK
 if tabs == "🗺️ Your Runs":  ##STR WORK
     from data import read_data_cached_for_recent
 
-    # if st.session_state.get("just_submitted", False):
-    #     df = get_runner_data()  # Uncached for fresh data after submission
-    #     st.session_state["just_submitted"] = False
-    # else:
-    #     df = get_runner_data()  # Cached for normal viewing
-    #     if df is None:
-    #         # Fallback to empty dataframe or previous data
-    #         df = pd.DataFrame()
     df = read_data_cached_for_recent.get_runner_data()
     full_df = pd.DataFrame(df)
 
@@ -827,7 +796,7 @@ if tabs == "🗺️ Your Runs":  ##STR WORK
             ]
 
     from visuals import table as mt
-    from visuals import mappolyline as poly
+    # from visuals import mappolyline as poly
     from visuals import activitycard as acard
 
     filtered_df = filtered_df[
@@ -858,13 +827,7 @@ if tabs == "🗺️ Your Runs":  ##STR WORK
         import data.read_data_cached
 
 
-        # client = push.get_gsheet_client()
-        # sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
-
         try:
-            # zone_worksheet = sheet.worksheet("Zone_Data")
-            # zone_records = zone_worksheet.get_all_values()
-
             zone_records = data.read_data_cached.get_zones()
 
             if len(zone_records) > 1:
