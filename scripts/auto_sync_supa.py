@@ -92,7 +92,7 @@ def convert_seconds_to_time_string(total_seconds):
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
 
-def main():
+def main_original():
     print("=" * 70)
     print(f"🚀 STRAVA AUTO SYNC - PRODUCTION")
     print(f"📍 Started at: {datetime.now()}")
@@ -178,6 +178,104 @@ def main():
 
     if error_count > 0:
         sys.exit(1)
+
+
+
+
+def main():
+    print("=" * 70)
+    print(f"🚀 STRAVA AUTO SYNC - PRODUCTION")
+    print(f"📍 Started at: {datetime.now()}")
+    print("=" * 70)
+
+    # Get days back from environment (default 30)
+    days_back = int(os.environ.get("DAYS_BACK", "30"))
+    print(f"📅 Syncing activities from the last {days_back} days")
+
+    # Fetch activities for ALL users
+    print("\n📡 Fetching Strava data for all users...")
+    activities = fetch_all_activities(days_back)
+
+    if not activities:
+        print("❌ No activities fetched")
+        sys.exit(1)
+
+    print(f"✅ Fetched {len(activities)} raw activities")
+
+    # Clean and convert
+    print("\n🔄 Processing activities...")
+    cleaned_activities = [clean_activity_data(act) for act in activities]
+    strava_df = pd.DataFrame(cleaned_activities)
+
+    # Apply transformations
+    strava_df["TimeStamp"] = pd.to_datetime(strava_df["TimeStamp"]).dt.date
+    strava_df["Date_of_Activity"] = pd.to_datetime(
+        strava_df["Date_of_Activity"]
+    ).dt.date
+    strava_df["Distance"] = (strava_df["Distance"]).round(2)
+
+    # Convert Pace
+    strava_df["Pace"] = pd.to_numeric(strava_df["Pace"], errors="coerce").fillna(0)
+    strava_df["Pace"] = strava_df["Pace"].apply(
+        lambda x: convert_speed_to_pace_string(x) if x > 0 else "00:00:00"
+    )
+
+    # Convert Max Pace
+    strava_df["Max_Pace"] = pd.to_numeric(
+        strava_df["Max_Pace"], errors="coerce"
+    ).fillna(0)
+    strava_df["Max_Pace"] = strava_df["Max_Pace"].apply(
+        lambda x: convert_speed_to_pace_string(x) if x > 0 else "00:00:00"
+    )
+
+    # Convert HR and Cadence
+    strava_df["HR (bpm)"] = strava_df["HR (bpm)"].round().astype(int)
+    strava_df["Max_HR"] = strava_df["Max_HR"].round().astype(int)
+    strava_df["Cadence (steps/min)"] = (
+        strava_df["Cadence (steps/min)"].round().astype(int)
+    )
+
+    # Convert Duration
+    strava_df["Duration"] = pd.to_numeric(
+        strava_df["Duration"], errors="coerce"
+    ).fillna(0)
+    strava_df["Duration"] = strava_df["Duration"].apply(convert_seconds_to_time_string)
+
+    # Create UniqueKey
+    strava_df["UniqueKey"] = (
+        strava_df[["Date_of_Activity", "Member Name", "Activity", "HR (bpm)"]]
+        .astype(str)
+        .agg("|".join, axis=1)
+    )
+
+    # Show summary by member
+    print("\n📊 Activities by member:")
+    member_counts = strava_df["Member Name"].value_counts()
+    for member, count in member_counts.items():
+        print(f"   • {member}: {count} activities")
+
+    # Push to Supabase
+    print("\n📤 Pushing to Supabase...")
+    success_count, error_count = push_activity_data_to_supabase(strava_df)
+
+    print("\n" + "=" * 70)
+    print(f"🏁 SYNC COMPLETED at {datetime.now()}")
+    print(f"📈 Summary:")
+    print(f"   • Total activities fetched: {len(activities)}")
+    print(f"   • New activities added: {success_count}")
+    print(f"   • Skipped/errors: {error_count}")
+    print("=" * 70)
+
+    # ============================================================
+    # EXIT WITH SUCCESS CODE 0 (no failure emails)
+    # ============================================================
+    if success_count == 0 and error_count == len(activities):
+        # Critical failure - nothing was inserted
+        print("❌ CRITICAL: No activities were inserted. Please check your data.")
+        sys.exit(1)
+    else:
+        print(f"✅ Sync completed successfully ({success_count} new activities, {error_count} skipped)")
+        sys.exit(0)  # ← Success, no email
 
 
 if __name__ == "__main__":

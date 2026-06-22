@@ -67,7 +67,7 @@ def main():
     print(f"📍 Started at: {datetime.now()}")
     print("=" * 70)
     
-    days_back = int(os.environ.get("DAYS_BACK", "15"))
+    days_back = int(os.environ.get("DAYS_BACK", "7"))
     print(f"📅 Analyzing activities from the last {days_back} days")
     
     # Get users from environment
