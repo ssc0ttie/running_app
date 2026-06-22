@@ -236,10 +236,10 @@ def main():
     )
 
     # Convert Duration
-    strava_df["Duration"] = pd.to_numeric(
-        strava_df["Duration"], errors="coerce"
+    strava_df["Duration_Other"] = pd.to_numeric(
+        strava_df["Duration_Other"], errors="coerce"
     ).fillna(0)
-    strava_df["Duration"] = strava_df["Duration"].apply(convert_seconds_to_time_string)
+    strava_df["Duration_Other"] = strava_df["Duration_Other"].apply(convert_seconds_to_time_string)
 
     # Create UniqueKey
     strava_df["UniqueKey"] = (
