@@ -139,7 +139,7 @@ def get_existing_zone_keys():
 
 
 
-def push_activity_data_to_supabase(df):
+def push_activity_data_to_supabase_old(df):
     """Push Strava activity data to Supabase."""
     supabase = init_supabase()
     
@@ -156,7 +156,8 @@ def push_activity_data_to_supabase(df):
             unique_key = str(row["UniqueKey"])
             
             if unique_key in existing_keys:
-                print(f"⏭️ Skipping existing: {unique_key}")
+                skipped_count += 1
+                # print(f"⏭️ Skipping existing: {unique_key}")
                 continue
             
             # Convert row to dict
@@ -220,6 +221,106 @@ def push_activity_data_to_supabase(df):
         
         if error_count > 0:
             print(f"⚠️ {error_count} rows failed. Check Supabase logs for details.")
+        
+        return success_count, error_count
+        
+    except Exception as e:
+        print(f"❌ Error in push_activity_data_to_supabase: {e}")
+        import traceback
+        traceback.print_exc()
+        return 0, len(df)
+    
+
+def push_activity_data_to_supabase(df):
+    """Push ONLY NEW Strava activities to Supabase (never update existing)."""
+    supabase = init_supabase()
+    
+    if supabase is None:
+        print("❌ Supabase client initialization failed!")
+        return 0, len(df)
+    
+    try:
+        existing_keys = get_existing_activity_keys()
+        print(f"🔍 Found {len(existing_keys)} existing activity keys")
+        
+        new_rows = []
+        skipped_count = 0
+        
+        for index, row in df.iterrows():
+            unique_key = str(row["UniqueKey"])
+            
+            # SKIP if already exists - NEVER UPDATE
+            if unique_key in existing_keys:
+                skipped_count += 1
+                continue
+            
+            # Convert row to dict
+            row_dict = row.to_dict()
+            
+            # Convert numeric fields to strings (schema expects text)
+            string_fields = [
+                "HR (bpm)",
+                "Cadence (steps/min)",
+                "RPE (1–10 scale)",
+                "Max_HR",
+                "Shoe",
+                "Remarks",
+                "Duration_Other",
+                "Strava_Base_Activity",
+                "Activity",
+                "Map_Polyline",
+                "Max_Pace"
+            ]
+            
+            for field in string_fields:
+                if field in row_dict and row_dict[field] is not None:
+                    row_dict[field] = str(row_dict[field])
+                elif field in row_dict and pd.isna(row_dict[field]):
+                    row_dict[field] = None
+            
+            # Handle date columns
+            date_fields = ["TimeStamp", "Date_of_Activity"]
+            for field in date_fields:
+                if field in row_dict and hasattr(row_dict[field], 'isoformat'):
+                    row_dict[field] = row_dict[field].isoformat()
+                elif field in row_dict and pd.isna(row_dict[field]):
+                    row_dict[field] = None
+            
+            # Handle numeric fields that should stay numeric
+            if "Distance" in row_dict and pd.notna(row_dict["Distance"]):
+                row_dict["Distance"] = float(row_dict["Distance"])
+            
+            if "Elevation_Gained" in row_dict and pd.notna(row_dict["Elevation_Gained"]):
+                row_dict["Elevation_Gained"] = float(row_dict["Elevation_Gained"])
+            
+            # Handle Pace (time without time zone)
+            if "Pace" in row_dict and row_dict["Pace"] and row_dict["Pace"] != "00:00:00":
+                # Keep as string, Supabase will convert to time
+                pass
+            
+            new_rows.append(row_dict)
+        
+        if skipped_count > 0:
+            print(f"⏭️ Skipped {skipped_count} existing activities (preserving manual edits)")
+        
+        print(f"🔍 {len(new_rows)} new rows to insert")
+        
+        if not new_rows:
+            print("ℹ️ No new activities to push")
+            return 0, 0
+        
+        # Use INSERT instead of UPSERT (only new rows)
+        response = supabase.table("activities")\
+            .insert(new_rows)\
+            .execute()
+        
+        success_count = len(response.data) if response.data else 0
+        error_count = len(new_rows) - success_count
+        
+        if error_count > 0:
+            print(f"⚠️ {error_count} rows failed. Check Supabase logs for details.")
+        
+        print(f"✅ Inserted {success_count} new activities")
         
         return success_count, error_count
         
