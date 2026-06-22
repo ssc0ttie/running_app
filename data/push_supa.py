@@ -139,7 +139,7 @@ def get_existing_zone_keys():
 
 
 
-def push_activity_data_to_supabase_old(df):
+def push_activity_data_to_supabase_original(df):
     """Push Strava activity data to Supabase."""
     supabase = init_supabase()
     
@@ -156,8 +156,8 @@ def push_activity_data_to_supabase_old(df):
             unique_key = str(row["UniqueKey"])
             
             if unique_key in existing_keys:
-                skipped_count += 1
-                # print(f"⏭️ Skipping existing: {unique_key}")
+                # skipped_count += 1
+                print(f"⏭️ Skipping existing: {unique_key}")
                 continue
             
             # Convert row to dict
@@ -231,7 +231,7 @@ def push_activity_data_to_supabase_old(df):
         return 0, len(df)
     
 
-def push_activity_data_to_supabase(df):
+def push_activity_data_to_supabase_option2(df):
     """Push ONLY NEW Strava activities to Supabase (never update existing)."""
     supabase = init_supabase()
     
@@ -329,6 +329,149 @@ def push_activity_data_to_supabase(df):
         import traceback
         traceback.print_exc()
         return 0, len(df)
+    
+
+
+def push_activity_data_to_supabase(df):
+    """Option 1: Push Strava activity data to Supabase - preserves manual Activity edits."""
+    supabase = init_supabase()
+    
+    if supabase is None:
+        print("❌ Supabase client initialization failed!")
+        return 0, len(df)
+    
+    try:
+        existing_keys = get_existing_activity_keys()
+        print(f"🔍 Found {len(existing_keys)} existing activity keys")
+        
+        # Separate new vs existing rows
+        new_rows = []
+        update_rows = []
+        
+        for index, row in df.iterrows():
+            unique_key = str(row["UniqueKey"])
+            
+            if unique_key in existing_keys:
+                update_rows.append(row)
+            else:
+                new_rows.append(row)
+        
+        print(f"🔍 {len(new_rows)} new rows to insert, {len(update_rows)} existing rows to update")
+        
+        # ============================================================
+        # 1. INSERT NEW ROWS (include all columns)
+        # ============================================================
+        if new_rows:
+            insert_payload = []
+            for row in new_rows:
+                row_dict = row.to_dict()
+                
+                # Convert fields to proper types
+                string_fields = [
+                    "HR (bpm)", "Cadence (steps/min)", "RPE (1–10 scale)",
+                    "Max_HR", "Shoe", "Remarks", "Duration_Other",
+                    "Strava_Base_Activity", "Activity", "Map_Polyline", "Max_Pace"
+                ]
+                for field in string_fields:
+                    if field in row_dict and row_dict[field] is not None:
+                        row_dict[field] = str(row_dict[field])
+                    elif field in row_dict and pd.isna(row_dict[field]):
+                        row_dict[field] = None
+                
+                date_fields = ["TimeStamp", "Date_of_Activity"]
+                for field in date_fields:
+                    if field in row_dict and hasattr(row_dict[field], 'isoformat'):
+                        row_dict[field] = row_dict[field].isoformat()
+                    elif field in row_dict and pd.isna(row_dict[field]):
+                        row_dict[field] = None
+                
+                if "Distance" in row_dict and pd.notna(row_dict["Distance"]):
+                    row_dict["Distance"] = float(row_dict["Distance"])
+                if "Elevation_Gained" in row_dict and pd.notna(row_dict["Elevation_Gained"]):
+                    row_dict["Elevation_Gained"] = float(row_dict["Elevation_Gained"])
+                
+                insert_payload.append(row_dict)
+            
+            response = supabase.table("activities")\
+                .insert(insert_payload)\
+                .execute()
+            
+            insert_success = len(response.data) if response.data else 0
+            insert_errors = len(insert_payload) - insert_success
+            print(f"  ✅ Inserted {insert_success} new activities")
+        else:
+            insert_success = 0
+            insert_errors = 0
+        
+        # ============================================================
+        # 2. UPDATE EXISTING ROWS (PRESERVE ACTIVITY COLUMN)
+        # ============================================================
+        if update_rows:
+            update_payload = []
+            for row in update_rows:
+                row_dict = row.to_dict()
+                
+                # Fields to update (EXCLUDING Activity)
+                fields_to_update = [
+                    "TimeStamp", "Date_of_Activity", "Distance", "Pace",
+                    "HR (bpm)", "Cadence (steps/min)", "Duration_Other",
+                    "Map_Polyline", "Max_Pace", "Max_HR", "Elevation_Gained",
+                    "Shoe", "Remarks", "RPE (1–10 scale)", "Strava_Base_Activity"
+                ]
+                
+                update_dict = {"UniqueKey": str(row_dict["UniqueKey"])}
+                
+                for field in fields_to_update:
+                    if field in row_dict:
+                        val = row_dict[field]
+                        
+                        # Handle date fields
+                        if field in ["TimeStamp", "Date_of_Activity"]:
+                            if hasattr(val, 'isoformat'):
+                                val = val.isoformat()
+                            elif pd.isna(val):
+                                val = None
+                        # Handle numeric fields
+                        elif field in ["Distance", "Elevation_Gained"]:
+                            if pd.notna(val):
+                                val = float(val)
+                            else:
+                                val = None
+                        # Handle everything else as string
+                        else:
+                            if val is not None and not pd.isna(val):
+                                val = str(val)
+                            else:
+                                val = None
+                        
+                        update_dict[field] = val
+                
+                update_payload.append(update_dict)
+            
+            # Use upsert with on_conflict to update existing rows
+            response = supabase.table("activities")\
+                .upsert(update_payload, on_conflict="UniqueKey", ignore_duplicates=False)\
+                .execute()
+            
+            update_success = len(response.data) if response.data else 0
+            update_errors = len(update_payload) - update_success
+            print(f"  ✅ Updated {update_success} existing activities (preserved Activity column)")
+        else:
+            update_success = 0
+            update_errors = 0
+        
+        success_count = insert_success + update_success
+        error_count = insert_errors + update_errors
+        
+        print(f"✅ Total: {success_count} success, {error_count} errors")
+        
+        return success_count, error_count
+        
+    except Exception as e:
+        print(f"❌ Error in push_activity_data_to_supabase: {e}")
+        import traceback
+        traceback.print_exc()
+        return 0, len(df)    
 # ============================================================
 # STEP 4: Push zone data (replaces push_zone_data_to_sheet)
 # ============================================================
