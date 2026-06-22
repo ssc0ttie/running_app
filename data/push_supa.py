@@ -171,6 +171,7 @@ def push_activity_data_to_supabase(df):
                 "Shoe",
                 "Remarks",
                 "Duration_Other",
+                "Strava_Base_Activity"
                 "Activity",
                 "Map_Polyline",
                 "Max_Pace"

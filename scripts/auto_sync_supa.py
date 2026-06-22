@@ -59,6 +59,7 @@ def clean_activity_data(act):
         "Cadence (steps/min)": to_float(act.get("average_cadence")) * 2,
         "Member Name": to_str(act.get("athlete_name", "Unknown")),
         "Duration_Other": to_float(act.get("moving_time")),
+        "Strava_Base_Activity": to_str(act.get("name")),
         "Map_Polyline": act.get("map", {}).get("summary_polyline"),
         "Max_Pace": to_float(act.get("max_speed")),
         "Max_HR": to_float(act.get("max_heartrate")),
