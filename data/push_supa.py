@@ -392,8 +392,9 @@ def push_activity_data_to_supabase(df):
                 
                 insert_payload.append(row_dict)
             
+            # Option 1: Use upsert (recommended)
             response = supabase.table("activities")\
-                .insert(insert_payload)\
+                .upsert(insert_payload, on_conflict="UniqueKey", ignore_duplicates=True)\
                 .execute()
             
             insert_success = len(response.data) if response.data else 0
