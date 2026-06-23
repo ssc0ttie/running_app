@@ -69,7 +69,7 @@ jobs:
         run: |
           echo "✅ Strava sync completed successfully at $(date)"
 
-      - name: Send failure notification
-        if: failure()
+      - name: Send failure notification (only for critical failures)
+        if: failure() && github.run_attempt == 3
         run: |
-          echo "❌ Strava sync failed at $(date)"
+          echo "❌ Strava sync failed critically after 3 attempts"

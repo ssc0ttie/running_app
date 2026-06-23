@@ -151,6 +151,10 @@ with col1:
             options.append("🔄 Strava Sync")
             # options.append("📊 Stats"),  # Add the hidden option
 
+        if selected_member == "Scott":
+            options.append("🔄 Strava Sync")
+
+
         if st.session_state.memberverified:
             options.append("📊 Stats")
             options.append("🗺️ Your Runs")
@@ -706,6 +710,14 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
         # If Chona has a base program, add it here too
     },
+    "Aiza": {
+        "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1351146568&single=true"
+        # If Chona has a base program, add it here too
+    },
+    "Alvin": {
+        "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=959789449&single=true"
+        # If Chona has a base program, add it here too
+    },
         "All": {
         "base": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
         # If Chona has a base program, add it here too
@@ -726,6 +738,20 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         with st.expander("📅 Chona's Program", expanded=True):
             components.iframe(
                 PROGRAM_URLS["Chona"]["personal"],
+                height=500,
+                width=1600,
+            )
+    elif selected_user == "Aiza":
+        with st.expander("📅 Aiza's Program", expanded=True):
+            components.iframe(
+                PROGRAM_URLS["Aiza"]["personal"],
+                height=500,
+                width=1600,
+            )
+    elif selected_user == "Alvin":
+        with st.expander("📅 Alvin's Program", expanded=True):
+            components.iframe(
+                PROGRAM_URLS["Alvin"]["personal"],
                 height=500,
                 width=1600,
             )

@@ -261,7 +261,7 @@ def create_activity_card(row, index):
     moving_time_str = format_duration(row["Moving_Time"])
     pace_str = format_pace(row["Pace"])
     max_pace_str = format_max_pace(row["Max_Pace"])
-    activity = str(row["Activity"])
+    activity = str(row["Strava_Base_Activity"])
     member = str(row["Member Name"])
     menu = str(row["Menu"])
 
