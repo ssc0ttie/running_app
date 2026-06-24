@@ -63,7 +63,7 @@ def generate_matrix_member(data):
     final_df = pd.merge(grouped, trend_grouped, on="Member Name", how="left")
 
     # Display in Streamlit
-    final_df = final_df.sort_values(by="Distance", ascending=False)
+    final_df = final_df.sort_values(by="Moving_Time", ascending=False)
 
     st.dataframe(
         final_df,
