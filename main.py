@@ -328,24 +328,24 @@ if tabs == "📊 Stats":  # STATS
         unsafe_allow_html=True,
     )
     ### FILTER RUNS ONLY ###
-    full_df = full_df[
-                ~full_df["Activity"].isin(
-                    [
-                        "Rest",
-                        "Cross Train",
-                        "Strength Training",
-                        "WeightTraining",
-                        "Yoga",
-                        0,
-                        "",
-                        "Walk",
-                        "Pilates",
-                        "Ride",
-                        "Cooldown",
-                        "Warm up",
-                    ]
-                )
-            ]
+    # full_df = full_df[
+    #             ~full_df["Activity"].isin(
+    #                 [
+    #                     "Rest",
+    #                     "Cross Train",
+    #                     "Strength Training",
+    #                     "WeightTraining",
+    #                     "Yoga",
+    #                     0,
+    #                     "",
+    #                     "Walk",
+    #                     "Pilates",
+    #                     "Ride",
+    #                     "Cooldown",
+    #                     "Warm up",
+    #                 ]
+    #             )
+    #         ]
 
    
     stats.generate_matrix_member(full_df)
@@ -497,21 +497,25 @@ if tabs == "📊 Stats":  # STATS
     # filter non running activity
 
     filtered_df_withnonrun = filtered_df.copy()
+
     filtered_df_all_run = filtered_df[
         ~filtered_df["Activity"].isin(
             [
                 "Rest",
                 "Cross Train",
                 "Strength Training",
-                "WeightTraining",
-                "Yoga",
                 "",
                 0,
+                "Activity",
                 "Pilates",
-                "Walk",
+                "Rest",
                 "Ride",
-                "Warm up",
-                "Cooldown",
+                "Swim",
+                "Walk",
+                "WeightTraining",
+                "Workout",
+                "Yoga",
+
             ]
         )
     ]
@@ -519,18 +523,18 @@ if tabs == "📊 Stats":  # STATS
     filtered_df_all_non_run = filtered_df[
         filtered_df["Activity"].isin(
             [
-                "Rest",
                 "Cross Train",
                 "Strength Training",
-                "WeightTraining",
-                "Yoga",
-                0,
-                "",
-                "Walk",
+                "Activity",
                 "Pilates",
+                "Rest",
                 "Ride",
-                "Warm up",
-                "Cooldown",
+                "Swim",
+                "Walk",
+                "WeightTraining",
+                "Workout",
+                "Yoga",
+
             ]
         )
     ]
@@ -651,6 +655,7 @@ if tabs == "📊 Stats":  # STATS
         cb.generate_running_duration_chart_new(filtered_df_all_run)
 
     with st.expander("View Supplimentary Metrics", expanded=False):
+        # st.dataframe(filtered_df_all_non_run)
         cb.generate_combo_supplimentary_new(filtered_df_all_non_run)
 
     with st.expander("View Other Charts", expanded=False):
