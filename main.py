@@ -750,14 +750,14 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
                     width=1600,
                 )
         elif selected_user == "Aiza":
-            with st.expander("📅 Aiza's Program", expanded=True):
+            with st.expander("📅 Aiza's Program", expanded=False):
                 components.iframe(
                     PROGRAM_URLS["Aiza"]["personal"],
                     height=500,
                     width=1600,
                 )
         elif selected_user == "Alvin":
-            with st.expander("📅 Alvin's Program", expanded=True):
+            with st.expander("📅 Alvin's Program", expanded=False):
                 components.iframe(
                     PROGRAM_URLS["Alvin"]["personal"],
                     height=500,
@@ -765,7 +765,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
                 )
         else:
             # All other users (Aiza, Fraulein, Alvin, Lead, Maxine, Guest)
-            with st.expander("🏋️ Base Building + SG Marathon 2026", expanded=True):
+            with st.expander("🏋️ Base Building + SG Marathon 2026", expanded=False):
                 components.iframe(
                     PROGRAM_URLS["All"]["base"],
                     height=500,
@@ -916,8 +916,9 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     df_prog = read_data_cached_for_recent.get_program_from_sheets()
 
     # Filter by member
-    if selected_user == "All" or selected_member == "Guest":
-        df_prog = df_prog
+    if selected_user == "All" or selected_member == "Guest" or selected_user == "Lead" or selected_member == "Maxine"or selected_member == "Fraulein":
+        df_prog = df_prog[df_prog["Member"] == "All"]
+        
     else:
         df_prog = df_prog[df_prog["Member"] == selected_user]
 
