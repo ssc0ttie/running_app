@@ -676,6 +676,8 @@ if tabs == "📊 Stats":  # STATS
             wc.generate_wordcloud_new(filtered_df_withnonrun)
 
 if tabs == "🗓️ Program":  ##TRAINING PLAN ##
+    from data import read_data_cached_for_recent
+
 
     with st.popover("💡 Activity Abbreviations"):
         st.markdown("""
@@ -909,7 +911,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     # MAIN CALL
     # ============================================================
 
-    from data import read_data_cached_for_recent
+   
 
     df_prog = read_data_cached_for_recent.get_program_from_sheets()
 
