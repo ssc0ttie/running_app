@@ -686,88 +686,382 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     **LT** – Lactate Threshold | **MLR** – Medium Long Run | **MP** – Marathon Pace
     **R** – Recovery Run | **S** – Speedwork | **STR** – Strength Training | **T** – Tempo
     """)
+    def old_program_implementation(): 
 
-    st.markdown(
-        """
-        <div style="
-            color:#3a3939;
-            font-size: 24px;
-            font-weight: 600;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;">
-            🗓️💪 Your Training Plan</div>
-    """,
-        unsafe_allow_html=True,
-    )
+        # st.markdown(
+        #     """
+        #     <div style="
+        #         color:#3a3939;
+        #         font-size: 24px;
+        #         font-weight: 600;
+        #         border-bottom: 1px solid #ccc;
+        #         padding-bottom: 4px;
+        #         margin-top: 20px;
+        #         margin-bottom: 10px;">
+        #         🗓️💪 Your Training Plan</div>
+        # """,
+        #     unsafe_allow_html=True,
+        # )
+        
+
+        # Define program URLs for each member
+        
+
+        PROGRAM_URLS = {
+        "Scott": {
+            "base": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true",
+            "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
+        },
+        "Chona": {
+            "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
+
+        },
+        "Aiza": {
+            "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1351146568&single=true"
+
+        },
+        "Alvin": {
+            "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=959789449&single=true"
     
-
-    # Define program URLs for each member
+        },
+            "All": {
+            "base": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
     
-
-    PROGRAM_URLS = {
-    "Scott": {
-        "base": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true",
-        "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
-    },
-    "Chona": {
-        "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
-        # If Chona has a base program, add it here too
-    },
-    "Aiza": {
-        "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1351146568&single=true"
-        # If Chona has a base program, add it here too
-    },
-    "Alvin": {
-        "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=959789449&single=true"
-        # If Chona has a base program, add it here too
-    },
-        "All": {
-        "base": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
-        # If Chona has a base program, add it here too
+        }
     }
-}
-    selected_user = st.session_state.current_user
+        selected_user = st.session_state.current_user
 
 
-    # Show expanders based on selected member
-    if selected_user == "Scott":
-        with st.expander("📅 Scott's Personal Program", expanded=True):
-            components.iframe(
-                PROGRAM_URLS["Scott"]["personal"],
-                height=500,
-                width=1600,
-            )
-    elif selected_user == "Chona":
-        with st.expander("📅 Chona's Program", expanded=True):
-            components.iframe(
-                PROGRAM_URLS["Chona"]["personal"],
-                height=500,
-                width=1600,
-            )
-    elif selected_user == "Aiza":
-        with st.expander("📅 Aiza's Program", expanded=True):
-            components.iframe(
-                PROGRAM_URLS["Aiza"]["personal"],
-                height=500,
-                width=1600,
-            )
-    elif selected_user == "Alvin":
-        with st.expander("📅 Alvin's Program", expanded=True):
-            components.iframe(
-                PROGRAM_URLS["Alvin"]["personal"],
-                height=500,
-                width=1600,
-            )
+        # Show expanders based on selected member
+        if selected_user == "Scott":
+            with st.expander("📅 Scott's Personal Program", expanded=False):
+                components.iframe(
+                    PROGRAM_URLS["Scott"]["personal"],
+                    height=500,
+                    width=1600,
+                )
+        elif selected_user == "Chona":
+            with st.expander("📅 Chona's Program :", expanded=False):
+                components.iframe(
+                    PROGRAM_URLS["Chona"]["personal"],
+                    height=500,
+                    width=1600,
+                )
+        elif selected_user == "Aiza":
+            with st.expander("📅 Aiza's Program", expanded=True):
+                components.iframe(
+                    PROGRAM_URLS["Aiza"]["personal"],
+                    height=500,
+                    width=1600,
+                )
+        elif selected_user == "Alvin":
+            with st.expander("📅 Alvin's Program", expanded=True):
+                components.iframe(
+                    PROGRAM_URLS["Alvin"]["personal"],
+                    height=500,
+                    width=1600,
+                )
+        else:
+            # All other users (Aiza, Fraulein, Alvin, Lead, Maxine, Guest)
+            with st.expander("🏋️ Base Building + SG Marathon 2026", expanded=True):
+                components.iframe(
+                    PROGRAM_URLS["All"]["base"],
+                    height=500,
+                    width=1600,
+                )
+
+    import streamlit as st
+    import pandas as pd
+    from datetime import datetime
+
+    def get_encouragement(activity):
+        """Get encouragement message based on activity type."""
+        
+        # Check for "Rest" first (exact or partial)
+        if activity and "Rest" in str(activity):
+            return "🛌 Rest day! Your body is building while you rest. Enjoy it."
+        
+        # Define mapping with keywords to look for in the activity string
+        encouragement_map = [
+            # (keyword_to_match, message)
+            ("T", "🔥 Tempo! Push your limits today! This is where growth happens."),
+            ("TH", "🔥 Threshold work today! This is where growth happens."),
+            ("LT", "🔥 Threshold work today! Embrace the discomfort."),
+            ("Interval", "⚡ Speed work today! Focus on form and turnover."),
+            ("Speedwork", "⚡ Speed work today! Focus on form and turnover."),
+            ("S/I ", "⚡ Speed work today! Focus on form and turnover."),
+            ("Speed", "⚡ Speed work today! Focus on form and turnover."),
+            ("LSD", "🏃‍♂️ Long run today! Build that endurance. Remember to fuel and pace yourself."),
+            ("Long Run", "🏃‍♂️ Long run today! Build that endurance. Remember to fuel and pace yourself."),
+            ("MLR", "🏃‍♂️ Medium long run today. Consistent effort builds endurance."),
+            ("E ", "😌 Easy run today. Enjoy the process and let your body recover."),
+            ("Easy", "😌 Easy run today. Enjoy the process and let your body recover."),
+            ("Recovery", "🔄 Recovery day! Don't skip this — it's where you get stronger."),
+            ("R ", "🔄 Recovery day! Don't skip this — it's where you get stronger."),
+            ("STR", "💪 Strength training today! Form over weight."),
+            ("GA", "📈 General aerobic run. Steady effort, building your base."),
+            ("R Ride", "🚴‍♀️ Recovery ride today. Light pedaling, keep it easy."),
+            ("Ride", "🚴‍♀️ Ride today! Enjoy the fresh air and keep it consistent."),
+        ]
+        
+        # Check each keyword in order
+        if activity:
+            activity_str = str(activity)
+            for keyword, message in encouragement_map:
+                if keyword in activity_str:
+                    return message
+        
+        # Default message if no match
+        return "💪 You've got this! Show up and do the work."
+    def display_training_program(df):
+        """Display training program as a styled dataframe with date range per week and phase-based row colors"""
+        
+        
+        # Convert date column to datetime if not already
+        if "Dates" in df.columns:
+            df["Dates"] = pd.to_datetime(df["Dates"])
+            df["Day"] = df["Dates"].dt.strftime("%a")  # Add day of week
+        
+        # Add date range per week (min and max date for each WEEK_Streamlit)
+        df["Week_Start"] = df.groupby("WEEK_Streamlit")["Dates"].transform("min")
+        df["Week_End"] = df.groupby("WEEK_Streamlit")["Dates"].transform("max")
+        df["Week_Range"] = (
+            df["Week_Start"].dt.strftime("%-d %b") + " - " + df["Week_End"].dt.strftime("%-d %b")
+        )
+        
+        # Create pivot table for calendar view
+        pivot_df = df.pivot_table(
+            index=["WEEK_Streamlit", "Weekref_act", "Week_Range", "Member", "Event", "Phase"],
+            columns="Day",
+            values="Activity",
+            aggfunc="first"
+        ).reset_index()
+        
+        today = datetime.now()
+        today_day = today.strftime("%a")
+        
+        # Define column order for days
+        days_order = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        day_columns = [col for col in days_order if col in pivot_df.columns]
+        
+        # Reorder columns
+        base_cols = ["WEEK_Streamlit", "Week_Range", "Phase"]
+        final_cols = base_cols + day_columns
+        pivot_df = pivot_df[final_cols]
+        
+        # ============================================================
+        # ROW COLORING BASED ON PHASE (Option 1 - Pandas Styler)
+        # ============================================================
+        
+        # Define phase colors
+        phase_colors = {
+            "B": "#C8E6C9",  # Light Green (Build)
+            "V": "#BBDEFB",  # Light Blue (Volume)
+            "S": "#FFE082",  # Light Amber (Speed)
+            "E": "#E1BEE7",  # Light Purple (Endurance)
+            "H": "#928C8B70",  # Light Orange (Half Marathon)
+            "P": "#FD8B2D93",  # Light Cyan (Peak)
+            "T": "#F5F0E9",  # Light Orange (Taper)
+            "R": "#FB6C6CD1",  # Light Red (Race)
+            "": "#FFFFFF",   # Default (white)
+        }
+        
+        # Ensure Phase column exists and is string
+        if "Phase" in pivot_df.columns:
+            pivot_df["Phase"] = pivot_df["Phase"].astype(str)
+        else:
+            pivot_df["Phase"] = ""
+        
+        # Define styling function
+        def apply_phase_color(row):
+            phase = row["Phase"] if "Phase" in row.index else ""
+            color = phase_colors.get(phase, "#FFFFFF")
+            return [f"background-color: {color};"] * len(row)
+        
+        # Apply styling
+        styled_df = pivot_df.style.apply(apply_phase_color, axis=1)
+        
+        # Display with st.dataframe
+        st.dataframe(
+            styled_df,
+            column_config={
+                "WEEK_Streamlit": st.column_config.TextColumn("Week"),
+                "Week_Range": st.column_config.TextColumn("Dates",),
+                "Monday": st.column_config.TextColumn("Mon"),
+                "Tuesday": st.column_config.TextColumn("Tue"),
+                "Wednesday": st.column_config.TextColumn("Wed", width="content"),
+                "Thursday": st.column_config.TextColumn("Thu"),
+                "Friday": st.column_config.TextColumn("Fri"),
+                "Saturday": st.column_config.TextColumn("Sat"),
+                "Sunday": st.column_config.TextColumn("Sun"),
+            },
+            hide_index=True,
+            use_container_width=True,
+            height=400,
+        )
+
+
+        
+        # Legend
+        st.caption("📌 **Phase Legend:** 🟢 Build | 🔵 Volume | 🟡 Speed | 🟣 Endurance | 🔶 Peak | ⚪ Taper | 🔴 Race")
+
+    # ============================================================
+    # MAIN CALL
+    # ============================================================
+
+    from data import read_data_cached_for_recent
+
+    df_prog = read_data_cached_for_recent.get_program_from_sheets()
+
+    # Filter by member
+    if selected_user == "All" or selected_member == "Guest":
+        df_prog = df_prog
     else:
-        # All other users (Aiza, Fraulein, Alvin, Lead, Maxine, Guest)
-        with st.expander("🏋️ Base Building + SG Marathon 2026", expanded=True):
-            components.iframe(
-                PROGRAM_URLS["All"]["base"],
-                height=500,
-                width=1600,
-            )
+        df_prog = df_prog[df_prog["Member"] == selected_user]
+
+    # Get sorted events
+    sorted_events = sorted(
+        df_prog["Event"].dropna().unique(), 
+        reverse=True
+    )
+
+    # Event selector
+    selected_event = st.selectbox(
+        "Select event",
+        options=sorted_events,
+        index=0
+    )
+
+    # Filter by selected event
+    df_prog = df_prog[df_prog["Event"] == selected_event]
+    df_prog = df_prog[df_prog["Phase"] != "H"]
+    
+
+    # Display the program
+    import streamlit as st
+    from datetime import datetime, timedelta
+
+    def quick_glance_section(df_prog):
+        """
+        Display a quick glance section with today's activity, phase, and encouragement.
+        """
+        # Make a copy to avoid modifying original
+        df = df_prog.copy()
+        
+        # -------- ENSURE Day COLUMN EXISTS --------
+        if "Day" not in df.columns:
+            if "Dates" in df.columns:
+                df["Dates"] = pd.to_datetime(df["Dates"])
+                df["Day"] = df["Dates"].dt.strftime("%a")
+            else:
+                st.warning("⚠️ 'Day' column not found and cannot be created.")
+                return
+        
+        # -------- ENSURE Phase COLUMN EXISTS --------
+        if "Phase" not in df.columns:
+            if "Weekref_act" in df.columns:
+                df["Phase"] = df["Weekref_act"].str[0]
+            else:
+                df["Phase"] = ""
+        
+        # Get today's date and day of week
+        today = datetime.now()
+        today_day = today.strftime("%a")
+        today_date = today.strftime("%d %b %Y")
+        
+        # Map day names
+        day_map = {
+            "Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday",
+            "Thu": "Thursday", "Fri": "Friday", "Sat": "Saturday", "Sun": "Sunday"
+        }
+        
+        # Find today's activity
+        today_activity = None
+        current_phase = None
+        current_week = None
+        
+        if not df.empty:
+            today_data = df[df["Day"] == today_day]
+            
+            if not today_data.empty:
+                today_row = today_data.iloc[0]
+                today_activity = today_row.get("Activity", "Rest day 🛌")
+                current_phase = today_row.get("Phase", "")
+                current_week = today_row.get("WEEK_Streamlit", "")
+        
+        # Get encouragement
+        encouragement = get_encouragement(today_activity)
+        
+        # Display (same as before)
+        with st.container():
+            st.markdown(f"""
+                <div class="quick-glance">
+                    <div class="title">📋 Today's Training</div>
+                    <div class="date">{today_date} — {day_map.get(today_day, today_day)}</div>
+                    <div class="activity">{today_activity if today_activity else "Rest day — no activity planned 🛌"}</div>
+                    <div>
+                        <span class="phase">Phase: {current_phase if current_phase else "—"}</span>
+                        <span class="week-info">• Week: {current_week if current_week else ""}</span>
+                    </div>
+                    <div class="encouragement">{encouragement}</div>
+                </div>
+                
+                <style>
+                .quick-glance {{
+                    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                    border-radius: 12px;
+                    padding: 20px 25px;
+                    border-left: 5px solid #FC4C02;
+                    margin: 15px 0;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                }}
+                .quick-glance .title {{
+                    color: #FC4C02;
+                    font-size: 14px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }}
+                .quick-glance .activity {{
+                    font-size: 22px;
+                    font-weight: 700;
+                    color: #1a1a2e;
+                    margin: 4px 0;
+                }}
+                .quick-glance .phase {{
+                    display: inline-block;
+                    background: #FC4C02;
+                    color: white;
+                    padding: 2px 12px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }}
+                .quick-glance .date {{
+                    color: #6c757d;
+                    font-size: 14px;
+                }}
+                .quick-glance .encouragement {{
+                    color: #2d3436;
+                    font-size: 16px;
+                    font-weight: 500;
+                    margin-top: 6px;
+                }}
+                .quick-glance .week-info {{
+                    color: #6c757d;
+                    font-size: 13px;
+                    margin-left: 8px;
+                }}
+                </style>
+            """, unsafe_allow_html=True)
+
+
+    quick_glance_section(df_prog)
+    display_training_program(df_prog)
+    old_program_implementation()
+    
+
+
 
 if tabs == "📘 Reference":  ##STR WORK
     from visuals import referencetab as ref

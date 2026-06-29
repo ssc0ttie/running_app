@@ -83,6 +83,19 @@ def get_worksheet_object():
     return worksheet
 
 
+def get_program_from_sheets():
+    client = get_gsheet_client()
+    sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
+    worksheet = sheet.get_worksheet_by_id(1748464052)
+    data = worksheet.get_all_values()
+    
+    if data:
+        headers = data[0]
+        rows = data[1:]
+        df = pd.DataFrame(rows, columns=headers)
+        return df
+    return pd.DataFrame()
+
 
 ######### -- SUPA BASE ----- #################
 # --- Database functions ---
