@@ -151,8 +151,8 @@ with col1:
             options.append("🔄 Strava Sync")
             # options.append("📊 Stats"),  # Add the hidden option
 
-        if selected_member == "Scott":
-            options.append("🔄 Strava Sync")
+        # if selected_member == "Scott":
+        #     options.append("🔄 Strava Sync")
 
 
         if st.session_state.memberverified:
