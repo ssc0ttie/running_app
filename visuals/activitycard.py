@@ -265,14 +265,14 @@ def create_activity_card(row, index):
     member = str(row["Member Name"])
     menu = str(row["Menu"])
 
-    menu = row["Menu"] if row["Member Name"] == "Scott" else row["Menu_Other"]
+    menu = row["Menu"] if row["Member Name"] == "Scott" else row["Menu"]
 
     if row["Member Name"] == "Scott":
         menu = row["Menu"]
     elif row["Member Name"] == "Chona":
-        menu = row["Menu_Chona"]
+        menu = row["Menu"]
     else:
-        menu = row["Menu_Other"]
+        menu = row["Menu"]
     avatar = avtr.get_member_avatar_advanced(member)
 
     if hasattr(row["Date_of_Activity"], "strftime"):

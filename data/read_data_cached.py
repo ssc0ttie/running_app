@@ -68,25 +68,24 @@ def get_runner_data():
     #######DATA CLEANUP######
 
     # ---- Load week lookup ---- #
-    week_lookup_data = sheet.get_worksheet_by_id(336401596).get_all_records()
+    week_lookup_data = sheet.get_worksheet_by_id(1748464052).get_all_records()
     df_week = pd.DataFrame(week_lookup_data)[
         [
+            
+            "Member",
             "Dates",
             "WEEK_Streamlit",
-            "Activity_Others",
-            "Activity_Chona",
+            "Activity",
             "Event",
-            "Activity_Scott",
+            "Phase",
         ]
     ]
     df_week.rename(
         columns={
             "Dates": "Date",
             "WEEK_Streamlit": "Week",
-            "Activity_Others": "Menu_Other",
-            "Activity_Chona": "Menu_Chona",
+            "Activity": "Menu",
             "Event": "Event",
-            "Activity_Scott": "Menu",
         },
         inplace=True,
     )
@@ -144,8 +143,8 @@ def get_runner_data():
     # ------------clean lookup dates and merge -----------------#
     df["Date_of_Activity"] = pd.to_datetime(df["Date_of_Activity"], errors="coerce")
     df_week["Date"] = pd.to_datetime(df_week["Date"])
-    df = df.merge(df_week, left_on="Date_of_Activity", right_on="Date", how="left")
-
+    # df = df.merge(df_week, left_on="Date_of_Activity", right_on="Date", how="left")
+    df = df.merge(df_week, left_on=["Date_of_Activity", "Member Name"], right_on=["Date", "Member"], how="left")
     # CALCULATE MOVING TIME
 
     # df["Moving_Time"] = df["Pace"] * df["Distance"]
