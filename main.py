@@ -11,21 +11,40 @@ from data import read_data_cached as pullc
 from zoneinfo import ZoneInfo
 import traceback
 
-userlist = [ "Guest","Scott", "Chona", "Aiza", "Fraulein", "Alvin", "Lead", "Maxine"]
+import streamlit as st
 
-# Initialize session state
+# ============================================================
+# STEP 1: Set page config ONCE at the very top
+# ============================================================
+st.set_page_config(
+    page_title="StillHere",
+    page_icon="🪨",
+    layout="wide",
+    initial_sidebar_state="expanded",  # Sidebar open by default
+)
+
+# ============================================================
+# STEP 2: Initialize session state
+# ============================================================
+userlist = ["Guest", "Scott", "Chona", "Aiza", "Fraulein", "Alvin", "Lead", "Maxine"]
+
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if "current_user" not in st.session_state:
     st.session_state.current_user = None
+if "coachauthenticated" not in st.session_state:
+    st.session_state.coachauthenticated = False
+if "memberverified" not in st.session_state:
+    st.session_state.memberverified = False
+if "options" not in st.session_state:
+    st.session_state.options = ["🗓️ Program", "🗺️ Your Runs", "📊 Your Stats", "📓Log"]
 
-# === LOGIN CHECK ===
+# ============================================================
+# STEP 3: Login Check (NO set_page_config here!)
+# ============================================================
 if not st.session_state.authenticated:
-    # Use wide layout for login page
-    st.set_page_config(page_title="StillHere", page_icon="🪨", layout="wide")
-    
-    st.subheader("🪨 StillHere",anchor=False)
-    Welcome_msg = "The boulder will roll back down again — you already know that. You just have to keep showing up. And you did. That's enough."
+    st.subheader("🪨 StillHere", anchor=False)
+    Welcome_msg = "The boulder will roll back down again. You just have to keep showing up. And you did. That's enough."
 
     st.markdown(
         f"""
@@ -39,11 +58,9 @@ if not st.session_state.authenticated:
         unsafe_allow_html=True,
     )
     st.text("")
-    # st.markdown("##### Select your profile to continue")
     
     users = userlist
-    
-    selected_user = st.selectbox("Select your profile to continue", [""]+users, index=0)
+    selected_user = st.selectbox("Select your profile to continue", [""] + users, index=0)
     
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -57,35 +74,33 @@ if not st.session_state.authenticated:
     
     st.stop()
 
-
-
-# Sidebar with member selector
+# ============================================================
+# STEP 4: Sidebar (runs after login)
+# ============================================================
 with st.sidebar:
     st.markdown("### 🏃‍♂️ Profile")
     
-    # Member selector dropdown
-    users = userlist
     selected_member = st.selectbox(
         "Select Member",
-        users,
-        index=users.index(st.session_state.current_user) if st.session_state.current_user in users else 0,
+        userlist,
+        index=userlist.index(st.session_state.current_user) if st.session_state.current_user in userlist else 0,
         key="member_selector",
         label_visibility="collapsed"
     )
     
-    # Update session state if changed
     if selected_member != st.session_state.current_user:
         st.session_state.current_user = selected_member
         st.rerun()
     
     st.divider()
+    
     with st.popover("💡 How to Use This Page"):
         st.markdown(
             """
             <p>Welcome! Here's how to navigate:</p>
             <ul>
                 <li>🗓️ <strong>Program</strong>: Your marathon training plan.</li>
-                <li>🗺️ <strong> Your Runs</strong>: View Recent Runs.</li>
+                <li>🗺️ <strong>Your Runs</strong>: View Recent Runs.</li>
                 <li>📊 <strong>Stats</strong>: Track your weekly progress.</li>
                 <li>📓 <strong>Logs</strong>: Edit your training entries.</li>
             </ul>
@@ -93,141 +108,65 @@ with st.sidebar:
             """,
             unsafe_allow_html=True,
         )
-    st.divider()
-    # Display current user
-    # st.markdown(f"**Current:** {st.session_state.current_user}")
-    options = ["🗓️ Program", "🗺️ Your Runs", "📊 Your Stats","📓Log"]
-       
-    tabs = st.radio("Choose a Page:", options, horizontal=True, index=0)
     
-    st.divider() 
-    #COACH LOGIN
-    if "coachauthenticated" not in st.session_state:
-        st.session_state.coachauthenticated = False
-
-    with st.popover("Coach Login"):
-        # Initialize session state
-        if "authenticated" not in st.session_state:
-            st.session_state.coachauthenticated = False
-
-        if "memberverified" not in st.session_state:
-            st.session_state.memberverified = False
-
-        # Passcode input
+    st.divider()
+    
+    # ============================================================
+    # COACH LOGIN (Updates options dynamically)
+    # ============================================================
+    with st.popover("🔐 Coach Login"):
         passcode = st.text_input("Passcode", type="password")
-
-        if st.button("Submit"):
-            if passcode == "8465":  # Your secret passcode
+        
+        if st.button("Submit Passcode"):
+            if passcode == "8465":
                 st.session_state.coachauthenticated = True
-            elif passcode == "0525":  # Your secret passcode
+            elif passcode == "0525":
                 st.session_state.memberverified = True
             else:
                 st.session_state.coachauthenticated = False
                 st.error("Wrong passcode!")
-
-            # Radio button that shows/hides based on authentication
-
-
+        
         if st.session_state.coachauthenticated:
-            options.append("🏋🏻‍♂️ Str Training")
-            options.append("💗 HR Zones")
-            options.append("📓Log")
-            options.append("🎯 Remarks")
-            options.append("🔄 Strava Sync")
-            # options.append("📊 Stats"),  # Add the hidden option
-
-        # if selected_member == "Scott":
-        #     options.append("🔄 Strava Sync")
-
-
+            st.success("✅ Coach mode activated")
         if st.session_state.memberverified:
+            st.success("✅ Member verified")
+    
+    st.divider()
+    
+    # ============================================================
+    # BUILD OPTIONS DYNAMICALLY (after coach login)
+    # ============================================================
+    options = ["🗓️ Program", "🗺️ Your Runs", "📊 Your Stats", "📓Log"]
+    
+    if st.session_state.coachauthenticated:
+        # Add coach-only options
+        coach_options = ["🏋🏻‍♂️ Str Training", "💗 HR Zones", "🎯 Remarks", "🔄 Strava Sync"]
+        options.extend(coach_options)
+    
+    if st.session_state.memberverified:
+        if "📊 Stats" not in options:
             options.append("📊 Stats")
+        if "🗺️ Your Runs" not in options:
             options.append("🗺️ Your Runs")
+        if "📓Log" not in options:
             options.append("📓Log")
-        # Add the hidden option
-
-
+    
+    # Radio selection
+    tabs = st.radio("Choose a Page:", options, horizontal=True, index=0)
+    
+    st.divider()
     st.info("💡 Tip: Click the '⋮' menu in the top-right to switch between light/dark theme")
 
+# ============================================================
+# STEP 5: Main Content
+# ============================================================
 selected_user = st.session_state.current_user
 
-
-# Rest of your tabs and content...
-    
-import numpy as np
-from visuals import racedaycounter as rdc
-# Your main app content
-
-
 st.subheader(f"Welcome, {st.session_state.current_user}! 🏃‍♂️")
-st.markdown(":blue[*Need to switch accounts ? Tap the » icon in the top-left corner*]")
-col1, col2 = st.columns(2)
-
-# with col2:
-    
-#     with st.popover("💡 How to Use This Page"):
-#         st.markdown(
-#             """
-#             <p>Welcome! Here's how to navigate this page:</p>
-#             <ul>
-#                 <li>🗓️ <strong>Program</strong>: Your marathon training plan.</li>
-#                 <li>🗺️ <strong> Your Runs</strong>: View Recent Runs.</li>
-#                 <li>📊 <strong>Stats</strong>: Track your weekly progress.</li>
-#                 <li>📓 <strong>Logs</strong>: Edit your training entries.</li>
-#             </ul>
-#             <p><strong>PS:</strong> If it lags, don't worry — it's just *thinking really hard*. 🧠💻</p>
-#             """,
-#             unsafe_allow_html=True,
-#         )
-# with col1:
-#     # Initialize session state
-#     if "coachauthenticated" not in st.session_state:
-#         st.session_state.coachauthenticated = False
-
-#     with st.popover("Coach"):
-#         # Initialize session state
-#         if "authenticated" not in st.session_state:
-#             st.session_state.coachauthenticated = False
-
-#         if "memberverified" not in st.session_state:
-#             st.session_state.memberverified = False
-
-#         # Passcode input
-#         passcode = st.text_input("Passcode", type="password")
-
-#         if st.button("Submit"):
-#             if passcode == "8465":  # Your secret passcode
-#                 st.session_state.coachauthenticated = True
-#             elif passcode == "0525":  # Your secret passcode
-#                 st.session_state.memberverified = True
-#             else:
-#                 st.session_state.coachauthenticated = False
-#                 st.error("Wrong passcode!")
-
-#             # Radio button that shows/hides based on authentication
-#         options = ["🗓️ Program", "🗺️ Your Runs", "📊 Stats","📓Log"]
-
-#         if st.session_state.coachauthenticated:
-#             options.append("🏋🏻‍♂️ Str Training")
-#             options.append("💗 HR Zones")
-#             options.append("📓Log")
-#             options.append("🎯 Remarks")
-#             options.append("🔄 Strava Sync")
-#             # options.append("📊 Stats"),  # Add the hidden option
-
-#         # if selected_member == "Scott":
-#         #     options.append("🔄 Strava Sync")
-
-
-#         if st.session_state.memberverified:
-#             options.append("📊 Stats")
-#             options.append("🗺️ Your Runs")
-#             options.append("📓Log")
-#         # Add the hidden option
+st.markdown(":blue[*Need to switch accounts? Tap the menu icon in the top-left corner*]")
 
 
 
-# element_name = "Log Your Activity Here"
 
 
 # ----------------- Confirmation Dialog -----------------
