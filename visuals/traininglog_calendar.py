@@ -409,7 +409,81 @@ def create_training_log_section(data):
         )
         
 
+
     with col2:
+        view_metric = st.radio(
+            "Select View:",
+            ["Distance", "Duration"],
+            horizontal=True,
+            key="training_log_view",
+            label_visibility="collapsed",
+        )
+
+    if data.empty:
+        st.info("No activities to display in training log.")
+        return
+
+    # Create the chart
+    fig = create_strava_training_log(data, metric=view_metric)
+
+    # Fixed height container (this actually works!)
+    with st.container(height=510):
+        st.plotly_chart(
+            fig, use_container_width=True, key=f"training_log_{view_metric}"
+        )
+
+
+def create_training_log_section_home(data):
+    """Training log with view selector for Distance vs Duration"""
+    # st.markdown("---")
+    col1, col2 = st.columns([1,3])
+    # with col1:
+    #     st.markdown(
+    #         """
+    #         <div style="
+    #             color:#3a3939;
+    #             font-size: 20px;
+    #             font-weight: 600;
+    #             border-bottom: 1px solid #ccc;
+    #             padding-bottom: 4px;
+    #             margin-top: 20px;
+    #             margin-bottom: 10px;">
+    #             📅 Training Calendar
+    #         </div>
+    #     """,
+    #         unsafe_allow_html=True,
+    #     )
+    col1, col2 = st.columns(2)
+
+
+
+    # with col1:
+    #     st.markdown(
+    #         """
+    #         <div style="
+    #             display: flex;
+    #             align-items: left;
+    #             justify-content: left;
+    #             height: 100%;
+    #         ">
+    #             <div style="
+    #                 font-weight: 600;
+    #                 font-size: 16px;
+    #                 color: #3a3939;
+    #                 background: #f0f2f6;
+    #                 padding: 8px 16px;
+    #                 border-radius: 20px;
+    #                 display: inline-block;
+    #             ">
+    #                 Training Calendar
+    #             </div>
+    #         </div>
+    #         """,
+    #         unsafe_allow_html=True,
+    #     )
+        
+
+    with col1:
         view_metric = st.radio(
             "Select View:",
             ["Distance", "Duration"],
@@ -434,7 +508,7 @@ def create_training_log_section(data):
     fig = create_strava_training_log(data, metric=view_metric)
 
     # Fixed height container (this actually works!)
-    with st.container(height=510):
+    with st.container(height=300):
         st.plotly_chart(
-            fig, use_container_width=True, key=f"training_log_{view_metric}"
+            fig, use_container_width=True, key=f"training_log_{view_metric}" 
         )

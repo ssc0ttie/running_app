@@ -78,7 +78,7 @@ if not st.session_state.authenticated:
 # STEP 4: Sidebar (runs after login)
 # ============================================================
 with st.sidebar:
-    st.markdown("### 🏃‍♂️ Profile")
+    st.markdown("### Profile")
     
     selected_member = st.selectbox(
         "Select Member",
@@ -93,22 +93,23 @@ with st.sidebar:
         st.rerun()
     
     st.divider()
-    
+   
     with st.popover("💡 How to Use This Page"):
         st.markdown(
             """
             <p>Welcome! Here's how to navigate:</p>
             <ul>
+                <li>🏁 <strong>Home</strong>: Your training dashboard overview.</li>
                 <li>🗓️ <strong>Program</strong>: Your marathon training plan.</li>
                 <li>🗺️ <strong>Your Runs</strong>: View Recent Runs.</li>
-                <li>📊 <strong>Stats</strong>: Track your weekly progress.</li>
-                <li>📓 <strong>Logs</strong>: Edit your training entries.</li>
+                <li>📊 <strong>Your Stats</strong>: Track your weekly progress.</li>
+                <li>📓 <strong>Log</strong>: Edit your training entries.</li>
             </ul>
-            <p><strong>PS:</strong> If it lags, don't worry — it's just *thinking really hard*. 🧠💻</p>
+            <p style="font-size: 13px; color: #888; margin-top: 8px;">💡 Tip: Hover over ℹ️ icons for more info.</p>
+            <p><strong>PS:</strong> If it lags, don't worry — it's just <em>thinking really hard</em>. 🧠💻</p>
             """,
             unsafe_allow_html=True,
         )
-    
     st.divider()
     
     # ============================================================
@@ -136,7 +137,7 @@ with st.sidebar:
     # ============================================================
     # BUILD OPTIONS DYNAMICALLY (after coach login)
     # ============================================================
-    options = ["🗓️ Program", "🗺️ Your Runs", "📊 Your Stats", "📓Log"]
+    options = ["🏁 Home","🗓️ Program", "🗺️ Your Runs", "📊 Your Stats", "📓Log"]
     
     if st.session_state.coachauthenticated:
         # Add coach-only options
@@ -162,11 +163,8 @@ with st.sidebar:
 # ============================================================
 selected_user = st.session_state.current_user
 
-st.subheader(f"Welcome, {st.session_state.current_user}! 🏃‍♂️")
-st.markdown(":blue[*Need to switch accounts? Tap the menu icon in the top-left corner*]")
-
-
-
+st.subheader(f"Welcome, {st.session_state.current_user}!")
+st.caption(":blue[*Need to switch accounts or view other page? Tap the menu icon >> in the top-left corner*]")
 
 
 # ----------------- Confirmation Dialog -----------------
@@ -331,26 +329,6 @@ if tabs == "📊 Your Stats":  # STATS
         unsafe_allow_html=True,
     )
     ### FILTER RUNS ONLY ###
-    # full_df = full_df[
-    #             ~full_df["Activity"].isin(
-    #                 [
-    #                     "Rest",
-    #                     "Cross Train",
-    #                     "Strength Training",
-    #                     "WeightTraining",
-    #                     "Yoga",
-    #                     0,
-    #                     "",
-    #                     "Walk",
-    #                     "Pilates",
-    #                     "Ride",
-    #                     "Cooldown",
-    #                     "Warm up",
-    #                 ]
-    #             )
-    #         ]
-
-   
     stats.generate_matrix_member(full_df)
 
     st.markdown(
@@ -678,7 +656,7 @@ if tabs == "📊 Your Stats":  # STATS
             st.markdown("##### 🏃💬 Runner's Word Cloud")
             wc.generate_wordcloud_new(filtered_df_withnonrun)
 
-if tabs == "🗓️ Program":  ##TRAINING PLAN ##
+if tabs == "🏁 Home":  ##TRAINING PLAN ##
     from data import read_data_cached_for_recent
 
 
@@ -693,89 +671,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     # """)
         
 
-    def old_program_implementation(): 
-
-        # st.markdown(
-        #     """
-        #     <div style="
-        #         color:#3a3939;
-        #         font-size: 24px;
-        #         font-weight: 600;
-        #         border-bottom: 1px solid #ccc;
-        #         padding-bottom: 4px;
-        #         margin-top: 20px;
-        #         margin-bottom: 10px;">
-        #         🗓️💪 Your Training Plan</div>
-        # """,
-        #     unsafe_allow_html=True,
-        # )
-        
-
-        # Define program URLs for each member
-        
-
-        PROGRAM_URLS = {
-        "Scott": {
-            "base": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true",
-            "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
-        },
-        "Chona": {
-            "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
-
-        },
-        "Aiza": {
-            "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1351146568&single=true"
-
-        },
-        "Alvin": {
-            "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=959789449&single=true"
     
-        },
-            "All": {
-            "base": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
-    
-        }
-    }
-        selected_user = st.session_state.current_user
-
-
-        # Show expanders based on selected member
-        if selected_user == "Scott":
-            with st.expander("📅 Scott's Personal Program", expanded=False):
-                components.iframe(
-                    PROGRAM_URLS["Scott"]["personal"],
-                    height=500,
-                    width=1600,
-                )
-        elif selected_user == "Chona":
-            with st.expander("📅 Chona's Program :", expanded=False):
-                components.iframe(
-                    PROGRAM_URLS["Chona"]["personal"],
-                    height=500,
-                    width=1600,
-                )
-        elif selected_user == "Aiza":
-            with st.expander("📅 Aiza's Program", expanded=False):
-                components.iframe(
-                    PROGRAM_URLS["Aiza"]["personal"],
-                    height=500,
-                    width=1600,
-                )
-        elif selected_user == "Alvin":
-            with st.expander("📅 Alvin's Program", expanded=False):
-                components.iframe(
-                    PROGRAM_URLS["Alvin"]["personal"],
-                    height=500,
-                    width=1600,
-                )
-        else:
-            # All other users (Aiza, Fraulein, Alvin, Lead, Maxine, Guest)
-            with st.expander("🏋️ Base Building + SG Marathon 2026", expanded=False):
-                components.iframe(
-                    PROGRAM_URLS["All"]["base"],
-                    height=500,
-                    width=1600,
-                )
 
     import streamlit as st
     import pandas as pd
@@ -791,7 +687,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         # Define mapping with keywords to look for in the activity string
         encouragement_map = [
             # (keyword_to_match, message)
-            ("STR", "💪 Strength training today! Form over weight. Slow and Controlled."),
+            ("STR", "💪 Strength training today! Slow and controlled."),
             ("T", "🔥 Tempo! Push your limits today! This is where growth happens."),
             ("TH", "🔥 Threshold work today! This is where growth happens."),
             ("LT", "🔥 Threshold work today! Embrace the discomfort."),
@@ -820,104 +716,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         
         # Default message if no match
         return "💪 You've got this! Show up and do the work."
-    def display_training_program(df):
-        """Display training program as a styled dataframe with date range per week and phase-based row colors"""
-        
-        
-        # Convert date column to datetime if not already
-        if "Dates" in df.columns:
-            df["Dates"] = pd.to_datetime(df["Dates"])
-            df["Day"] = df["Dates"].dt.strftime("%a")  # Add day of week
-        
-        # Add date range per week (min and max date for each WEEK_Streamlit)
-        df["Week_Start"] = df.groupby("WEEK_Streamlit")["Dates"].transform("min")
-        df["Week_End"] = df.groupby("WEEK_Streamlit")["Dates"].transform("max")
-        df["Week_Range"] = (
-            df["Week_Start"].dt.strftime("%-d %b") + " - " + df["Week_End"].dt.strftime("%-d %b")
-        )
-        
-        # Create pivot table for calendar view
-        pivot_df = df.pivot_table(
-            index=["WEEK_Streamlit", "Weekref_act", "Week_Range", "Member", "Event", "Phase"],
-            columns="Day",
-            values="Activity",
-            aggfunc="first"
-        ).reset_index()
-        
-        today = datetime.now()
-        today_day = today.strftime("%a")
-        
-        # Define column order for days
-        days_order = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        day_columns = [col for col in days_order if col in pivot_df.columns]
-        
-        # Reorder columns
-        base_cols = ["WEEK_Streamlit", "Week_Range", "Phase"]
-        final_cols = base_cols + day_columns
-        pivot_df = pivot_df[final_cols]
-        
-        # ============================================================
-        # ROW COLORING BASED ON PHASE (Option 1 - Pandas Styler)
-        # ============================================================
-        
-        # Define phase colors
-        phase_colors = {
-            "B": "#C8E6C9",  # Light Green (Build)
-            "V": "#BBDEFB",  # Light Blue (Volume)
-            "S": "#FFE082",  # Light Amber (Speed)
-            "E": "#E1BEE7",  # Light Purple (Endurance)
-            "H": "#928C8B70",  # Light Orange (Half Marathon)
-            "P": "#FD8B2D93",  # Light Cyan (Peak)
-            "T": "#F5F0E9",  # Light Orange (Taper)
-            "R": "#FB6C6CD1",  # Light Red (Race)
-            "": "#FFFFFF",   # Default (white)
-        }
-        
-        # Ensure Phase column exists and is string
-        if "Phase" in pivot_df.columns:
-            pivot_df["Phase"] = pivot_df["Phase"].astype(str)
-        else:
-            pivot_df["Phase"] = ""
-        
-        # Define styling function
-        def apply_phase_color(row):
-            phase = row["Phase"] if "Phase" in row.index else ""
-            color = phase_colors.get(phase, "#FFFFFF")
-            return [f"background-color: {color};"] * len(row)
-        
-        # Apply styling
-        styled_df = pivot_df.style.apply(apply_phase_color, axis=1)
-        
-        # Display with st.dataframe
-        st.divider()
-        st.markdown(f"""
-        <div style="margin: 8px 0 4px 0; border-bottom: 2px solid #FC4C02; padding-bottom: 6px; display: flex; align-items: baseline; gap: 12px;">
-            <span style="font-size: 20px; font-weight: 600; color: #1a1a2e;">📋 {selected_user}'s Training Plan</span>
-            </span>
-        </div>
-        """, unsafe_allow_html=True)
-        st.dataframe(
-            styled_df,
-            column_config={
-                "WEEK_Streamlit": st.column_config.TextColumn("Week"),
-                "Week_Range": st.column_config.TextColumn("Dates",),
-                "Monday": st.column_config.TextColumn("Mon"),
-                "Tuesday": st.column_config.TextColumn("Tue"),
-                "Wednesday": st.column_config.TextColumn("Wed", width="content"),
-                "Thursday": st.column_config.TextColumn("Thu"),
-                "Friday": st.column_config.TextColumn("Fri"),
-                "Saturday": st.column_config.TextColumn("Sat"),
-                "Sunday": st.column_config.TextColumn("Sun"),
-            },
-            hide_index=True,
-            use_container_width=True,
-            height=300,
-        )
 
-
-        
-        # Legend
-        st.caption("📌 **Phase Legend:** 🟢 Build | 🔵 Volume | 🟡 Speed | 🟣 Endurance | 🔶 Peak | ⚪ Taper | 🔴 Race")
 
     # ============================================================
     # MAIN CALL
@@ -950,7 +749,113 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     # Display the program
     import streamlit as st
     from datetime import datetime, timedelta
+    import pandas as pd
 
+    def display_current_week_program(df_prog, selected_user):
+
+        """
+        Display only the current week's training program with progress tracking.
+        """
+        # Get today's date
+        today = datetime.now()
+        today_day = today.strftime("%a")
+        
+        # Get current week's Monday
+        monday = today - timedelta(days=today.weekday())
+        sunday = monday + timedelta(days=6)
+        
+        # Filter for current week
+        if "Dates" in df_prog.columns:
+            df_prog["Dates"] = pd.to_datetime(df_prog["Dates"])
+            current_week_df = df_prog[
+                (df_prog["Dates"] >= monday) & 
+                (df_prog["Dates"] <= sunday)
+            ]
+        else:
+            latest_week = df_prog["WEEK_Streamlit"].iloc[0] if not df_prog.empty else None
+            if latest_week:
+                current_week_df = df_prog[df_prog["WEEK_Streamlit"] == latest_week]
+            else:
+                current_week_df = pd.DataFrame()
+        
+        if current_week_df.empty:
+            st.info("📋 No training program for this week.")
+            return
+        
+        # Pivot to get day-wise activities
+        if "Day" not in current_week_df.columns:
+            current_week_df["Day"] = current_week_df["Dates"].dt.strftime("%a")
+        
+        pivot_df = current_week_df.pivot_table(
+            index=["WEEK_Streamlit"],
+            columns="Day",
+            values="Activity",
+            aggfunc="first"
+        ).reset_index()
+        
+        days_order = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        for day in days_order:
+            if day not in pivot_df.columns:
+                pivot_df[day] = "Rest"
+        
+        pivot_df = pivot_df[["WEEK_Streamlit"] + days_order]
+        
+        # Determine completed days (past days)
+        completed_days = []
+        for day in days_order:
+            day_index = days_order.index(day)
+            day_date = monday + timedelta(days=day_index)
+            if day_date < today:
+                completed_days.append(day)
+        
+        remaining_days = [d for d in days_order if d not in completed_days]
+        
+        # ---- DISPLAY ----
+        
+        # Header
+
+         
+    # Header with progress in title
+        progress = len(completed_days) / 7 if len(completed_days) > 0 else 0
+        progress_pct = int(progress * 100)
+
+        progress = len(completed_days) / 7 if len(completed_days) > 0 else 0
+        st.progress(progress, text=f"{len(completed_days)}/7 days completed")
+        
+        # ---- BUILD ACTIVITY LIST ----
+        st.markdown(f"###### 📋 This Week's Activities  •  {progress_pct}% complete")
+        
+        # Build HTML for each day using simple f-strings
+        html_parts = []
+        for day in days_order:
+            activity = pivot_df[day].iloc[0] if day in pivot_df.columns else "Rest"
+            activity_display = activity if activity and "Rest" not in str(activity) else "—"
+            
+            is_today = day == today_day
+            is_completed = day in completed_days
+            
+            # Determine styling
+            if is_completed:
+                icon = "✅"
+                day_style = "color: #999; min-width: 32px;"
+                activity_style = "color: #999; text-decoration: line-through;"
+            elif is_today:
+                icon = "📍"
+                day_style = "color: #FC4C02; font-weight: 700; min-width: 32px;"
+                activity_style = "font-weight: 600; background: #fff3e0; padding: 0 8px; border-radius: 4px;"
+            else:
+                icon = "⬜"
+                day_style = "color: #555; min-width: 32px;"
+                activity_style = "color: #1a1a2e;"
+            
+            html_parts.append(f"""
+            <div style="display: flex; align-items: baseline; gap: 4px; padding: 2px 0;">
+                <span style="{day_style}">{icon} {day}:</span>
+                <span style="{activity_style}">{activity_display}</span>
+            </div>
+            """)
+        
+        st.markdown("".join(html_parts), unsafe_allow_html=True)
 
     def quick_glance_section(df_prog):
         """
@@ -1194,9 +1099,482 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
             """, unsafe_allow_html=True)
                 
             ### Sequece of display
+    
+    
+    def weekly_stats(full_df, selected_user):
+        """
+        Display weekly statistics and training calendar for the selected user.
+        """
+        # ------------------- FILTER BY USER -----------------------#
+        if selected_user == "Guest":
+            filtered_df = full_df.copy()
+        else:
+            filtered_df = full_df[full_df["Member Name"] == selected_user].copy()
+        
+        # ------------------- GET CURRENT WEEK -----------------------#
+        weeks = sorted(filtered_df["Week"].dropna().unique(), reverse=True)
+        if not weeks:
+            st.info("No activity data available for this user.")
+            return
+        
+        current_week = weeks[0]
+        filtered_df = filtered_df[filtered_df["Week"] == current_week]
+        
+        if filtered_df.empty:
+            st.info(f"No activities found for week {current_week}.")
+            return
+        
+        # ------------------- FILTER RUNNING ACTIVITIES -----------------------#
+        exclude_activities = [
+            "Rest", "Cross Train", "Strength Training", "WeightTraining",
+            "Yoga", "Pilates", "Swim", "Ride", "Walk", "Workout",
+            "", 0, "Activity"
+        ]
+        
+        running_df = filtered_df[
+            ~filtered_df["Activity"].isin(exclude_activities)
+        ].copy()
+        
+        if running_df.empty:
+            st.info("No running activities found for this week.")
+            return
+        
+        # ------------------- CALCULATE METRICS -----------------------#
+        # Total Distance
+        metric_distance = int(running_df["Distance"].sum())
+        
+        # Total Moving Time
+        total_seconds = int(running_df["Moving_Time"].sum().total_seconds())
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        metric_movingtime = f"{hours:02d}:{minutes:02d}"
+        
+        # Number of Runs
+        metric_number_runs = len(running_df)
+        
+        # Average Pace
+        avg_pace = running_df["Pace"].mean()
+        if pd.isna(avg_pace):
+            metric_pace = "N/A"
+        else:
+            metric_pace = f"{int(avg_pace.total_seconds() // 60):02d}:{int(avg_pace.total_seconds() % 60):02d}"
+        
+        # Days until race
+        race_date = datetime(2025, 12, 7)
+        metric_tillrace = (race_date - datetime.today()).days
+        
+        # ------------------- DISPLAY METRICS -----------------------#
+        st.markdown("""
+        <style>
+        div[data-testid="stMetric"] {
+            height: 120px !important;
+            padding: 15px 10px !important;
+        }
+        div[data-testid="stMetricValue"] {
+            font-size: 24px !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        # Metrics in a single row
+        col0, col1 = st.columns(2)
+        with col0:
+            st.metric("Runs 🏃‍♀️", metric_number_runs, border=True)
+            st.metric("Distance 🏃💨", f"{metric_distance} km", border=True)
+        with col1:
+            st.metric("Moving Time ⏱️", metric_movingtime, border=True)
+            st.metric("Avg Pace 🚄", metric_pace, border=True)
+    
+    def weekly_calendar(full_df,selected_user):
+        """
+        Display weekly statistics and training calendar for the selected user.
+        """
+        # ------------------- FILTER BY USER -----------------------#
+
+        if selected_user == "Guest":
+            filtered_df = full_df.copy()
+        else:
+            filtered_df = full_df[full_df["Member Name"] == selected_user].copy()
+        
+        # ------------------- GET CURRENT WEEK -----------------------#
+        weeks = sorted(filtered_df["Week"].dropna().unique(), reverse=True)
+        if not weeks:
+            st.info("No activity data available for this user.")
+            return
+        
+        current_week = weeks[0]
+        filtered_df = filtered_df[filtered_df["Week"] == current_week]
+        
+        if filtered_df.empty:
+            st.info(f"No activities found for week {current_week}.")
+            return
+        
+        # ------------------- FILTER RUNNING ACTIVITIES -----------------------#
+        exclude_activities = [
+            "Rest", "Cross Train", "Strength Training", "WeightTraining",
+            "Yoga", "Pilates", "Swim", "Ride", "Walk", "Workout",
+            "", 0, "Activity"
+        ]
+        
+        running_df = filtered_df[
+            ~filtered_df["Activity"].isin(exclude_activities)
+        ].copy()
+        
+        if running_df.empty:
+            st.info("No running activities found for this week.")
+            return
+        
+                # ------------------- TRAINING CALENDAR -----------------------#
+        
+        from visuals import traininglog_calendar
+        traininglog_calendar.create_training_log_section_home(filtered_df)
+        
+
+    def weekly_recent_run(selected_user):
+        """
+        Display recent runs for the current week for a selected user.
+        Filters based on the current calendar week, not the latest available data.
+        """
+        from data import read_data_cached_for_recent
+        from visuals import activitycard as acard
+        import gspread
+        import pandas as pd
+        
+        # ------------------- LOAD DATA -----------------------#
+        df = read_data_cached_for_recent.get_runner_data()
+        full_df = pd.DataFrame(df)
+        
+        # ------------------- FILTER BY USER -----------------------#
+        if selected_user == "Guest":
+            filtered_member_df = full_df.copy()
+        else:
+            filterefiltered_member_dfd_df = full_df[full_df["Member Name"] == selected_user].copy()
+    
+        
+        if filtered_member_df.empty:
+            st.info(f"No data found for {selected_user}.")
+            return
+        
+        # ------------------- FILTER BY CURRENT CALENDAR WEEK -----------------------#
+        # Get today's date and calculate current week's Monday and Sunday
+        today = datetime.now().date()
+        monday = today - timedelta(days=today.weekday())
+        sunday = monday + timedelta(days=6)
+        
+        # Convert Date_of_Activity to date for comparison
+        filtered_member_df["Date_of_Activity"] = pd.to_datetime(filtered_member_df["Date_of_Activity"]).dt.date
+        
+        # Filter for current week only
+        current_week_df = filtered_member_df[
+            (filtered_member_df["Date_of_Activity"] >= monday) & 
+            (filtered_member_df["Date_of_Activity"] <= sunday)
+        ].copy()
+        
+        if current_week_df.empty:
+            st.info(f"📋 No activities found for {selected_user} this week ({monday.strftime('%d %b')} - {sunday.strftime('%d %b')}).")
+            return
+        
+        # ------------------- EXCLUDE NON-RUNNING ACTIVITIES -----------------------#
+        exclude_activities = [
+            "Rest", "Cross Train", "Strength Training", "WeightTraining",
+            "Yoga", "", 0, "Pilates", "Walk", "Ride",
+            "Warm up", "Cooldown"
+        ]
+        
+        filtered_df = current_week_df[
+            ~current_week_df["Activity"].isin(exclude_activities)
+        ].copy()
+        
+        if filtered_df.empty:
+            st.info(f"🏃 No running activities for {selected_user} this week.")
+            return
+        
+        # ------------------- CONVERT NUMERIC COLUMNS -----------------------#
+        numeric_cols = ["HR (bpm)", "Cadence (steps/min)", "Max_HR"]
+        for col in numeric_cols:
+            if col in filtered_df.columns:
+                filtered_df[col] = pd.to_numeric(filtered_df[col], errors="coerce")
+        
+        # ------------------- LOAD ZONE DATA -----------------------#
+        zones_data = None
+        try:
+            import data.read_data_cached
+            
+            zone_records = data.read_data_cached.get_zones()
+            
+            if len(zone_records) > 1:
+                headers = zone_records[0]
+                zones_data = pd.DataFrame(zone_records[1:], columns=headers)
+                # Clean up percentage column
+                if "Percentage" in zones_data.columns:
+                    zones_data["Percentage"] = (
+                        zones_data["Percentage"].astype(str).str.replace("%", "")
+                    )
+                # Convert HR column
+                if "HR (bpm)" in zones_data.columns:
+                    zones_data["HR (bpm)"] = pd.to_numeric(
+                        zones_data["HR (bpm)"], errors="coerce"
+                    )
+                    
+        except gspread.WorksheetNotFound:
+            st.info("📊 Zone data not available. Run Strava Sync to calculate zones.")
+        except Exception as e:
+            st.warning(f"Could not load zone data: {e}")
+        
+        # ------------------- DISPLAY ACTIVITY CARDS -----------------------#
+        st.markdown(f"""
+        <div style="margin: 8px 0 12px 0;">
+            <span style="font-size: 12px; color: #888; margin-left: 12px;">
+                {monday.strftime('%d %b')} – {sunday.strftime('%d %b %Y')}
+            </span>
+            <span style="font-size: 12px; color: #FC4C02; margin-left: 12px;">
+                {len(filtered_df)} activities
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Display activity cards
+        acard.display_strava_style_feed_test(filtered_df, zones_data)
+        
+        
+    
+    
+    ##IMPLEMENTATION
     quick_glance_section(df_prog)
+    st.divider()
+
+    def section_header(title, subtitle=None):
+        subtitle_html = f'<span style="font-size: 12px; color: #888; font-weight: 400; margin-left: 8px;">{subtitle}</span>' if subtitle else ''
+        st.markdown(f"""
+        <div style="margin: 16px 0 8px 0; border-left: 4px solid #FC4C02; padding-left: 12px;">
+            <span style="font-size: 16px; font-weight: 600; color: #1a1a2e;">{title}</span>
+            {subtitle_html}
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Usage
+    section_header("This Week's Progress", selected_user)
+    display_current_week_program(df_prog, selected_user)
+
+    section_header("This Week's Stats")
+    weekly_stats(full_df, selected_user)
+
+    section_header("📅 Training Calendar")
+    weekly_calendar(full_df, selected_user)
+
+    section_header("🏃 Recent Runs")
+    weekly_recent_run(selected_user)
+
+if tabs == "🗓️ Program":
+    from data import read_data_cached_for_recent
+    df_prog = read_data_cached_for_recent.get_program_from_sheets()
+    def old_program_implementation(): 
+    
+
+        PROGRAM_URLS = {
+        "Scott": {
+            "base": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true",
+            "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1680121528&single=true"
+        },
+        "Chona": {
+            "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1489038442&single=true"
+
+        },
+        "Aiza": {
+            "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1351146568&single=true"
+
+        },
+        "Alvin": {
+            "personal": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=959789449&single=true"
+    
+        },
+            "All": {
+            "base": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRF_uf-orH_71Ibql9N1QZ2FSWblHhvX2_KzjN_SLOSlchsDz0Mo8jOBI9mQOONyeKJR4pEQOjXAjKt/pubhtml?gid=1748190509&single=true"
+    
+        }
+    }
+        selected_user = st.session_state.current_user
+
+
+        # Show expanders based on selected member
+        if selected_user == "Scott":
+            with st.expander("📅 Scott's Personal Program", expanded=False):
+                components.iframe(
+                    PROGRAM_URLS["Scott"]["personal"],
+                    height=500,
+                    width=1600,
+                )
+        elif selected_user == "Chona":
+            with st.expander("📅 Chona's Program :", expanded=False):
+                components.iframe(
+                    PROGRAM_URLS["Chona"]["personal"],
+                    height=500,
+                    width=1600,
+                )
+        elif selected_user == "Aiza":
+            with st.expander("📅 Aiza's Program", expanded=False):
+                components.iframe(
+                    PROGRAM_URLS["Aiza"]["personal"],
+                    height=500,
+                    width=1600,
+                )
+        elif selected_user == "Alvin":
+            with st.expander("📅 Alvin's Program", expanded=False):
+                components.iframe(
+                    PROGRAM_URLS["Alvin"]["personal"],
+                    height=500,
+                    width=1600,
+                )
+        else:
+            # All other users (Aiza, Fraulein, Alvin, Lead, Maxine, Guest)
+            with st.expander("🏋️ Base Building + SG Marathon 2026", expanded=False):
+                components.iframe(
+                    PROGRAM_URLS["All"]["base"],
+                    height=500,
+                    width=1600,
+                )
+
+    def display_training_program(df):
+        """Display training program as a styled dataframe with date range per week and phase-based row colors"""
+        
+        
+        # Convert date column to datetime if not already
+        if "Dates" in df.columns:
+            df["Dates"] = pd.to_datetime(df["Dates"])
+            df["Day"] = df["Dates"].dt.strftime("%a")  # Add day of week
+        
+        # Add date range per week (min and max date for each WEEK_Streamlit)
+        df["Week_Start"] = df.groupby("WEEK_Streamlit")["Dates"].transform("min")
+        df["Week_End"] = df.groupby("WEEK_Streamlit")["Dates"].transform("max")
+        df["Week_Range"] = (
+            df["Week_Start"].dt.strftime("%-d %b") + " - " + df["Week_End"].dt.strftime("%-d %b")
+        )
+        
+        # Create pivot table for calendar view
+        pivot_df = df.pivot_table(
+            index=["WEEK_Streamlit", "Weekref_act", "Week_Range", "Member", "Event", "Phase"],
+            columns="Day",
+            values="Activity",
+            aggfunc="first"
+        ).reset_index()
+        
+        today = datetime.now()
+        today_day = today.strftime("%a")
+        
+        # Define column order for days
+        days_order = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        day_columns = [col for col in days_order if col in pivot_df.columns]
+        
+        # Reorder columns
+        base_cols = ["WEEK_Streamlit", "Week_Range", "Phase"]
+        final_cols = base_cols + day_columns
+        pivot_df = pivot_df[final_cols]
+        
+        # ============================================================
+        # ROW COLORING BASED ON PHASE (Option 1 - Pandas Styler)
+        # ============================================================
+        
+        # Define phase colors
+        phase_colors = {
+            "B": "#C8E6C9",  # Light Green (Build)
+            "V": "#BBDEFB",  # Light Blue (Volume)
+            "S": "#FFE082",  # Light Amber (Speed)
+            "E": "#E1BEE7",  # Light Purple (Endurance)
+            "H": "#928C8B70",  # Light Orange (Half Marathon)
+            "P": "#FD8B2D93",  # Light Cyan (Peak)
+            "T": "#F5F0E9",  # Light Orange (Taper)
+            "R": "#FB6C6CD1",  # Light Red (Race)
+            "": "#FFFFFF",   # Default (white)
+        }
+        
+        # Ensure Phase column exists and is string
+        if "Phase" in pivot_df.columns:
+            pivot_df["Phase"] = pivot_df["Phase"].astype(str)
+        else:
+            pivot_df["Phase"] = ""
+        
+        # Define styling function
+        def apply_phase_color(row):
+            phase = row["Phase"] if "Phase" in row.index else ""
+            color = phase_colors.get(phase, "#FFFFFF")
+            return [f"background-color: {color};"] * len(row)
+        
+        # Apply styling
+        styled_df = pivot_df.style.apply(apply_phase_color, axis=1)
+        
+        # Display with st.dataframe
+        st.dataframe(
+            styled_df,
+            column_config={
+                "WEEK_Streamlit": st.column_config.TextColumn("Week"),
+                "Week_Range": st.column_config.TextColumn("Dates",),
+                "Monday": st.column_config.TextColumn("Mon"),
+                "Tuesday": st.column_config.TextColumn("Tue"),
+                "Wednesday": st.column_config.TextColumn("Wed", width="content"),
+                "Thursday": st.column_config.TextColumn("Thu"),
+                "Friday": st.column_config.TextColumn("Fri"),
+                "Saturday": st.column_config.TextColumn("Sat"),
+                "Sunday": st.column_config.TextColumn("Sun"),
+            },
+            hide_index=True,
+            use_container_width=True,
+            height=500,
+        )
+
+
+        
+        # Legend
+        st.caption("📌 **Phase Legend:** 🟢 Build | 🔵 Volume | 🟡 Speed | 🟣 Endurance | 🔶 Peak | ⚪ Taper | 🔴 Race")
+
+    # ============================================================
+    # MAIN CALL
+    # ============================================================
+
+   
+
+    df_prog = read_data_cached_for_recent.get_program_from_sheets()
+
+    # Filter by member
+    if selected_user == "All" or selected_member == "Guest" or selected_user == "Lead" or selected_member == "Maxine"or selected_member == "Fraulein":
+        df_prog = df_prog[df_prog["Member"] == "All"]
+        
+    else:
+        df_prog = df_prog[df_prog["Member"] == selected_user]
+
+    # Get sorted events
+    sorted_events = sorted(
+        df_prog["Event"].dropna().unique(), 
+        reverse=True
+    )
+
+    if not sorted_events:
+        st.warning("No events found")
+        df_prog = pd.DataFrame()  # Empty DataFrame
+    else:
+        # Option A: Use selectbox (returns string)
+        selected_event = st.selectbox(
+            "Select Event",
+            options=sorted_events,
+            index=0,
+            key="event_selector"
+        )
+
+
+
+    # Filter by selected event
+    df_prog = df_prog[df_prog["Event"] == selected_event]
+    df_prog = df_prog[df_prog["Phase"] != "H"]
+
+
+    st.markdown(f"""
+        <div style="margin: 8px 0 4px 0; border-bottom: 2px solid #FC4C02; padding-bottom: 6px; display: flex; align-items: baseline; gap: 12px;">
+            <span style="font-size: 20px; font-weight: 600; color: #1a1a2e;">📋 {selected_user}'s Training Plan</span>
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
+    
     display_training_program(df_prog)
-    old_program_implementation()
+    old_program_implementation()            
     
 if tabs == "📘 Reference":  ##STR WORK
     from visuals import referencetab as ref
@@ -1317,28 +1695,6 @@ if tabs == "🗺️ Your Runs":  ##STR WORK
 
         
     acard.display_strava_style_feed_test(filtered_df, zones_data)
-
-    # st.write(f"Columns in filtered_df: {filtered_df.columns.tolist()}")
-    # if "UniqueKey" not in filtered_df.columns:
-    #     st.error("UniqueKey column not found! Zones will not match.")
-    #     # acard.display_strava_style_feed_test(filtered_df)
-
-    # # # In the Your Runs tab, after loading both dataframes
-    # if zones_data is not None and not zones_data.empty:
-    #     st.write("### Sample Parent_UniqueKey from zones_data:")
-    #     if "Parent_UniqueKey" in zones_data.columns:
-    #         st.write(zones_data["Parent_UniqueKey"].head(5).tolist())
-    #     else:
-    #         st.write("Parent_UniqueKey column not found!")
-
-    # st.write("### Sample UniqueKey from activities:")
-    # st.write(filtered_df["UniqueKey"].tail(5).tolist())
-
-    # st.write("### full_df UniqueKey samples:")
-    # st.write(full_df["UniqueKey"].tail(10).tolist())
-
-    # st.write("### full_df columns:")
-    # st.write(full_df.columns.tolist())
 
 if tabs == "🏋🏻‍♂️ Str Training":  # REFERENCE
     from visuals import strength_ref as sref
