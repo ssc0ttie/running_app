@@ -1227,7 +1227,7 @@ if tabs == "🏁 Home":  ##TRAINING PLAN ##
                 # ------------------- TRAINING CALENDAR -----------------------#
         
         from visuals import traininglog_calendar
-        traininglog_calendar.create_training_log_section_home(filtered_df)
+        traininglog_calendar.create_training_log_section_home(running_df)
         
 
     def weekly_recent_run(selected_user):
@@ -1248,7 +1248,7 @@ if tabs == "🏁 Home":  ##TRAINING PLAN ##
         if selected_user == "Guest":
             filtered_member_df = full_df.copy()
         else:
-            filterefiltered_member_dfd_df = full_df[full_df["Member Name"] == selected_user].copy()
+            filtered_member_df = full_df[full_df["Member Name"] == selected_user].copy()
     
         
         if filtered_member_df.empty:
