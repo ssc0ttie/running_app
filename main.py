@@ -79,32 +79,10 @@ with st.sidebar:
         st.rerun()
     
     st.divider()
-    
-    # Display current user
-    st.markdown(f"**Current:** {st.session_state.current_user}")
-    
-    st.info("💡 Tip: Click the '⋮' menu in the top-right to switch between light/dark theme")
-
-selected_user = st.session_state.current_user
-
-
-# Rest of your tabs and content...
-    
-import numpy as np
-from visuals import racedaycounter as rdc
-# Your main app content
-
-
-st.subheader(f"Welcome, {st.session_state.current_user}! 🏃‍♂️")
-st.markdown(":blue[*Need to switch accounts ? Tap the » icon in the top-left corner*]")
-col1, col2 = st.columns(2)
-
-with col2:
-    
     with st.popover("💡 How to Use This Page"):
         st.markdown(
             """
-            <p>Welcome! Here's how to navigate this page:</p>
+            <p>Welcome! Here's how to navigate:</p>
             <ul>
                 <li>🗓️ <strong>Program</strong>: Your marathon training plan.</li>
                 <li>🗺️ <strong> Your Runs</strong>: View Recent Runs.</li>
@@ -115,12 +93,19 @@ with col2:
             """,
             unsafe_allow_html=True,
         )
-with col1:
-    # Initialize session state
+    st.divider()
+    # Display current user
+    # st.markdown(f"**Current:** {st.session_state.current_user}")
+    options = ["🗓️ Program", "🗺️ Your Runs", "📊 Your Stats","📓Log"]
+       
+    tabs = st.radio("Choose a Page:", options, horizontal=True, index=0)
+    
+    st.divider() 
+    #COACH LOGIN
     if "coachauthenticated" not in st.session_state:
         st.session_state.coachauthenticated = False
 
-    with st.popover("Coach"):
+    with st.popover("Coach Login"):
         # Initialize session state
         if "authenticated" not in st.session_state:
             st.session_state.coachauthenticated = False
@@ -141,7 +126,7 @@ with col1:
                 st.error("Wrong passcode!")
 
             # Radio button that shows/hides based on authentication
-        options = ["🗓️ Program", "🗺️ Your Runs", "📊 Stats","📓Log"]
+
 
         if st.session_state.coachauthenticated:
             options.append("🏋🏻‍♂️ Str Training")
@@ -161,7 +146,86 @@ with col1:
             options.append("📓Log")
         # Add the hidden option
 
-tabs = st.radio("Choose a Section:", options, horizontal=True, index=0)
+
+    st.info("💡 Tip: Click the '⋮' menu in the top-right to switch between light/dark theme")
+
+selected_user = st.session_state.current_user
+
+
+# Rest of your tabs and content...
+    
+import numpy as np
+from visuals import racedaycounter as rdc
+# Your main app content
+
+
+st.subheader(f"Welcome, {st.session_state.current_user}! 🏃‍♂️")
+st.markdown(":blue[*Need to switch accounts ? Tap the » icon in the top-left corner*]")
+col1, col2 = st.columns(2)
+
+# with col2:
+    
+#     with st.popover("💡 How to Use This Page"):
+#         st.markdown(
+#             """
+#             <p>Welcome! Here's how to navigate this page:</p>
+#             <ul>
+#                 <li>🗓️ <strong>Program</strong>: Your marathon training plan.</li>
+#                 <li>🗺️ <strong> Your Runs</strong>: View Recent Runs.</li>
+#                 <li>📊 <strong>Stats</strong>: Track your weekly progress.</li>
+#                 <li>📓 <strong>Logs</strong>: Edit your training entries.</li>
+#             </ul>
+#             <p><strong>PS:</strong> If it lags, don't worry — it's just *thinking really hard*. 🧠💻</p>
+#             """,
+#             unsafe_allow_html=True,
+#         )
+# with col1:
+#     # Initialize session state
+#     if "coachauthenticated" not in st.session_state:
+#         st.session_state.coachauthenticated = False
+
+#     with st.popover("Coach"):
+#         # Initialize session state
+#         if "authenticated" not in st.session_state:
+#             st.session_state.coachauthenticated = False
+
+#         if "memberverified" not in st.session_state:
+#             st.session_state.memberverified = False
+
+#         # Passcode input
+#         passcode = st.text_input("Passcode", type="password")
+
+#         if st.button("Submit"):
+#             if passcode == "8465":  # Your secret passcode
+#                 st.session_state.coachauthenticated = True
+#             elif passcode == "0525":  # Your secret passcode
+#                 st.session_state.memberverified = True
+#             else:
+#                 st.session_state.coachauthenticated = False
+#                 st.error("Wrong passcode!")
+
+#             # Radio button that shows/hides based on authentication
+#         options = ["🗓️ Program", "🗺️ Your Runs", "📊 Stats","📓Log"]
+
+#         if st.session_state.coachauthenticated:
+#             options.append("🏋🏻‍♂️ Str Training")
+#             options.append("💗 HR Zones")
+#             options.append("📓Log")
+#             options.append("🎯 Remarks")
+#             options.append("🔄 Strava Sync")
+#             # options.append("📊 Stats"),  # Add the hidden option
+
+#         # if selected_member == "Scott":
+#         #     options.append("🔄 Strava Sync")
+
+
+#         if st.session_state.memberverified:
+#             options.append("📊 Stats")
+#             options.append("🗺️ Your Runs")
+#             options.append("📓Log")
+#         # Add the hidden option
+
+
 
 # element_name = "Log Your Activity Here"
 
@@ -307,7 +371,7 @@ if tabs == "📓Log":  ##LOG
 
     #     user_field.bulk_edit_user_fields_new(full_df)
 
-if tabs == "📊 Stats":  # STATS
+if tabs == "📊 Your Stats":  # STATS
 
     # -----ALL STATS TABLE-------#
     # st.subheader("🏆 All-Time Highlights", divider="gray")
@@ -679,15 +743,17 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     from data import read_data_cached_for_recent
 
 
-    with st.popover("💡 Activity Abbreviations"):
-        st.markdown("""
-    ##### 📋 Activity Type Abbreviations
+    # with st.popover("💡 Activity Abbreviations"):
+    #     st.caption("""
+    # ##### 📋 Activity Type Abbreviations
 
-    **AR** – Active Recovery | **CT** – Cross Train | **E** – Easy Run
-    **GA** – General Aerobic | **I** – Interval | **LSD** – Long Slow Distance
-    **LT** – Lactate Threshold | **MLR** – Medium Long Run | **MP** – Marathon Pace
-    **R** – Recovery Run | **S** – Speedwork | **STR** – Strength Training | **T** – Tempo
-    """)
+    # **AR** – Active Recovery | **CT** – Cross Train | **E** – Easy Run
+    # **GA** – General Aerobic | **I** – Interval | **LSD** – Long Slow Distance
+    # **LT** – Lactate Threshold | **MLR** – Medium Long Run | **MP** – Marathon Pace
+    # **R** – Recovery Run | **S** – Speedwork | **STR** – Strength Training | **T** – Tempo
+    # """)
+        
+
     def old_program_implementation(): 
 
         # st.markdown(
@@ -786,6 +852,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         # Define mapping with keywords to look for in the activity string
         encouragement_map = [
             # (keyword_to_match, message)
+            ("STR", "💪 Strength training today! Form over weight. Slow and Controlled."),
             ("T", "🔥 Tempo! Push your limits today! This is where growth happens."),
             ("TH", "🔥 Threshold work today! This is where growth happens."),
             ("LT", "🔥 Threshold work today! Embrace the discomfort."),
@@ -800,7 +867,6 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
             ("Easy", "😌 Easy run today. Enjoy the process and let your body recover."),
             ("Recovery", "🔄 Recovery day! Don't skip this — it's where you get stronger."),
             ("R ", "🔄 Recovery day! Don't skip this — it's where you get stronger."),
-            ("STR", "💪 Strength training today! Form over weight."),
             ("GA", "📈 General aerobic run. Steady effort, building your base."),
             ("R Ride", "🚴‍♀️ Recovery ride today. Light pedaling, keep it easy."),
             ("Ride", "🚴‍♀️ Ride today! Enjoy the fresh air and keep it consistent."),
@@ -884,6 +950,13 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         styled_df = pivot_df.style.apply(apply_phase_color, axis=1)
         
         # Display with st.dataframe
+        st.divider()
+        st.markdown(f"""
+        <div style="margin: 8px 0 4px 0; border-bottom: 2px solid #FC4C02; padding-bottom: 6px; display: flex; align-items: baseline; gap: 12px;">
+            <span style="font-size: 20px; font-weight: 600; color: #1a1a2e;">📋 {selected_user}'s Training Plan</span>
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
         st.dataframe(
             styled_df,
             column_config={
@@ -899,7 +972,7 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
             },
             hide_index=True,
             use_container_width=True,
-            height=400,
+            height=300,
         )
 
 
@@ -928,15 +1001,10 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         reverse=True
     )
 
-    # Event selector
-    selected_event = st.selectbox(
-        "Select event",
-        options=sorted_events,
-        index=0
-    )
+    current_event = sorted_events[0]
 
     # Filter by selected event
-    df_prog = df_prog[df_prog["Event"] == selected_event]
+    df_prog = df_prog[df_prog["Event"] == current_event]
     df_prog = df_prog[df_prog["Phase"] != "H"]
     
 
@@ -944,23 +1012,24 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
     import streamlit as st
     from datetime import datetime, timedelta
 
+
     def quick_glance_section(df_prog):
         """
         Display a quick glance section with today's activity, phase, and encouragement.
+        Includes hover-popover for activity abbreviations.
         """
         # Make a copy to avoid modifying original
         df = df_prog.copy()
         
-        # -------- ENSURE Day COLUMN EXISTS --------
+        # -------- ENSURE REQUIRED COLUMNS EXIST --------
         if "Day" not in df.columns:
             if "Dates" in df.columns:
                 df["Dates"] = pd.to_datetime(df["Dates"])
                 df["Day"] = df["Dates"].dt.strftime("%a")
             else:
-                st.warning("⚠️ 'Day' column not found and cannot be created.")
+                st.warning("⚠️ 'Day' column not found.")
                 return
         
-        # -------- ENSURE Phase COLUMN EXISTS --------
         if "Phase" not in df.columns:
             if "Weekref_act" in df.columns:
                 df["Phase"] = df["Weekref_act"].str[0]
@@ -977,6 +1046,12 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
             "Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday",
             "Thu": "Thursday", "Fri": "Friday", "Sat": "Saturday", "Sun": "Sunday"
         }
+        
+        # -------- GET LATEST EVENT --------
+        current_event = None
+        if "Event" in df.columns:
+            sorted_events = sorted(df["Event"].dropna().unique(), reverse=True)
+            current_event = sorted_events[0] if sorted_events else None
         
         # Find today's activity
         today_activity = None
@@ -995,11 +1070,36 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
         # Get encouragement
         encouragement = get_encouragement(today_activity)
         
-        # Display (same as before)
+        # -------- DISPLAY WITH HOVER POPOVER --------
         with st.container():
             st.markdown(f"""
                 <div class="quick-glance">
-                    <div class="title">📋 Today's Training</div>
+                    <div class="event-reminder">
+                        🎯 <strong>Preparing for:</strong> {current_event if current_event else "No event selected"}
+                    </div>
+                    <div class="divider"></div>
+                    <div class="title">
+                        📋 Today's Training
+                        <span class="hover-popover">
+                            ℹ️
+                            <span class="popover-content">
+                                <span class="popover-title">📋 Activity Type Abbreviations</span>
+                                <span class="abbr">AR</span> Active Recovery <span class="sep">|</span>
+                                <span class="abbr">CT</span> Cross Train <span class="sep">|</span>
+                                <span class="abbr">E</span> Easy Run<br>
+                                <span class="abbr">GA</span> General Aerobic <span class="sep">|</span>
+                                <span class="abbr">I</span> Interval <span class="sep">|</span>
+                                <span class="abbr">LSD</span> Long Slow Distance<br>
+                                <span class="abbr">LT</span> Lactate Threshold <span class="sep">|</span>
+                                <span class="abbr">MLR</span> Medium Long Run <span class="sep">|</span>
+                                <span class="abbr">MP</span> Marathon Pace<br>
+                                <span class="abbr">R</span> Recovery Run <span class="sep">|</span>
+                                <span class="abbr">S</span> Speedwork <span class="sep">|</span>
+                                <span class="abbr">STR</span> Strength Training <span class="sep">|</span>
+                                <span class="abbr">T</span> Tempo
+                            </span>
+                        </span>
+                    </div>
                     <div class="date">{today_date} — {day_map.get(today_day, today_day)}</div>
                     <div class="activity">{today_activity if today_activity else "Rest day — no activity planned 🛌"}</div>
                     <div>
@@ -1018,12 +1118,31 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
                     margin: 15px 0;
                     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
                 }}
+                .quick-glance .event-reminder {{
+                    color: #FC4C02;
+                    font-size: 15px;
+                    font-weight: 500;
+                    padding: 6px 0;
+                    letter-spacing: 0.3px;
+                }}
+                .quick-glance .event-reminder strong {{
+                    color: #1a1a2e;
+                }}
+                .quick-glance .divider {{
+                    border: none;
+                    border-top: 1px solid #e0e0e0;
+                    margin: 6px 0 12px 0;
+                }}
                 .quick-glance .title {{
                     color: #FC4C02;
                     font-size: 14px;
                     font-weight: 600;
                     text-transform: uppercase;
                     letter-spacing: 1px;
+                    margin-top: 2px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
                 }}
                 .quick-glance .activity {{
                     font-size: 22px;
@@ -1055,17 +1174,91 @@ if tabs == "🗓️ Program":  ##TRAINING PLAN ##
                     font-size: 13px;
                     margin-left: 8px;
                 }}
+                
+                /* Hover Popover Styles */
+                .hover-popover {{
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                    cursor: help;
+                    font-size: 14px;
+                    color: #FC4C02;
+                    background: #f0f2f6;
+                    width: 22px;
+                    height: 22px;
+                    border-radius: 50%;
+                    transition: background 0.2s;
+                    margin-left: 4px;
+                    flex-shrink: 0;
+                }}
+                .hover-popover:hover {{
+                    background: #e0e2e6;
+                }}
+                .hover-popover .popover-content {{
+                    visibility: hidden;
+                    opacity: 0;
+                    width: 340px;
+                    max-width: 90vw;
+                    background: white;
+                    color: #2d3436;
+                    text-align: left;
+                    padding: 14px 18px;
+                    border-radius: 12px;
+                    border: 1px solid #e0e0e0;
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+                    position: absolute;
+                    z-index: 1000;
+                    bottom: 140%;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease;
+                    font-size: 12.5px;
+                    line-height: 1.8;
+                    pointer-events: none;
+                }}
+                .hover-popover:hover .popover-content {{
+                    visibility: visible;
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(-4px);
+                }}
+                .hover-popover .popover-content::after {{
+                    content: "";
+                    position: absolute;
+                    top: 100%;
+                    left: 50%;
+                    margin-left: -8px;
+                    border-width: 8px;
+                    border-style: solid;
+                    border-color: white transparent transparent transparent;
+                }}
+                .hover-popover .popover-title {{
+                    font-weight: 700;
+                    font-size: 13px;
+                    color: #FC4C02;
+                    margin-bottom: 6px;
+                    display: block;
+                }}
+                .hover-popover .abbr {{
+                    display: inline-block;
+                    background: #f0f2f6;
+                    padding: 0 6px;
+                    border-radius: 4px;
+                    font-weight: 600;
+                    font-size: 11px;
+                }}
+                .hover-popover .sep {{
+                    color: #ddd;
+                    margin: 0 2px;
+                }}
                 </style>
             """, unsafe_allow_html=True)
-
-
+                
+            ### Sequece of display
     quick_glance_section(df_prog)
     display_training_program(df_prog)
     old_program_implementation()
     
-
-
-
 if tabs == "📘 Reference":  ##STR WORK
     from visuals import referencetab as ref
 
