@@ -26,7 +26,7 @@ st.set_page_config(
 # ============================================================
 # STEP 2: Initialize session state
 # ============================================================
-userlist = ["Guast","Scott", "Chona", "Aiza", "Fraulein", "Alvin", "Lead", "Maxine"]
+userlist = ["Guest","Scott", "Chona", "Aiza", "Fraulein", "Alvin", "Lead", "Maxine"]
 
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
