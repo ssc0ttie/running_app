@@ -26,7 +26,7 @@ st.set_page_config(
 # ============================================================
 # STEP 2: Initialize session state
 # ============================================================
-userlist = ["Guest", "Scott", "Chona", "Aiza", "Fraulein", "Alvin", "Lead", "Maxine"]
+userlist = ["Guast","Scott", "Chona", "Aiza", "Fraulein", "Alvin", "Lead", "Maxine"]
 
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
@@ -1574,7 +1574,7 @@ if tabs == "🗓️ Program":
         """, unsafe_allow_html=True)
     
     display_training_program(df_prog)
-    old_program_implementation()            
+    # old_program_implementation()            
     
 if tabs == "📘 Reference":  ##STR WORK
     from visuals import referencetab as ref
