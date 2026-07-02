@@ -6,6 +6,14 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 
+def safe_format_number(value, default="—"):
+    """Safely format a number for display."""
+    if value is None or pd.isna(value):
+        return default
+    try:
+        return f"{float(value):.0f}"
+    except (ValueError, TypeError):
+        return str(value)
 
 def format_duration(duration):
     """
@@ -283,49 +291,88 @@ def create_activity_card(row, index):
     # Start building the stats HTML - include all stats in one continuous string
 
     # Start building the stats HTML
-    stats_html = f"""
-<div style="padding: 20px; background: #fafafa;">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 20px; margin-bottom: 20px;">
-        <div>
-            <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Distance']:.1f}</div>
-            <div style="font-size: 12px; color: #666; text-transform: uppercase;">Distance (km)</div>
-        </div>
-        <div>
-            <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{moving_time_str}</div>
-            <div style="font-size: 12px; color: #666; text-transform: uppercase;">Moving Time</div>
-        </div>
-        <div>
-            <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{pace_str}</div>
-            <div style="font-size: 12px; color: #666; text-transform: uppercase;">Avg Pace</div>
-        </div>
-        <div>
-            <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['HR (bpm)']:.0f}</div>
-            <div style="font-size: 12px; color: #666; text-transform: uppercase;">Avg HR</div>
-        </div>
-        <div>
-            <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Cadence (steps/min)']:.0f}</div>
-            <div style="font-size: 12px; color: #666; text-transform: uppercase;">Cadence</div>
-        </div>
-        <div>
-            <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{max_pace_str}</div>
-            <div style="font-size: 12px; color: #666; text-transform: uppercase;">Max Pace</div>
-        </div>
-        <div>
-            <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Max_HR']:.0f}</div>
-            <div style="font-size: 12px; color: #666; text-transform: uppercase;">Max HR</div>
-        </div>
-        <div>
-            <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Elevation_Gained']:.0f}</div>
-            <div style="font-size: 12px; color: #666; text-transform: uppercase;">Elevation Gained</div>
-        </div>
-    </div>
-    </div>
-    <div style="padding: 12px 20px; background: #f9f9f9; border-top: 1px solid #f0f0f0; color: #555; font-size: 16px; font-style: italic;">
-        💭 {row['Remarks']}
-    </div>
-</div>
-"""
+#     stats_html = f"""
+# <div style="padding: 20px; background: #fafafa;">
+#     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 20px; margin-bottom: 20px;">
+#         <div>
+#             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Distance']:.1f}</div>
+#             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Distance (km)</div>
+#         </div>
+#         <div>
+#             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{moving_time_str}</div>
+#             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Moving Time</div>
+#         </div>
+#         <div>
+#             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{pace_str}</div>
+#             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Avg Pace</div>
+#         </div>
+#         <div>
+#             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['HR (bpm)']:.0f}</div>
+#             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Avg HR</div>
+#         </div>
+#         <div>
+#             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Cadence (steps/min)']:.0f}</div>
+#             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Cadence</div>
+#         </div>
+#         <div>
+#             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{max_pace_str}</div>
+#             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Max Pace</div>
+#         </div>
+#         <div>
+#             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Max_HR']:.0f}</div>
+#             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Max HR</div>
+#         </div>
+#         <div>
+#             <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Elevation_Gained']:.0f}</div>
+#             <div style="font-size: 12px; color: #666; text-transform: uppercase;">Elevation Gained</div>
+#         </div>
+#     </div>
+#     </div>
+#     <div style="padding: 12px 20px; background: #f9f9f9; border-top: 1px solid #f0f0f0; color: #555; font-size: 16px; font-style: italic;">
+#         💭 {row['Remarks']}
+#     </div>
+# </div>
+# """
 
+    stats_html = f"""
+    <div style="padding: 20px; background: #fafafa;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 20px; margin-bottom: 20px;">
+            <div>
+                <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Distance']:.1f}</div>
+                <div style="font-size: 12px; color: #666; text-transform: uppercase;">Distance (km)</div>
+            </div>
+            <div>
+                <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{moving_time_str}</div>
+                <div style="font-size: 12px; color: #666; text-transform: uppercase;">Moving Time</div>
+            </div>
+            <div>
+                <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{pace_str}</div>
+                <div style="font-size: 12px; color: #666; text-transform: uppercase;">Avg Pace</div>
+            </div>
+            <div>
+                <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{safe_format_number(row['HR (bpm)'])}</div>
+                <div style="font-size: 12px; color: #666; text-transform: uppercase;">Avg HR</div>
+            </div>
+            <div>
+                <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{safe_format_number(row['Cadence (steps/min)'])}</div>
+                <div style="font-size: 12px; color: #666; text-transform: uppercase;">Cadence</div>
+            </div>
+            <div>
+                <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{max_pace_str}</div>
+                <div style="font-size: 12px; color: #666; text-transform: uppercase;">Max Pace</div>
+            </div>
+            <div>
+                <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{safe_format_number(row['Max_HR'])}</div>
+                <div style="font-size: 12px; color: #666; text-transform: uppercase;">Max HR</div>
+            </div>
+            <div>
+                <div style="font-size: 24px; font-weight: 700; color: #FC4C02;">{row['Elevation_Gained']:.0f}</div>
+                <div style="font-size: 12px; color: #666; text-transform: uppercase;">Elevation Gained</div>
+            </div>
+        </div>
+    </div>
+    """
+    
     card_html = f"""
     <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; overflow: hidden;">
         <div style="padding: 16px 20px; border-bottom: 1px solid #f0f0f0;">

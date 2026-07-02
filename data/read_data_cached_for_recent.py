@@ -21,7 +21,7 @@ def get_gsheet_client():
 
 
 ### -- CACHED: Load all runner data with TTL -- ###
-# @st.cache_data(ttl=120)  # refresh every 5 minutes
+@st.cache_data(ttl=3600)  # refresh every 5 minutes
 def get_runner_data():
     client = get_gsheet_client()
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
@@ -73,6 +73,7 @@ def get_runner_data():
     return df
 
 
+@st.cache_data(ttl=3600)
 def get_worksheet_object():
     """Return the Google Sheets worksheet object for writing"""
     client = get_gsheet_client()
@@ -80,7 +81,7 @@ def get_worksheet_object():
     worksheet = sheet.get_worksheet_by_id(1611308583)  # Your worksheet ID
     return worksheet
 
-
+@st.cache_data(ttl=3600)
 def get_program_from_sheets():
     client = get_gsheet_client()
     sheet = client.open_by_key("1RDIWNLnrMR9SxR6uMxI-BuQlkefXPsGTlaQx2PQ7ENM")
@@ -98,7 +99,7 @@ def get_program_from_sheets():
 ######### -- SUPA BASE ----- #################
 # --- Database functions ---
 import supabase_client
-# @st.cache_data(ttl=600) 
+@st.cache_data(ttl=3600)
 def get_activities():
     
     try:
@@ -130,7 +131,8 @@ def get_activities():
     except Exception as e:
         st.error(f"Error fetching activities: {e}")
         return []
-        
+    
+@st.cache_data(ttl=3600)        
 def get_activities_hist():
     
     try:
@@ -163,6 +165,7 @@ def get_activities_hist():
         st.error(f"Error fetching activity history: {e}")
         return []
 # --- Database functions ---
+@st.cache_data(ttl=3600)
 def get_zones():
     
     try:

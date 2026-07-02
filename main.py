@@ -228,22 +228,1405 @@ st.text("")
 
 #########################################################################
 
-if tabs != "🗓️ Program" and tabs != "🗺️ Your Runs":
+# if tabs != "🗓️ Program" and tabs != "🗺️ Your Runs":
 
-    if st.session_state.get("just_submitted", False):
-        df = pullc.get_runner_data()  # Uncached for fresh data after submission
-        st.session_state["just_submitted"] = False
-    else:
-        df = pullc.get_runner_data()  # Cached for normal viewing
-        if df is None:
-            # Fallback to empty dataframe or previous data
-            df = pd.DataFrame()
+#     if st.session_state.get("just_submitted", False):
+#         df = pullc.get_runner_data()  # Uncached for fresh data after submission
+#         st.session_state["just_submitted"] = False
+#     else:
+#         df = pullc.get_runner_data()  # Cached for normal viewing
+#         if df is None:
+#             # Fallback to empty dataframe or previous data
+#             df = pd.DataFrame()
 
-#############################################################################
+# #############################################################################
 
-    full_df = pd.DataFrame(df)
+#     full_df = pd.DataFrame(df)
 
 #################################----LOG TAB ------ ################################
+####### OLD HOME TAB##############
+
+# if tabs == "🏁 Home":  ##TRAINING PLAN ##
+#     from data import read_data_cached_for_recent
+#     import streamlit as st
+#     import pandas as pd
+#     from datetime import datetime, timedelta
+
+#     # Load program data once
+#     df_prog = read_data_cached_for_recent.get_program_from_sheets()
+    
+#     # Load activity data once
+#     df = read_data_cached_for_recent.get_runner_data()
+#     full_df = pd.DataFrame(df) 
+
+#         # Filter data for current user
+#     if selected_user == "Guest":
+#         filtered_user_df = full_df.copy()
+#     else:
+#         filtered_user_df = full_df[full_df["Member Name"] == selected_user].copy()
+    
+#     # Filter for current week
+#     today = datetime.now()
+#     monday = today - timedelta(days=today.weekday())
+#     sunday = monday + timedelta(days=6)
+    
+#     if "Date_of_Activity" in filtered_user_df.columns:
+#         filtered_user_df["Date_of_Activity"] = pd.to_datetime(filtered_user_df["Date_of_Activity"]).dt.date
+#         current_week_df = filtered_user_df[
+#             (filtered_user_df["Date_of_Activity"] >= monday.date()) & 
+#             (filtered_user_df["Date_of_Activity"] <= sunday.date())
+#         ]
+#     else:
+#         current_week_df = filtered_user_df
+    
+#     def get_encouragement(activity):
+#         """Get encouragement message based on activity type."""
+        
+#         # Check for "Rest" first (exact or partial)
+#         if activity and "Rest" in str(activity):
+#             return "🛌 Rest day! Your body is building while you rest. Enjoy it."
+        
+#         # Define mapping with keywords to look for in the activity string
+#         encouragement_map = [
+#             # (keyword_to_match, message)
+#             ("STR", "💪 Strength training today! Slow and controlled."),
+#             ("T", "🔥 Tempo! Push your limits today! This is where growth happens."),
+#             ("TH", "🔥 Threshold work today! This is where growth happens."),
+#             ("LT", "🔥 Threshold work today! Embrace the discomfort."),
+#             ("Interval", "⚡ Speed work today! Focus on form and turnover."),
+#             ("Speedwork", "⚡ Speed work today! Focus on form and turnover."),
+#             ("S/I ", "⚡ Speed work today! Focus on form and turnover."),
+#             ("Speed", "⚡ Speed work today! Focus on form and turnover."),
+#             ("LSD", "🏃‍♂️ Long run today! Build that endurance. Remember to fuel and pace yourself."),
+#             ("Long Run", "🏃‍♂️ Long run today! Build that endurance. Remember to fuel and pace yourself."),
+#             ("MLR", "🏃‍♂️ Medium long run today. Consistent effort builds endurance."),
+#             ("E ", "😌 Easy run today. Enjoy the process and let your body recover."),
+#             ("Easy", "😌 Easy run today. Enjoy the process and let your body recover."),
+#             ("Recovery", "🔄 Recovery day! Don't skip this — it's where you get stronger."),
+#             ("R ", "🔄 Recovery day! Don't skip this — it's where you get stronger."),
+#             ("GA", "📈 General aerobic run. Steady effort, building your base."),
+#             ("R Ride", "🚴‍♀️ Recovery ride today. Light pedaling, keep it easy."),
+#             ("Ride", "🚴‍♀️ Ride today! Enjoy the fresh air and keep it consistent."),
+#         ]
+        
+#         # Check each keyword in order
+#         if activity:
+#             activity_str = str(activity)
+#             for keyword, message in encouragement_map:
+#                 if keyword in activity_str:
+#                     return message
+        
+#         # Default message if no match
+#         return "💪 You've got this! Show up and do the work."
+
+
+
+    
+
+#     # Filter by member
+#     if selected_user == "All" or selected_member == "Guest" or selected_user == "Lead" or selected_member == "Maxine"or selected_member == "Fraulein":
+#         df_prog = df_prog[df_prog["Member"] == "All"]
+        
+#     else:
+#         df_prog = df_prog[df_prog["Member"] == selected_user]
+
+#     # Get sorted events
+#     sorted_events = sorted(
+#         df_prog["Event"].dropna().unique(), 
+#         reverse=True
+#     )
+
+#     current_event = sorted_events[0]
+
+#     # Filter by selected event
+#     df_prog = df_prog[df_prog["Event"] == current_event]
+#     df_prog = df_prog[df_prog["Phase"] != "H"]
+    
+
+#     # Display the program
+#     import streamlit as st
+#     from datetime import datetime, timedelta
+#     import pandas as pd
+
+#     def display_current_week_program(df_prog, selected_user):
+
+#         """
+#         Display only the current week's training program with progress tracking.
+#         """
+#         # Get today's date
+#         today = datetime.now()
+#         today_day = today.strftime("%a")
+        
+#         # Get current week's Monday
+#         monday = today - timedelta(days=today.weekday())
+#         sunday = monday + timedelta(days=6)
+        
+#         # Filter for current week
+#         if "Dates" in df_prog.columns:
+#             df_prog["Dates"] = pd.to_datetime(df_prog["Dates"])
+#             current_week_df = df_prog[
+#                 (df_prog["Dates"] >= monday) & 
+#                 (df_prog["Dates"] <= sunday)
+#             ]
+#         else:
+#             latest_week = df_prog["WEEK_Streamlit"].iloc[0] if not df_prog.empty else None
+#             if latest_week:
+#                 current_week_df = df_prog[df_prog["WEEK_Streamlit"] == latest_week]
+#             else:
+#                 current_week_df = pd.DataFrame()
+        
+#         if current_week_df.empty:
+#             st.info("📋 No training program for this week.")
+#             return
+        
+#         # Pivot to get day-wise activities
+#         if "Day" not in current_week_df.columns:
+#             current_week_df["Day"] = current_week_df["Dates"].dt.strftime("%a")
+        
+#         pivot_df = current_week_df.pivot_table(
+#             index=["WEEK_Streamlit"],
+#             columns="Day",
+#             values="Activity",
+#             aggfunc="first"
+#         ).reset_index()
+        
+#         days_order = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+#         for day in days_order:
+#             if day not in pivot_df.columns:
+#                 pivot_df[day] = "Rest"
+        
+#         pivot_df = pivot_df[["WEEK_Streamlit"] + days_order]
+        
+#         # Determine completed days (past days)
+#         completed_days = []
+#         for day in days_order:
+#             day_index = days_order.index(day)
+#             day_date = monday + timedelta(days=day_index)
+#             if day_date < today:
+#                 completed_days.append(day)
+        
+#         remaining_days = [d for d in days_order if d not in completed_days]
+        
+#         # ---- DISPLAY ----
+        
+#         # Header
+
+         
+#     # Header with progress in title
+#         progress = len(completed_days) / 7 if len(completed_days) > 0 else 0
+#         progress_pct = int(progress * 100)
+
+#         progress = len(completed_days) / 7 if len(completed_days) > 0 else 0
+#         st.progress(progress, text=f"{len(completed_days)}/7 days completed")
+        
+#         # ---- BUILD ACTIVITY LIST ----
+#         st.markdown(f"###### 📋 This Week's Activities  •  {progress_pct}% complete")
+        
+#         # Build HTML for each day using simple f-strings
+#         html_parts = []
+#         for day in days_order:
+#             activity = pivot_df[day].iloc[0] if day in pivot_df.columns else "Rest"
+#             activity_display = activity if activity and "Rest" not in str(activity) else "—"
+            
+#             is_today = day == today_day
+#             is_completed = day in completed_days
+            
+#             # Determine styling
+#             if is_completed:
+#                 icon = "✅"
+#                 day_style = "color: #999; min-width: 32px;"
+#                 activity_style = "color: #999; text-decoration: line-through;"
+#             elif is_today:
+#                 icon = "📍"
+#                 day_style = "color: #FC4C02; font-weight: 700; min-width: 32px;"
+#                 activity_style = "font-weight: 600; background: #fff3e0; padding: 0 8px; border-radius: 4px;"
+#             else:
+#                 icon = "⬜"
+#                 day_style = "color: #555; min-width: 32px;"
+#                 activity_style = "color: #1a1a2e;"
+            
+#             html_parts.append(f"""
+#             <div style="display: flex; align-items: baseline; gap: 4px; padding: 2px 0;">
+#                 <span style="{day_style}">{icon} {day}:</span>
+#                 <span style="{activity_style}">{activity_display}</span>
+#             </div>
+#             """)
+        
+#         st.markdown("".join(html_parts), unsafe_allow_html=True)
+
+#     def quick_glance_section(df_prog):
+#         """
+#         Display a quick glance section with today's activity, phase, and encouragement.
+#         Includes hover-popover for activity abbreviations.
+#         """
+#         # Make a copy to avoid modifying original
+#         df = df_prog.copy()
+        
+#         # -------- ENSURE REQUIRED COLUMNS EXIST --------
+#         if "Day" not in df.columns:
+#             if "Dates" in df.columns:
+#                 df["Dates"] = pd.to_datetime(df["Dates"])
+#                 df["Day"] = df["Dates"].dt.strftime("%a")
+#             else:
+#                 st.warning("⚠️ 'Day' column not found.")
+#                 return
+        
+#         if "Phase" not in df.columns:
+#             if "Weekref_act" in df.columns:
+#                 df["Phase"] = df["Weekref_act"].str[0]
+#             else:
+#                 df["Phase"] = ""
+        
+#         # Get today's date and day of week
+#         today = datetime.now()
+#         today_day = today.strftime("%a")
+#         today_date = today.strftime("%d %b %Y")
+        
+#         # Map day names
+#         day_map = {
+#             "Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday",
+#             "Thu": "Thursday", "Fri": "Friday", "Sat": "Saturday", "Sun": "Sunday"
+#         }
+        
+#         # -------- GET LATEST EVENT --------
+#         current_event = None
+#         if "Event" in df.columns:
+#             sorted_events = sorted(df["Event"].dropna().unique(), reverse=True)
+#             current_event = sorted_events[0] if sorted_events else None
+        
+#         # Find today's activity
+#         today_activity = None
+#         current_phase = None
+#         current_week = None
+        
+#         if not df.empty:
+#             today_data = df[df["Day"] == today_day]
+            
+#             if not today_data.empty:
+#                 today_row = today_data.iloc[0]
+#                 today_activity = today_row.get("Activity", "Rest day 🛌")
+#                 current_phase = today_row.get("Phase", "")
+#                 current_week = today_row.get("WEEK_Streamlit", "")
+        
+#         # Get encouragement
+#         encouragement = get_encouragement(today_activity)
+        
+#         # -------- DISPLAY WITH HOVER POPOVER --------
+#         with st.container():
+#             st.markdown(f"""
+#                 <div class="quick-glance">
+#                     <div class="event-reminder">
+#                         🎯 <strong>Preparing for:</strong> {current_event if current_event else "No event selected"}
+#                     </div>
+#                     <div class="divider"></div>
+#                     <div class="title">
+#                         📋 Today's Training
+#                         <span class="hover-popover">
+#                             ℹ️
+#                             <span class="popover-content">
+#                                 <span class="popover-title">📋 Activity Type Abbreviations</span>
+#                                 <span class="abbr">AR</span> Active Recovery <span class="sep">|</span>
+#                                 <span class="abbr">CT</span> Cross Train <span class="sep">|</span>
+#                                 <span class="abbr">E</span> Easy Run<br>
+#                                 <span class="abbr">GA</span> General Aerobic <span class="sep">|</span>
+#                                 <span class="abbr">I</span> Interval <span class="sep">|</span>
+#                                 <span class="abbr">LSD</span> Long Slow Distance<br>
+#                                 <span class="abbr">LT</span> Lactate Threshold <span class="sep">|</span>
+#                                 <span class="abbr">MLR</span> Medium Long Run <span class="sep">|</span>
+#                                 <span class="abbr">MP</span> Marathon Pace<br>
+#                                 <span class="abbr">R</span> Recovery Run <span class="sep">|</span>
+#                                 <span class="abbr">S</span> Speedwork <span class="sep">|</span>
+#                                 <span class="abbr">STR</span> Strength Training <span class="sep">|</span>
+#                                 <span class="abbr">T</span> Tempo
+#                             </span>
+#                         </span>
+#                     </div>
+#                     <div class="date">{today_date} — {day_map.get(today_day, today_day)}</div>
+#                     <div class="activity">{today_activity if today_activity else "Rest day — no activity planned 🛌"}</div>
+#                     <div>
+#                         <span class="phase">Phase: {current_phase if current_phase else "—"}</span>
+#                         <span class="week-info">• Week: {current_week if current_week else ""}</span>
+#                     </div>
+#                     <div class="encouragement">{encouragement}</div>
+#                 </div>
+                
+#                 <style>
+#                 .quick-glance {{
+#                     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+#                     border-radius: 12px;
+#                     padding: 20px 25px;
+#                     border-left: 5px solid #FC4C02;
+#                     margin: 15px 0;
+#                     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+#                 }}
+#                 .quick-glance .event-reminder {{
+#                     color: #FC4C02;
+#                     font-size: 15px;
+#                     font-weight: 500;
+#                     padding: 6px 0;
+#                     letter-spacing: 0.3px;
+#                 }}
+#                 .quick-glance .event-reminder strong {{
+#                     color: #1a1a2e;
+#                 }}
+#                 .quick-glance .divider {{
+#                     border: none;
+#                     border-top: 1px solid #e0e0e0;
+#                     margin: 6px 0 12px 0;
+#                 }}
+#                 .quick-glance .title {{
+#                     color: #FC4C02;
+#                     font-size: 14px;
+#                     font-weight: 600;
+#                     text-transform: uppercase;
+#                     letter-spacing: 1px;
+#                     margin-top: 2px;
+#                     display: flex;
+#                     align-items: center;
+#                     gap: 8px;
+#                 }}
+#                 .quick-glance .activity {{
+#                     font-size: 22px;
+#                     font-weight: 700;
+#                     color: #1a1a2e;
+#                     margin: 4px 0;
+#                 }}
+#                 .quick-glance .phase {{
+#                     display: inline-block;
+#                     background: #FC4C02;
+#                     color: white;
+#                     padding: 2px 12px;
+#                     border-radius: 20px;
+#                     font-size: 12px;
+#                     font-weight: 600;
+#                 }}
+#                 .quick-glance .date {{
+#                     color: #6c757d;
+#                     font-size: 14px;
+#                 }}
+#                 .quick-glance .encouragement {{
+#                     color: #2d3436;
+#                     font-size: 16px;
+#                     font-weight: 500;
+#                     margin-top: 6px;
+#                 }}
+#                 .quick-glance .week-info {{
+#                     color: #6c757d;
+#                     font-size: 13px;
+#                     margin-left: 8px;
+#                 }}
+                
+#                 /* Hover Popover Styles */
+#                 .hover-popover {{
+#                     display: inline-flex;
+#                     align-items: center;
+#                     justify-content: center;
+#                     position: relative;
+#                     cursor: help;
+#                     font-size: 14px;
+#                     color: #FC4C02;
+#                     background: #f0f2f6;
+#                     width: 22px;
+#                     height: 22px;
+#                     border-radius: 50%;
+#                     transition: background 0.2s;
+#                     margin-left: 4px;
+#                     flex-shrink: 0;
+#                 }}
+#                 .hover-popover:hover {{
+#                     background: #e0e2e6;
+#                 }}
+#                 .hover-popover .popover-content {{
+#                     visibility: hidden;
+#                     opacity: 0;
+#                     width: 340px;
+#                     max-width: 90vw;
+#                     background: white;
+#                     color: #2d3436;
+#                     text-align: left;
+#                     padding: 14px 18px;
+#                     border-radius: 12px;
+#                     border: 1px solid #e0e0e0;
+#                     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+#                     position: absolute;
+#                     z-index: 1000;
+#                     bottom: 140%;
+#                     left: 50%;
+#                     transform: translateX(-50%);
+#                     transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease;
+#                     font-size: 12.5px;
+#                     line-height: 1.8;
+#                     pointer-events: none;
+#                 }}
+#                 .hover-popover:hover .popover-content {{
+#                     visibility: visible;
+#                     opacity: 1;
+#                     transform: translateX(-50%) translateY(-4px);
+#                 }}
+#                 .hover-popover .popover-content::after {{
+#                     content: "";
+#                     position: absolute;
+#                     top: 100%;
+#                     left: 50%;
+#                     margin-left: -8px;
+#                     border-width: 8px;
+#                     border-style: solid;
+#                     border-color: white transparent transparent transparent;
+#                 }}
+#                 .hover-popover .popover-title {{
+#                     font-weight: 700;
+#                     font-size: 13px;
+#                     color: #FC4C02;
+#                     margin-bottom: 6px;
+#                     display: block;
+#                 }}
+#                 .hover-popover .abbr {{
+#                     display: inline-block;
+#                     background: #f0f2f6;
+#                     padding: 0 6px;
+#                     border-radius: 4px;
+#                     font-weight: 600;
+#                     font-size: 11px;
+#                 }}
+#                 .hover-popover .sep {{
+#                     color: #ddd;
+#                     margin: 0 2px;
+#                 }}
+#                 </style>
+#             """, unsafe_allow_html=True)
+                
+#             ### Sequece of display
+    
+#     def weekly_stats(full_df, selected_user):
+#         """
+#         Display weekly statistics and training calendar for the selected user.
+#         """
+#         # ------------------- FILTER BY USER -----------------------#
+#         if selected_user == "Guest":
+#             filtered_df = full_df.copy()
+#         else:
+#             filtered_df = full_df[full_df["Member Name"] == selected_user].copy()
+        
+#         # ------------------- GET CURRENT WEEK -----------------------#
+#         weeks = sorted(filtered_df["Week"].dropna().unique(), reverse=True)
+#         if not weeks:
+#             st.info("No activity data available for this user.")
+#             return
+        
+#         current_week = weeks[0]
+#         filtered_df = filtered_df[filtered_df["Week"] == current_week]
+        
+#         if filtered_df.empty:
+#             st.info(f"No activities found for week {current_week}.")
+#             return
+        
+#         # ------------------- FILTER RUNNING ACTIVITIES -----------------------#
+#         exclude_activities = [
+#             "Rest", "Cross Train", "Strength Training", "WeightTraining",
+#             "Yoga", "Pilates", "Swim", "Ride", "Walk", "Workout",
+#             "", 0, "Activity"
+#         ]
+        
+#         running_df = filtered_df[
+#             ~filtered_df["Activity"].isin(exclude_activities)
+#         ].copy()
+        
+#         if running_df.empty:
+#             st.info("No running activities found for this week.")
+#             return
+        
+#         # ------------------- CALCULATE METRICS -----------------------#
+#         # Total Distance
+#         metric_distance = int(running_df["Distance"].sum())
+        
+#         # Total Moving Time
+#         total_seconds = int(running_df["Moving_Time"].sum().total_seconds())
+#         hours = total_seconds // 3600
+#         minutes = (total_seconds % 3600) // 60
+#         metric_movingtime = f"{hours:02d}:{minutes:02d}"
+        
+#         # Number of Runs
+#         metric_number_runs = len(running_df)
+        
+#         # Average Pace
+#         avg_pace = running_df["Pace"].mean()
+#         if pd.isna(avg_pace):
+#             metric_pace = "N/A"
+#         else:
+#             metric_pace = f"{int(avg_pace.total_seconds() // 60):02d}:{int(avg_pace.total_seconds() % 60):02d}"
+        
+#         # Days until race
+#         race_date = datetime(2025, 12, 7)
+#         metric_tillrace = (race_date - datetime.today()).days
+        
+#         # ------------------- DISPLAY METRICS -----------------------#
+#         st.markdown("""
+#         <style>
+#         div[data-testid="stMetric"] {
+#             height: 120px !important;
+#             padding: 15px 10px !important;
+#         }
+#         div[data-testid="stMetricValue"] {
+#             font-size: 24px !important;
+#         }
+#         </style>
+#         """, unsafe_allow_html=True)
+        
+#         # Metrics in a single row
+#         col0, col1 = st.columns(2)
+#         with col0:
+#             st.metric("Runs 🏃‍♀️", metric_number_runs, border=True)
+#             st.metric("Distance 🏃💨", f"{metric_distance} km", border=True)
+#         with col1:
+#             st.metric("Moving Time ⏱️", metric_movingtime, border=True)
+#             st.metric("Avg Pace 🚄", metric_pace, border=True)
+    
+#     def weekly_calendar(full_df,selected_user):
+#         """
+#         Display weekly statistics and training calendar for the selected user.
+#         """
+#         # ------------------- FILTER BY USER -----------------------#
+
+#         if selected_user == "Guest":
+#             filtered_df = full_df.copy()
+#         else:
+#             filtered_df = full_df[full_df["Member Name"] == selected_user].copy()
+        
+#         # ------------------- GET CURRENT WEEK -----------------------#
+#         weeks = sorted(filtered_df["Week"].dropna().unique(), reverse=True)
+#         if not weeks:
+#             st.info("No activity data available for this user.")
+#             return
+        
+#         current_week = weeks[0]
+#         filtered_df = filtered_df[filtered_df["Week"] == current_week]
+        
+#         if filtered_df.empty:
+#             st.info(f"No activities found for week {current_week}.")
+#             return
+        
+#         # ------------------- FILTER RUNNING ACTIVITIES -----------------------#
+#         exclude_activities = [
+#             "Rest", "Cross Train", "Strength Training", "WeightTraining",
+#             "Yoga", "Pilates", "Swim", "Ride", "Walk", "Workout",
+#             "", 0, "Activity"
+#         ]
+        
+#         running_df = filtered_df[
+#             ~filtered_df["Activity"].isin(exclude_activities)
+#         ].copy()
+        
+#         if running_df.empty:
+#             st.info("No running activities found for this week.")
+#             return
+        
+#                 # ------------------- TRAINING CALENDAR -----------------------#
+        
+#         from visuals import traininglog_calendar
+#         traininglog_calendar.create_training_log_section_home(running_df)
+        
+#     def weekly_recent_run(selected_user):
+#         """
+#         Display recent runs for the current week for a selected user.
+#         Filters based on the current calendar week, not the latest available data.
+#         """
+#         from data import read_data_cached_for_recent
+#         from visuals import activitycard as acard
+#         import gspread
+#         import pandas as pd
+        
+#         # ------------------- LOAD DATA -----------------------#
+#         df = read_data_cached_for_recent.get_runner_data()
+#         full_df = pd.DataFrame(df)
+        
+#         # ------------------- FILTER BY USER -----------------------#
+#         if selected_user == "Guest":
+#             filtered_member_df = full_df.copy()
+#         else:
+#             filtered_member_df = full_df[full_df["Member Name"] == selected_user].copy()
+    
+        
+#         if filtered_member_df.empty:
+#             st.info(f"No data found for {selected_user}.")
+#             return
+        
+#         # ------------------- FILTER BY CURRENT CALENDAR WEEK -----------------------#
+#         # Get today's date and calculate current week's Monday and Sunday
+#         today = datetime.now().date()
+#         monday = today - timedelta(days=today.weekday())
+#         sunday = monday + timedelta(days=6)
+        
+#         # Convert Date_of_Activity to date for comparison
+#         filtered_member_df["Date_of_Activity"] = pd.to_datetime(filtered_member_df["Date_of_Activity"]).dt.date
+        
+#         # Filter for current week only
+#         current_week_df = filtered_member_df[
+#             (filtered_member_df["Date_of_Activity"] >= monday) & 
+#             (filtered_member_df["Date_of_Activity"] <= sunday)
+#         ].copy()
+        
+#         if current_week_df.empty:
+#             st.info(f"📋 No activities found for {selected_user} this week ({monday.strftime('%d %b')} - {sunday.strftime('%d %b')}).")
+#             return
+        
+#         # ------------------- EXCLUDE NON-RUNNING ACTIVITIES -----------------------#
+#         exclude_activities = [
+#             "Rest", "Cross Train", "Strength Training", "WeightTraining",
+#             "Yoga", "", 0, "Pilates", "Walk", "Ride",
+#             "Warm up", "Cooldown"
+#         ]
+        
+#         filtered_df = current_week_df[
+#             ~current_week_df["Activity"].isin(exclude_activities)
+#         ].copy()
+        
+#         if filtered_df.empty:
+#             st.info(f"🏃 No running activities for {selected_user} this week.")
+#             return
+        
+#         # ------------------- CONVERT NUMERIC COLUMNS -----------------------#
+#         numeric_cols = ["HR (bpm)", "Cadence (steps/min)", "Max_HR"]
+#         for col in numeric_cols:
+#             if col in filtered_df.columns:
+#                 filtered_df[col] = pd.to_numeric(filtered_df[col], errors="coerce")
+        
+#         # ------------------- LOAD ZONE DATA -----------------------#
+#         zones_data = None
+#         try:
+#             import data.read_data_cached
+            
+#             zone_records = data.read_data_cached.get_zones()
+            
+#             if len(zone_records) > 1:
+#                 headers = zone_records[0]
+#                 zones_data = pd.DataFrame(zone_records[1:], columns=headers)
+#                 # Clean up percentage column
+#                 if "Percentage" in zones_data.columns:
+#                     zones_data["Percentage"] = (
+#                         zones_data["Percentage"].astype(str).str.replace("%", "")
+#                     )
+#                 # Convert HR column
+#                 if "HR (bpm)" in zones_data.columns:
+#                     zones_data["HR (bpm)"] = pd.to_numeric(
+#                         zones_data["HR (bpm)"], errors="coerce"
+#                     )
+                    
+#         except gspread.WorksheetNotFound:
+#             st.info("📊 Zone data not available. Run Strava Sync to calculate zones.")
+#         except Exception as e:
+#             st.warning(f"Could not load zone data: {e}")
+        
+#         # ------------------- DISPLAY ACTIVITY CARDS -----------------------#
+#         st.markdown(f"""
+#         <div style="margin: 8px 0 12px 0;">
+#             <span style="font-size: 12px; color: #888; margin-left: 12px;">
+#                 {monday.strftime('%d %b')} – {sunday.strftime('%d %b %Y')}
+#             </span>
+#             <span style="font-size: 12px; color: #FC4C02; margin-left: 12px;">
+#                 {len(filtered_df)} activities
+#             </span>
+#         </div>
+#         """, unsafe_allow_html=True)
+        
+#         # Display activity cards
+#         acard.display_strava_style_feed_test(filtered_df, zones_data)
+        
+        
+    
+#     #### IMPLEMENTATION ####
+#     quick_glance_section(df_prog)
+#     st.divider()
+
+#     def section_header(title, subtitle=None):
+#         subtitle_html = f'<span style="font-size: 12px; color: #888; font-weight: 400; margin-left: 8px;">{subtitle}</span>' if subtitle else ''
+#         st.markdown(f"""
+#         <div style="margin: 16px 0 8px 0; border-left: 4px solid #FC4C02; padding-left: 12px;">
+#             <span style="font-size: 16px; font-weight: 600; color: #1a1a2e;">{title}</span>
+#             {subtitle_html}
+#         </div>
+#         """, unsafe_allow_html=True)
+
+#     # Usage
+#     section_header("This Week's Progress", selected_user)
+#     display_current_week_program(df_prog, selected_user)
+
+#     section_header("This Week's Stats")
+#     weekly_stats(full_df, selected_user)
+
+#     section_header("📅 Training Calendar")
+#     weekly_calendar(full_df, selected_user)
+
+#     section_header("🏃 Recent Runs")
+#     weekly_recent_run(selected_user)
+
+
+if tabs == "🏁 Home":
+    from data import read_data_cached_for_recent
+    import pandas as pd
+    from datetime import datetime, timedelta
+    
+    # ============================================================
+    # LOAD DATA ONCE (Cached)
+    # ============================================================
+    @st.cache_data(ttl=300)  # 5 minute cache
+    def load_home_data(selected_user):
+        """Load all data once and return processed dataframes."""
+        # Load program data
+        try:
+            df_prog = read_data_cached_for_recent.get_program_from_sheets()
+            if df_prog is None:
+                df_prog = pd.DataFrame()
+        except Exception:
+            df_prog = pd.DataFrame()
+        
+        # Load activity data
+        try:
+            df = read_data_cached_for_recent.get_runner_data()
+            if df is None:
+                full_df = pd.DataFrame()
+            else:
+                full_df = pd.DataFrame(df)
+        except Exception:
+            full_df = pd.DataFrame()
+        
+        # Filter by user
+        if selected_user == "Guest" or selected_user == "All":
+            user_activities = full_df.copy() if not full_df.empty else pd.DataFrame()
+        else:
+            if not full_df.empty and "Member Name" in full_df.columns:
+                user_activities = full_df[full_df["Member Name"] == selected_user].copy()
+            else:
+                user_activities = pd.DataFrame()
+        
+        # Get current week
+        today = datetime.now()
+        monday = today - timedelta(days=today.weekday())
+        sunday = monday + timedelta(days=6)
+        
+        # Filter activities to current week
+        current_week_activities = pd.DataFrame()
+        if not user_activities.empty and "Date_of_Activity" in user_activities.columns:
+            user_activities["Date_of_Activity"] = pd.to_datetime(user_activities["Date_of_Activity"]).dt.date
+            current_week_activities = user_activities[
+                (user_activities["Date_of_Activity"] >= monday.date()) & 
+                (user_activities["Date_of_Activity"] <= sunday.date())
+            ]
+        
+        return df_prog, full_df, current_week_activities, monday, sunday
+        
+    # Load once
+    df_prog, full_df, current_week_activities, monday, sunday = load_home_data(selected_user)
+    
+    # ============================================================
+    # FILTER PROGRAM DATA FOR CURRENT USER
+    # ============================================================
+    user_prog = pd.DataFrame()
+    
+    if not df_prog.empty:
+        # Check if 'Member' column exists
+        if "Member" in df_prog.columns:
+            # Filter by member
+            if selected_user == "Guest" or selected_user == "All":
+                user_prog = df_prog[df_prog["Member"] == "All"].copy()
+            else:
+                user_prog = df_prog[df_prog["Member"] == selected_user].copy()
+        
+        # If user_prog is empty or no Member column, try using the whole df
+        if user_prog.empty and "Event" in df_prog.columns:
+            user_prog = df_prog.copy()
+        
+        # Get latest event and filter
+        if not user_prog.empty and "Event" in user_prog.columns:
+            sorted_events = sorted(user_prog["Event"].dropna().unique(), reverse=True)
+            current_event = sorted_events[0] if sorted_events else None
+            
+            if current_event:
+                user_prog = user_prog[user_prog["Event"] == current_event]
+                
+                # Filter out Phase "H" if column exists
+                if "Phase" in user_prog.columns:
+                    user_prog = user_prog[user_prog["Phase"] != "H"]
+    
+    # ============================================================
+    # HELPER FUNCTIONS
+    # ============================================================
+    
+    def get_encouragement(activity):
+        """Get encouragement message based on activity type."""
+        if activity and "Rest" in str(activity):
+            return "🛌 Rest day! Your body is building while you rest. Enjoy it."
+        
+        encouragement_map = [
+            ("STR", "💪 Strength training today! Slow and controlled."),
+            ("T", "🔥 Tempo! Push your limits today! This is where growth happens."),
+            ("TH", "🔥 Threshold work today! This is where growth happens."),
+            ("LT", "🔥 Threshold work today! Embrace the discomfort."),
+            ("Interval", "⚡ Speed work today! Focus on form and turnover."),
+            ("Speedwork", "⚡ Speed work today! Focus on form and turnover."),
+            ("S/I ", "⚡ Speed work today! Focus on form and turnover."),
+            ("Speed", "⚡ Speed work today! Focus on form and turnover."),
+            ("LSD", "🏃‍♂️ Long run today! Build that endurance. Remember to fuel and pace yourself."),
+            ("Long Run", "🏃‍♂️ Long run today! Build that endurance. Remember to fuel and pace yourself."),
+            ("MLR", "🏃‍♂️ Medium long run today. Consistent effort builds endurance."),
+            ("E ", "😌 Easy run today. Enjoy the process and let your body recover."),
+            ("Easy", "😌 Easy run today. Enjoy the process and let your body recover."),
+            ("Recovery", "🔄 Recovery day! Don't skip this — it's where you get stronger."),
+            ("R ", "🔄 Recovery day! Don't skip this — it's where you get stronger."),
+            ("GA", "📈 General aerobic run. Steady effort, building your base."),
+            ("R Ride", "🚴‍♀️ Recovery ride today. Light pedaling, keep it easy."),
+            ("Ride", "🚴‍♀️ Ride today! Enjoy the fresh air and keep it consistent."),
+        ]
+        
+        if activity:
+            activity_str = str(activity)
+            for keyword, message in encouragement_map:
+                if keyword in activity_str:
+                    return message
+        
+        return "💪 You've got this! Show up and do the work."
+
+    @st.cache_data(ttl=3600)
+    def load_zones_data():
+        """Load zones data once and cache."""
+        try:
+            import data.read_data_cached
+            zone_records = data.read_data_cached.get_zones()
+            if zone_records and len(zone_records) > 1:
+                headers = zone_records[0]
+                zones_data = pd.DataFrame(zone_records[1:], columns=headers)
+                if "Percentage" in zones_data.columns:
+                    zones_data["Percentage"] = zones_data["Percentage"].astype(str).str.replace("%", "")
+                if "HR (bpm)" in zones_data.columns:
+                    zones_data["HR (bpm)"] = pd.to_numeric(zones_data["HR (bpm)"], errors="coerce")
+                return zones_data
+        except Exception:
+            pass
+        return None
+    
+    # ============================================================
+    # DISPLAY FUNCTIONS (Use pre-filtered data)
+    # ============================================================
+    
+    def display_current_week_program(df_prog, selected_user):
+        """Display only the current week's training program with progress tracking."""
+        if df_prog is None or df_prog.empty:
+            st.info("📋 No training program for this week.")
+            return
+        
+        today = datetime.now()
+        today_day = today.strftime("%a")
+        
+        # Filter for current week
+        current_week_df = pd.DataFrame()
+        if "Dates" in df_prog.columns:
+            df_prog["Dates"] = pd.to_datetime(df_prog["Dates"])
+            current_week_df = df_prog[
+                (df_prog["Dates"] >= monday) & 
+                (df_prog["Dates"] <= sunday)
+            ]
+        else:
+            latest_week = df_prog["WEEK_Streamlit"].iloc[0] if not df_prog.empty else None
+            if latest_week:
+                current_week_df = df_prog[df_prog["WEEK_Streamlit"] == latest_week]
+        
+        if current_week_df is None or current_week_df.empty:
+            st.info("📋 No training program for this week.")
+            return
+        
+        # Pivot to get day-wise activities
+        if "Day" not in current_week_df.columns:
+            current_week_df["Day"] = current_week_df["Dates"].dt.strftime("%a")
+        
+        pivot_df = current_week_df.pivot_table(
+            index=["WEEK_Streamlit"],
+            columns="Day",
+            values="Activity",
+            aggfunc="first"
+        ).reset_index()
+        
+        days_order = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        for day in days_order:
+            if day not in pivot_df.columns:
+                pivot_df[day] = "Rest"
+        
+        pivot_df = pivot_df[["WEEK_Streamlit"] + days_order]
+        
+        # Determine completed days (past days)
+        completed_days = []
+        for day in days_order:
+            day_index = days_order.index(day)
+            day_date = monday + timedelta(days=day_index)
+            if day_date < today:
+                completed_days.append(day)
+        
+        # Display
+        progress = len(completed_days) / 7 if len(completed_days) > 0 else 0
+        progress_pct = int(progress * 100)
+        
+        st.progress(progress, text=f"{len(completed_days)}/7 days completed")
+        st.markdown(f"###### 📋 This Week's Activities  •  {progress_pct}% complete")
+        
+        # Build HTML for each day
+        html_parts = []
+        for day in days_order:
+            activity = pivot_df[day].iloc[0] if day in pivot_df.columns else "Rest"
+            activity_display = activity if activity and "Rest" not in str(activity) else "—"
+            
+            is_today = day == today_day
+            is_completed = day in completed_days
+            
+            if is_completed:
+                icon = "✅"
+                day_style = "color: #999; min-width: 32px;"
+                activity_style = "color: #999; text-decoration: line-through;"
+            elif is_today:
+                icon = "📍"
+                day_style = "color: #FC4C02; font-weight: 700; min-width: 32px;"
+                activity_style = "font-weight: 600; background: #fff3e0; padding: 0 8px; border-radius: 4px;"
+            else:
+                icon = "⬜"
+                day_style = "color: #555; min-width: 32px;"
+                activity_style = "color: #1a1a2e;"
+            
+            html_parts.append(f"""
+            <div style="display: flex; align-items: baseline; gap: 4px; padding: 2px 0;">
+                <span style="{day_style}">{icon} {day}:</span>
+                <span style="{activity_style}">{activity_display}</span>
+            </div>
+            """)
+        
+        st.markdown("".join(html_parts), unsafe_allow_html=True)
+
+    def quick_glance_section(df_prog):
+        """Display quick glance with today's activity, phase, and encouragement."""
+        if df_prog is None or df_prog.empty:
+            return
+        
+        df = df_prog.copy()
+        
+        # Ensure required columns exist
+        if "Day" not in df.columns:
+            if "Dates" in df.columns:
+                df["Dates"] = pd.to_datetime(df["Dates"])
+                df["Day"] = df["Dates"].dt.strftime("%a")
+            else:
+                st.warning("⚠️ 'Day' column not found.")
+                return
+        
+        if "Phase" not in df.columns:
+            if "Weekref_act" in df.columns:
+                df["Phase"] = df["Weekref_act"].str[0]
+            else:
+                df["Phase"] = ""
+        
+        today = datetime.now()
+        today_day = today.strftime("%a")
+        today_date = today.strftime("%d %b %Y")
+        
+        day_map = {"Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday",
+                   "Thu": "Thursday", "Fri": "Friday", "Sat": "Saturday", "Sun": "Sunday"}
+        
+        # Get latest event
+        current_event = None
+        if "Event" in df.columns:
+            sorted_events = sorted(df["Event"].dropna().unique(), reverse=True)
+            current_event = sorted_events[0] if sorted_events else None
+        
+        # Find today's activity
+        today_activity = None
+        current_phase = None
+        current_week = None
+        
+        if not df.empty:
+            today_data = df[df["Day"] == today_day]
+            if not today_data.empty:
+                today_row = today_data.iloc[0]
+                today_activity = today_row.get("Activity", "Rest day 🛌")
+                current_phase = today_row.get("Phase", "")
+                current_week = today_row.get("WEEK_Streamlit", "")
+        
+        encouragement = get_encouragement(today_activity)
+        
+        # Display (HTML/CSS same as before)
+        with st.container():
+            st.markdown(f"""
+                <div class="quick-glance">
+                    <div class="event-reminder">🎯 <strong>Preparing for:</strong> {current_event if current_event else "No event selected"}</div>
+                    <div class="divider"></div>
+                    <div class="title">
+                        📋 Today's Training
+                        <span class="hover-popover">
+                            ℹ️
+                            <span class="popover-content">
+                                <span class="popover-title">📋 Activity Type Abbreviations</span>
+                                <span class="abbr">AR</span> Active Recovery <span class="sep">|</span>
+                                <span class="abbr">CT</span> Cross Train <span class="sep">|</span>
+                                <span class="abbr">E</span> Easy Run<br>
+                                <span class="abbr">GA</span> General Aerobic <span class="sep">|</span>
+                                <span class="abbr">I</span> Interval <span class="sep">|</span>
+                                <span class="abbr">LSD</span> Long Slow Distance<br>
+                                <span class="abbr">LT</span> Lactate Threshold <span class="sep">|</span>
+                                <span class="abbr">MLR</span> Medium Long Run <span class="sep">|</span>
+                                <span class="abbr">MP</span> Marathon Pace<br>
+                                <span class="abbr">R</span> Recovery Run <span class="sep">|</span>
+                                <span class="abbr">S</span> Speedwork <span class="sep">|</span>
+                                <span class="abbr">STR</span> Strength Training <span class="sep">|</span>
+                                <span class="abbr">T</span> Tempo
+                            </span>
+                        </span>
+                    </div>
+                    <div class="date">{today_date} — {day_map.get(today_day, today_day)}</div>
+                    <div class="activity">{today_activity if today_activity else "Rest day — no activity planned 🛌"}</div>
+                    <div>
+                        <span class="phase">Phase: {current_phase if current_phase else "—"}</span>
+                        <span class="week-info">• Week: {current_week if current_week else ""}</span>
+                    </div>
+                    <div class="encouragement">{encouragement}</div>
+                </div>
+                <style>
+                .quick-glance {{
+                    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                    border-radius: 12px;
+                    padding: 20px 25px;
+                    border-left: 5px solid #FC4C02;
+                    margin: 15px 0;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                }}
+                .quick-glance .event-reminder {{
+                    color: #FC4C02;
+                    font-size: 15px;
+                    font-weight: 500;
+                    padding: 6px 0;
+                    letter-spacing: 0.3px;
+                }}
+                .quick-glance .event-reminder strong {{
+                    color: #1a1a2e;
+                }}
+                .quick-glance .divider {{
+                    border: none;
+                    border-top: 1px solid #e0e0e0;
+                    margin: 6px 0 12px 0;
+                }}
+                .quick-glance .title {{
+                    color: #FC4C02;
+                    font-size: 14px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    margin-top: 2px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }}
+                .quick-glance .activity {{
+                    font-size: 22px;
+                    font-weight: 700;
+                    color: #1a1a2e;
+                    margin: 4px 0;
+                }}
+                .quick-glance .phase {{
+                    display: inline-block;
+                    background: #FC4C02;
+                    color: white;
+                    padding: 2px 12px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }}
+                .quick-glance .date {{
+                    color: #6c757d;
+                    font-size: 14px;
+                }}
+                .quick-glance .encouragement {{
+                    color: #2d3436;
+                    font-size: 16px;
+                    font-weight: 500;
+                    margin-top: 6px;
+                }}
+                .quick-glance .week-info {{
+                    color: #6c757d;
+                    font-size: 13px;
+                    margin-left: 8px;
+                }}
+                .hover-popover {{
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                    cursor: help;
+                    font-size: 14px;
+                    color: #FC4C02;
+                    background: #f0f2f6;
+                    width: 22px;
+                    height: 22px;
+                    border-radius: 50%;
+                    transition: background 0.2s;
+                    margin-left: 4px;
+                    flex-shrink: 0;
+                }}
+                .hover-popover:hover {{
+                    background: #e0e2e6;
+                }}
+                .hover-popover .popover-content {{
+                    visibility: hidden;
+                    opacity: 0;
+                    width: 340px;
+                    max-width: 90vw;
+                    background: white;
+                    color: #2d3436;
+                    text-align: left;
+                    padding: 14px 18px;
+                    border-radius: 12px;
+                    border: 1px solid #e0e0e0;
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+                    position: absolute;
+                    z-index: 1000;
+                    bottom: 140%;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease;
+                    font-size: 12.5px;
+                    line-height: 1.8;
+                    pointer-events: none;
+                }}
+                .hover-popover:hover .popover-content {{
+                    visibility: visible;
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(-4px);
+                }}
+                .hover-popover .popover-content::after {{
+                    content: "";
+                    position: absolute;
+                    top: 100%;
+                    left: 50%;
+                    margin-left: -8px;
+                    border-width: 8px;
+                    border-style: solid;
+                    border-color: white transparent transparent transparent;
+                }}
+                .hover-popover .popover-title {{
+                    font-weight: 700;
+                    font-size: 13px;
+                    color: #FC4C02;
+                    margin-bottom: 6px;
+                    display: block;
+                }}
+                .hover-popover .abbr {{
+                    display: inline-block;
+                    background: #f0f2f6;
+                    padding: 0 6px;
+                    border-radius: 4px;
+                    font-weight: 600;
+                    font-size: 11px;
+                }}
+                .hover-popover .sep {{
+                    color: #ddd;
+                    margin: 0 2px;
+                }}
+                </style>
+            """, unsafe_allow_html=True)
+
+    def display_weekly_stats(current_week_df, selected_user):
+        """Display weekly stats from pre-filtered data."""
+        if current_week_df is None or current_week_df.empty:
+            st.info("No activity data for this week.")
+            return
+        
+        # Filter running activities
+        exclude = ["Rest", "Cross Train", "Strength Training", "WeightTraining",
+                "Yoga", "Pilates", "Swim", "Ride", "Walk", "Workout", "", 0, "Activity"]
+        
+        running_df = current_week_df[~current_week_df["Activity"].isin(exclude)].copy()
+        
+        if running_df.empty:
+            st.info("No running activities this week.")
+            return
+        
+        # ============================================================
+        # CLEAN AND CONVERT PACES TO NUMERIC (min/km)
+        # ============================================================
+        
+        def clean_pace(pace_val):
+            """Convert pace string (HH:MM:SS) to minutes (float)."""
+            if pace_val is None or pd.isna(pace_val):
+                return None
+            if isinstance(pace_val, (int, float)):
+                return float(pace_val)
+            
+            pace_str = str(pace_val).strip()
+            
+            # If it's already a time string like "00:06:30"
+            if ":" in pace_str and len(pace_str) <= 10:
+                try:
+                    parts = pace_str.split(":")
+                    if len(parts) == 3:
+                        hours = int(parts[0])
+                        minutes = int(parts[1])
+                        seconds = int(parts[2])
+                        return hours * 60 + minutes + seconds / 60
+                    elif len(parts) == 2:
+                        minutes = int(parts[0])
+                        seconds = int(parts[1])
+                        return minutes + seconds / 60
+                except:
+                    pass
+            
+            # Try to extract first valid time from concatenated string
+            # e.g., "00:04:5400:06:28" -> take first one
+            import re
+            match = re.search(r'(\d{2}):(\d{2}):(\d{2})', pace_str)
+            if match:
+                hours = int(match.group(1))
+                minutes = int(match.group(2))
+                seconds = int(match.group(3))
+                return hours * 60 + minutes + seconds / 60
+            
+            return None
+        
+        # Apply cleaning to Pace column
+        if "Pace" in running_df.columns:
+            running_df["Pace_Min"] = running_df["Pace"].apply(clean_pace)
+        else:
+            running_df["Pace_Min"] = None
+        
+        # ============================================================
+        # CALCULATE METRICS
+        # ============================================================
+        
+        # Total Distance
+        if "Distance" in running_df.columns:
+            metric_distance = int(running_df["Distance"].sum())
+        else:
+            metric_distance = 0
+        
+        # Total Moving Time
+        if "Moving_Time" in running_df.columns:
+            total_seconds = int(running_df["Moving_Time"].sum().total_seconds())
+            hours = total_seconds // 3600
+            minutes = (total_seconds % 3600) // 60
+            metric_movingtime = f"{hours:02d}:{minutes:02d}"
+        else:
+            metric_movingtime = "00:00"
+        
+        # Number of Runs
+        metric_number_runs = len(running_df)
+        
+        # Average Pace
+        valid_paces = running_df["Pace_Min"].dropna()
+        if not valid_paces.empty:
+            avg_pace_min = valid_paces.mean()
+            avg_minutes = int(avg_pace_min)
+            avg_seconds = int((avg_pace_min - avg_minutes) * 60)
+            metric_pace = f"{avg_minutes:02d}:{avg_seconds:02d}"
+        else:
+            metric_pace = "N/A"
+        
+        # Days until race
+        try:
+            race_date = datetime(2025, 12, 7)
+            metric_tillrace = (race_date - datetime.today()).days
+        except:
+            metric_tillrace = "—"
+        
+        # ============================================================
+        # DISPLAY METRICS
+        # ============================================================
+        
+        st.markdown("""
+        <style>
+        div[data-testid="stMetric"] {
+            height: 100px !important;
+            padding: 10px 10px !important;
+        }
+        div[data-testid="stMetricValue"] {
+            font-size: 20px !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        col0, col1 = st.columns(2)
+        with col0:
+            st.metric("Runs 🏃‍♀️", metric_number_runs, border=True)
+            st.metric("Distance 🏃💨", f"{metric_distance} km", border=True)
+        with col1:
+            st.metric("Moving Time ⏱️", metric_movingtime, border=True)
+            st.metric("Avg Pace 🚄", metric_pace, border=True)
+    def display_weekly_calendar(current_week_df, selected_user):
+        """Display weekly calendar from pre-filtered data."""
+        if current_week_df is None or current_week_df.empty:
+            st.info("No activity data for this week.")
+            return
+        
+        from visuals import traininglog_calendar
+        traininglog_calendar.create_training_log_section_home(current_week_df)
+
+    def display_weekly_recent_run(current_week_df, selected_user, monday, sunday):
+        """Display recent runs from pre-filtered data."""
+        from visuals import activitycard as acard
+        
+        if current_week_df is None or current_week_df.empty:
+            st.info(f"📋 No activities for {selected_user} this week.")
+            return
+        
+        # Filter running activities
+        exclude = ["Rest", "Cross Train", "Strength Training", "WeightTraining",
+                   "Yoga", "", 0, "Pilates", "Walk", "Ride", "Warm up", "Cooldown"]
+        
+        filtered_df = current_week_df[~current_week_df["Activity"].isin(exclude)]
+        
+        if filtered_df.empty:
+            st.info(f"🏃 No running activities for {selected_user} this week.")
+            return
+        
+        # Load zones (cached)
+        zones_data = load_zones_data()
+        
+        # Display header
+        st.markdown(f"""
+        <div style="margin: 8px 0 12px 0;">
+            <span style="font-size: 12px; color: #888;">
+                {monday.strftime('%d %b')} – {sunday.strftime('%d %b %Y')}
+            </span>
+            <span style="font-size: 12px; color: #FC4C02; margin-left: 12px;">
+                {len(filtered_df)} activities
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Display activity cards
+        acard.display_strava_style_feed_test(filtered_df, zones_data)
+
+    # ============================================================
+    # SECTION HEADER
+    # ============================================================
+    
+    def section_header(title, subtitle=None):
+        subtitle_html = f'<span style="font-size: 12px; color: #888; font-weight: 400; margin-left: 8px;">{subtitle}</span>' if subtitle else ''
+        st.markdown(f"""
+        <div style="margin: 16px 0 8px 0; border-left: 4px solid #FC4C02; padding-left: 12px;">
+            <span style="font-size: 16px; font-weight: 600; color: #1a1a2e;">{title}</span>
+            {subtitle_html}
+        </div>
+        """, unsafe_allow_html=True)
+
+    # ============================================================
+    # DISPLAY HOME PAGE
+    # ============================================================
+    
+    quick_glance_section(user_prog)
+    st.divider()
+
+    section_header("This Week's Progress", selected_user)
+    display_current_week_program(user_prog, selected_user)
+
+    section_header("This Week's Stats")
+    display_weekly_stats(current_week_activities, selected_user)
+
+    section_header("📅 Training Calendar")
+    display_weekly_calendar(current_week_activities, selected_user)
+
+    section_header("🏃 Recent Runs")
+    display_weekly_recent_run(current_week_activities, selected_user, monday, sunday)
 
 if tabs == "📓Log":  ##LOG
 
@@ -656,714 +2039,6 @@ if tabs == "📊 Your Stats":  # STATS
             st.markdown("##### 🏃💬 Runner's Word Cloud")
             wc.generate_wordcloud_new(filtered_df_withnonrun)
 
-if tabs == "🏁 Home":  ##TRAINING PLAN ##
-    from data import read_data_cached_for_recent
-
-
-    # with st.popover("💡 Activity Abbreviations"):
-    #     st.caption("""
-    # ##### 📋 Activity Type Abbreviations
-
-    # **AR** – Active Recovery | **CT** – Cross Train | **E** – Easy Run
-    # **GA** – General Aerobic | **I** – Interval | **LSD** – Long Slow Distance
-    # **LT** – Lactate Threshold | **MLR** – Medium Long Run | **MP** – Marathon Pace
-    # **R** – Recovery Run | **S** – Speedwork | **STR** – Strength Training | **T** – Tempo
-    # """)
-        
-
-    
-
-    import streamlit as st
-    import pandas as pd
-    from datetime import datetime
-
-    def get_encouragement(activity):
-        """Get encouragement message based on activity type."""
-        
-        # Check for "Rest" first (exact or partial)
-        if activity and "Rest" in str(activity):
-            return "🛌 Rest day! Your body is building while you rest. Enjoy it."
-        
-        # Define mapping with keywords to look for in the activity string
-        encouragement_map = [
-            # (keyword_to_match, message)
-            ("STR", "💪 Strength training today! Slow and controlled."),
-            ("T", "🔥 Tempo! Push your limits today! This is where growth happens."),
-            ("TH", "🔥 Threshold work today! This is where growth happens."),
-            ("LT", "🔥 Threshold work today! Embrace the discomfort."),
-            ("Interval", "⚡ Speed work today! Focus on form and turnover."),
-            ("Speedwork", "⚡ Speed work today! Focus on form and turnover."),
-            ("S/I ", "⚡ Speed work today! Focus on form and turnover."),
-            ("Speed", "⚡ Speed work today! Focus on form and turnover."),
-            ("LSD", "🏃‍♂️ Long run today! Build that endurance. Remember to fuel and pace yourself."),
-            ("Long Run", "🏃‍♂️ Long run today! Build that endurance. Remember to fuel and pace yourself."),
-            ("MLR", "🏃‍♂️ Medium long run today. Consistent effort builds endurance."),
-            ("E ", "😌 Easy run today. Enjoy the process and let your body recover."),
-            ("Easy", "😌 Easy run today. Enjoy the process and let your body recover."),
-            ("Recovery", "🔄 Recovery day! Don't skip this — it's where you get stronger."),
-            ("R ", "🔄 Recovery day! Don't skip this — it's where you get stronger."),
-            ("GA", "📈 General aerobic run. Steady effort, building your base."),
-            ("R Ride", "🚴‍♀️ Recovery ride today. Light pedaling, keep it easy."),
-            ("Ride", "🚴‍♀️ Ride today! Enjoy the fresh air and keep it consistent."),
-        ]
-        
-        # Check each keyword in order
-        if activity:
-            activity_str = str(activity)
-            for keyword, message in encouragement_map:
-                if keyword in activity_str:
-                    return message
-        
-        # Default message if no match
-        return "💪 You've got this! Show up and do the work."
-
-
-    # ============================================================
-    # MAIN CALL
-    # ============================================================
-
-   
-
-    df_prog = read_data_cached_for_recent.get_program_from_sheets()
-
-    # Filter by member
-    if selected_user == "All" or selected_member == "Guest" or selected_user == "Lead" or selected_member == "Maxine"or selected_member == "Fraulein":
-        df_prog = df_prog[df_prog["Member"] == "All"]
-        
-    else:
-        df_prog = df_prog[df_prog["Member"] == selected_user]
-
-    # Get sorted events
-    sorted_events = sorted(
-        df_prog["Event"].dropna().unique(), 
-        reverse=True
-    )
-
-    current_event = sorted_events[0]
-
-    # Filter by selected event
-    df_prog = df_prog[df_prog["Event"] == current_event]
-    df_prog = df_prog[df_prog["Phase"] != "H"]
-    
-
-    # Display the program
-    import streamlit as st
-    from datetime import datetime, timedelta
-    import pandas as pd
-
-    def display_current_week_program(df_prog, selected_user):
-
-        """
-        Display only the current week's training program with progress tracking.
-        """
-        # Get today's date
-        today = datetime.now()
-        today_day = today.strftime("%a")
-        
-        # Get current week's Monday
-        monday = today - timedelta(days=today.weekday())
-        sunday = monday + timedelta(days=6)
-        
-        # Filter for current week
-        if "Dates" in df_prog.columns:
-            df_prog["Dates"] = pd.to_datetime(df_prog["Dates"])
-            current_week_df = df_prog[
-                (df_prog["Dates"] >= monday) & 
-                (df_prog["Dates"] <= sunday)
-            ]
-        else:
-            latest_week = df_prog["WEEK_Streamlit"].iloc[0] if not df_prog.empty else None
-            if latest_week:
-                current_week_df = df_prog[df_prog["WEEK_Streamlit"] == latest_week]
-            else:
-                current_week_df = pd.DataFrame()
-        
-        if current_week_df.empty:
-            st.info("📋 No training program for this week.")
-            return
-        
-        # Pivot to get day-wise activities
-        if "Day" not in current_week_df.columns:
-            current_week_df["Day"] = current_week_df["Dates"].dt.strftime("%a")
-        
-        pivot_df = current_week_df.pivot_table(
-            index=["WEEK_Streamlit"],
-            columns="Day",
-            values="Activity",
-            aggfunc="first"
-        ).reset_index()
-        
-        days_order = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        for day in days_order:
-            if day not in pivot_df.columns:
-                pivot_df[day] = "Rest"
-        
-        pivot_df = pivot_df[["WEEK_Streamlit"] + days_order]
-        
-        # Determine completed days (past days)
-        completed_days = []
-        for day in days_order:
-            day_index = days_order.index(day)
-            day_date = monday + timedelta(days=day_index)
-            if day_date < today:
-                completed_days.append(day)
-        
-        remaining_days = [d for d in days_order if d not in completed_days]
-        
-        # ---- DISPLAY ----
-        
-        # Header
-
-         
-    # Header with progress in title
-        progress = len(completed_days) / 7 if len(completed_days) > 0 else 0
-        progress_pct = int(progress * 100)
-
-        progress = len(completed_days) / 7 if len(completed_days) > 0 else 0
-        st.progress(progress, text=f"{len(completed_days)}/7 days completed")
-        
-        # ---- BUILD ACTIVITY LIST ----
-        st.markdown(f"###### 📋 This Week's Activities  •  {progress_pct}% complete")
-        
-        # Build HTML for each day using simple f-strings
-        html_parts = []
-        for day in days_order:
-            activity = pivot_df[day].iloc[0] if day in pivot_df.columns else "Rest"
-            activity_display = activity if activity and "Rest" not in str(activity) else "—"
-            
-            is_today = day == today_day
-            is_completed = day in completed_days
-            
-            # Determine styling
-            if is_completed:
-                icon = "✅"
-                day_style = "color: #999; min-width: 32px;"
-                activity_style = "color: #999; text-decoration: line-through;"
-            elif is_today:
-                icon = "📍"
-                day_style = "color: #FC4C02; font-weight: 700; min-width: 32px;"
-                activity_style = "font-weight: 600; background: #fff3e0; padding: 0 8px; border-radius: 4px;"
-            else:
-                icon = "⬜"
-                day_style = "color: #555; min-width: 32px;"
-                activity_style = "color: #1a1a2e;"
-            
-            html_parts.append(f"""
-            <div style="display: flex; align-items: baseline; gap: 4px; padding: 2px 0;">
-                <span style="{day_style}">{icon} {day}:</span>
-                <span style="{activity_style}">{activity_display}</span>
-            </div>
-            """)
-        
-        st.markdown("".join(html_parts), unsafe_allow_html=True)
-
-    def quick_glance_section(df_prog):
-        """
-        Display a quick glance section with today's activity, phase, and encouragement.
-        Includes hover-popover for activity abbreviations.
-        """
-        # Make a copy to avoid modifying original
-        df = df_prog.copy()
-        
-        # -------- ENSURE REQUIRED COLUMNS EXIST --------
-        if "Day" not in df.columns:
-            if "Dates" in df.columns:
-                df["Dates"] = pd.to_datetime(df["Dates"])
-                df["Day"] = df["Dates"].dt.strftime("%a")
-            else:
-                st.warning("⚠️ 'Day' column not found.")
-                return
-        
-        if "Phase" not in df.columns:
-            if "Weekref_act" in df.columns:
-                df["Phase"] = df["Weekref_act"].str[0]
-            else:
-                df["Phase"] = ""
-        
-        # Get today's date and day of week
-        today = datetime.now()
-        today_day = today.strftime("%a")
-        today_date = today.strftime("%d %b %Y")
-        
-        # Map day names
-        day_map = {
-            "Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday",
-            "Thu": "Thursday", "Fri": "Friday", "Sat": "Saturday", "Sun": "Sunday"
-        }
-        
-        # -------- GET LATEST EVENT --------
-        current_event = None
-        if "Event" in df.columns:
-            sorted_events = sorted(df["Event"].dropna().unique(), reverse=True)
-            current_event = sorted_events[0] if sorted_events else None
-        
-        # Find today's activity
-        today_activity = None
-        current_phase = None
-        current_week = None
-        
-        if not df.empty:
-            today_data = df[df["Day"] == today_day]
-            
-            if not today_data.empty:
-                today_row = today_data.iloc[0]
-                today_activity = today_row.get("Activity", "Rest day 🛌")
-                current_phase = today_row.get("Phase", "")
-                current_week = today_row.get("WEEK_Streamlit", "")
-        
-        # Get encouragement
-        encouragement = get_encouragement(today_activity)
-        
-        # -------- DISPLAY WITH HOVER POPOVER --------
-        with st.container():
-            st.markdown(f"""
-                <div class="quick-glance">
-                    <div class="event-reminder">
-                        🎯 <strong>Preparing for:</strong> {current_event if current_event else "No event selected"}
-                    </div>
-                    <div class="divider"></div>
-                    <div class="title">
-                        📋 Today's Training
-                        <span class="hover-popover">
-                            ℹ️
-                            <span class="popover-content">
-                                <span class="popover-title">📋 Activity Type Abbreviations</span>
-                                <span class="abbr">AR</span> Active Recovery <span class="sep">|</span>
-                                <span class="abbr">CT</span> Cross Train <span class="sep">|</span>
-                                <span class="abbr">E</span> Easy Run<br>
-                                <span class="abbr">GA</span> General Aerobic <span class="sep">|</span>
-                                <span class="abbr">I</span> Interval <span class="sep">|</span>
-                                <span class="abbr">LSD</span> Long Slow Distance<br>
-                                <span class="abbr">LT</span> Lactate Threshold <span class="sep">|</span>
-                                <span class="abbr">MLR</span> Medium Long Run <span class="sep">|</span>
-                                <span class="abbr">MP</span> Marathon Pace<br>
-                                <span class="abbr">R</span> Recovery Run <span class="sep">|</span>
-                                <span class="abbr">S</span> Speedwork <span class="sep">|</span>
-                                <span class="abbr">STR</span> Strength Training <span class="sep">|</span>
-                                <span class="abbr">T</span> Tempo
-                            </span>
-                        </span>
-                    </div>
-                    <div class="date">{today_date} — {day_map.get(today_day, today_day)}</div>
-                    <div class="activity">{today_activity if today_activity else "Rest day — no activity planned 🛌"}</div>
-                    <div>
-                        <span class="phase">Phase: {current_phase if current_phase else "—"}</span>
-                        <span class="week-info">• Week: {current_week if current_week else ""}</span>
-                    </div>
-                    <div class="encouragement">{encouragement}</div>
-                </div>
-                
-                <style>
-                .quick-glance {{
-                    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                    border-radius: 12px;
-                    padding: 20px 25px;
-                    border-left: 5px solid #FC4C02;
-                    margin: 15px 0;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-                }}
-                .quick-glance .event-reminder {{
-                    color: #FC4C02;
-                    font-size: 15px;
-                    font-weight: 500;
-                    padding: 6px 0;
-                    letter-spacing: 0.3px;
-                }}
-                .quick-glance .event-reminder strong {{
-                    color: #1a1a2e;
-                }}
-                .quick-glance .divider {{
-                    border: none;
-                    border-top: 1px solid #e0e0e0;
-                    margin: 6px 0 12px 0;
-                }}
-                .quick-glance .title {{
-                    color: #FC4C02;
-                    font-size: 14px;
-                    font-weight: 600;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
-                    margin-top: 2px;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                }}
-                .quick-glance .activity {{
-                    font-size: 22px;
-                    font-weight: 700;
-                    color: #1a1a2e;
-                    margin: 4px 0;
-                }}
-                .quick-glance .phase {{
-                    display: inline-block;
-                    background: #FC4C02;
-                    color: white;
-                    padding: 2px 12px;
-                    border-radius: 20px;
-                    font-size: 12px;
-                    font-weight: 600;
-                }}
-                .quick-glance .date {{
-                    color: #6c757d;
-                    font-size: 14px;
-                }}
-                .quick-glance .encouragement {{
-                    color: #2d3436;
-                    font-size: 16px;
-                    font-weight: 500;
-                    margin-top: 6px;
-                }}
-                .quick-glance .week-info {{
-                    color: #6c757d;
-                    font-size: 13px;
-                    margin-left: 8px;
-                }}
-                
-                /* Hover Popover Styles */
-                .hover-popover {{
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    position: relative;
-                    cursor: help;
-                    font-size: 14px;
-                    color: #FC4C02;
-                    background: #f0f2f6;
-                    width: 22px;
-                    height: 22px;
-                    border-radius: 50%;
-                    transition: background 0.2s;
-                    margin-left: 4px;
-                    flex-shrink: 0;
-                }}
-                .hover-popover:hover {{
-                    background: #e0e2e6;
-                }}
-                .hover-popover .popover-content {{
-                    visibility: hidden;
-                    opacity: 0;
-                    width: 340px;
-                    max-width: 90vw;
-                    background: white;
-                    color: #2d3436;
-                    text-align: left;
-                    padding: 14px 18px;
-                    border-radius: 12px;
-                    border: 1px solid #e0e0e0;
-                    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-                    position: absolute;
-                    z-index: 1000;
-                    bottom: 140%;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease;
-                    font-size: 12.5px;
-                    line-height: 1.8;
-                    pointer-events: none;
-                }}
-                .hover-popover:hover .popover-content {{
-                    visibility: visible;
-                    opacity: 1;
-                    transform: translateX(-50%) translateY(-4px);
-                }}
-                .hover-popover .popover-content::after {{
-                    content: "";
-                    position: absolute;
-                    top: 100%;
-                    left: 50%;
-                    margin-left: -8px;
-                    border-width: 8px;
-                    border-style: solid;
-                    border-color: white transparent transparent transparent;
-                }}
-                .hover-popover .popover-title {{
-                    font-weight: 700;
-                    font-size: 13px;
-                    color: #FC4C02;
-                    margin-bottom: 6px;
-                    display: block;
-                }}
-                .hover-popover .abbr {{
-                    display: inline-block;
-                    background: #f0f2f6;
-                    padding: 0 6px;
-                    border-radius: 4px;
-                    font-weight: 600;
-                    font-size: 11px;
-                }}
-                .hover-popover .sep {{
-                    color: #ddd;
-                    margin: 0 2px;
-                }}
-                </style>
-            """, unsafe_allow_html=True)
-                
-            ### Sequece of display
-    
-    
-    def weekly_stats(full_df, selected_user):
-        """
-        Display weekly statistics and training calendar for the selected user.
-        """
-        # ------------------- FILTER BY USER -----------------------#
-        if selected_user == "Guest":
-            filtered_df = full_df.copy()
-        else:
-            filtered_df = full_df[full_df["Member Name"] == selected_user].copy()
-        
-        # ------------------- GET CURRENT WEEK -----------------------#
-        weeks = sorted(filtered_df["Week"].dropna().unique(), reverse=True)
-        if not weeks:
-            st.info("No activity data available for this user.")
-            return
-        
-        current_week = weeks[0]
-        filtered_df = filtered_df[filtered_df["Week"] == current_week]
-        
-        if filtered_df.empty:
-            st.info(f"No activities found for week {current_week}.")
-            return
-        
-        # ------------------- FILTER RUNNING ACTIVITIES -----------------------#
-        exclude_activities = [
-            "Rest", "Cross Train", "Strength Training", "WeightTraining",
-            "Yoga", "Pilates", "Swim", "Ride", "Walk", "Workout",
-            "", 0, "Activity"
-        ]
-        
-        running_df = filtered_df[
-            ~filtered_df["Activity"].isin(exclude_activities)
-        ].copy()
-        
-        if running_df.empty:
-            st.info("No running activities found for this week.")
-            return
-        
-        # ------------------- CALCULATE METRICS -----------------------#
-        # Total Distance
-        metric_distance = int(running_df["Distance"].sum())
-        
-        # Total Moving Time
-        total_seconds = int(running_df["Moving_Time"].sum().total_seconds())
-        hours = total_seconds // 3600
-        minutes = (total_seconds % 3600) // 60
-        metric_movingtime = f"{hours:02d}:{minutes:02d}"
-        
-        # Number of Runs
-        metric_number_runs = len(running_df)
-        
-        # Average Pace
-        avg_pace = running_df["Pace"].mean()
-        if pd.isna(avg_pace):
-            metric_pace = "N/A"
-        else:
-            metric_pace = f"{int(avg_pace.total_seconds() // 60):02d}:{int(avg_pace.total_seconds() % 60):02d}"
-        
-        # Days until race
-        race_date = datetime(2025, 12, 7)
-        metric_tillrace = (race_date - datetime.today()).days
-        
-        # ------------------- DISPLAY METRICS -----------------------#
-        st.markdown("""
-        <style>
-        div[data-testid="stMetric"] {
-            height: 120px !important;
-            padding: 15px 10px !important;
-        }
-        div[data-testid="stMetricValue"] {
-            font-size: 24px !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        
-        # Metrics in a single row
-        col0, col1 = st.columns(2)
-        with col0:
-            st.metric("Runs 🏃‍♀️", metric_number_runs, border=True)
-            st.metric("Distance 🏃💨", f"{metric_distance} km", border=True)
-        with col1:
-            st.metric("Moving Time ⏱️", metric_movingtime, border=True)
-            st.metric("Avg Pace 🚄", metric_pace, border=True)
-    
-    def weekly_calendar(full_df,selected_user):
-        """
-        Display weekly statistics and training calendar for the selected user.
-        """
-        # ------------------- FILTER BY USER -----------------------#
-
-        if selected_user == "Guest":
-            filtered_df = full_df.copy()
-        else:
-            filtered_df = full_df[full_df["Member Name"] == selected_user].copy()
-        
-        # ------------------- GET CURRENT WEEK -----------------------#
-        weeks = sorted(filtered_df["Week"].dropna().unique(), reverse=True)
-        if not weeks:
-            st.info("No activity data available for this user.")
-            return
-        
-        current_week = weeks[0]
-        filtered_df = filtered_df[filtered_df["Week"] == current_week]
-        
-        if filtered_df.empty:
-            st.info(f"No activities found for week {current_week}.")
-            return
-        
-        # ------------------- FILTER RUNNING ACTIVITIES -----------------------#
-        exclude_activities = [
-            "Rest", "Cross Train", "Strength Training", "WeightTraining",
-            "Yoga", "Pilates", "Swim", "Ride", "Walk", "Workout",
-            "", 0, "Activity"
-        ]
-        
-        running_df = filtered_df[
-            ~filtered_df["Activity"].isin(exclude_activities)
-        ].copy()
-        
-        if running_df.empty:
-            st.info("No running activities found for this week.")
-            return
-        
-                # ------------------- TRAINING CALENDAR -----------------------#
-        
-        from visuals import traininglog_calendar
-        traininglog_calendar.create_training_log_section_home(running_df)
-        
-
-    def weekly_recent_run(selected_user):
-        """
-        Display recent runs for the current week for a selected user.
-        Filters based on the current calendar week, not the latest available data.
-        """
-        from data import read_data_cached_for_recent
-        from visuals import activitycard as acard
-        import gspread
-        import pandas as pd
-        
-        # ------------------- LOAD DATA -----------------------#
-        df = read_data_cached_for_recent.get_runner_data()
-        full_df = pd.DataFrame(df)
-        
-        # ------------------- FILTER BY USER -----------------------#
-        if selected_user == "Guest":
-            filtered_member_df = full_df.copy()
-        else:
-            filtered_member_df = full_df[full_df["Member Name"] == selected_user].copy()
-    
-        
-        if filtered_member_df.empty:
-            st.info(f"No data found for {selected_user}.")
-            return
-        
-        # ------------------- FILTER BY CURRENT CALENDAR WEEK -----------------------#
-        # Get today's date and calculate current week's Monday and Sunday
-        today = datetime.now().date()
-        monday = today - timedelta(days=today.weekday())
-        sunday = monday + timedelta(days=6)
-        
-        # Convert Date_of_Activity to date for comparison
-        filtered_member_df["Date_of_Activity"] = pd.to_datetime(filtered_member_df["Date_of_Activity"]).dt.date
-        
-        # Filter for current week only
-        current_week_df = filtered_member_df[
-            (filtered_member_df["Date_of_Activity"] >= monday) & 
-            (filtered_member_df["Date_of_Activity"] <= sunday)
-        ].copy()
-        
-        if current_week_df.empty:
-            st.info(f"📋 No activities found for {selected_user} this week ({monday.strftime('%d %b')} - {sunday.strftime('%d %b')}).")
-            return
-        
-        # ------------------- EXCLUDE NON-RUNNING ACTIVITIES -----------------------#
-        exclude_activities = [
-            "Rest", "Cross Train", "Strength Training", "WeightTraining",
-            "Yoga", "", 0, "Pilates", "Walk", "Ride",
-            "Warm up", "Cooldown"
-        ]
-        
-        filtered_df = current_week_df[
-            ~current_week_df["Activity"].isin(exclude_activities)
-        ].copy()
-        
-        if filtered_df.empty:
-            st.info(f"🏃 No running activities for {selected_user} this week.")
-            return
-        
-        # ------------------- CONVERT NUMERIC COLUMNS -----------------------#
-        numeric_cols = ["HR (bpm)", "Cadence (steps/min)", "Max_HR"]
-        for col in numeric_cols:
-            if col in filtered_df.columns:
-                filtered_df[col] = pd.to_numeric(filtered_df[col], errors="coerce")
-        
-        # ------------------- LOAD ZONE DATA -----------------------#
-        zones_data = None
-        try:
-            import data.read_data_cached
-            
-            zone_records = data.read_data_cached.get_zones()
-            
-            if len(zone_records) > 1:
-                headers = zone_records[0]
-                zones_data = pd.DataFrame(zone_records[1:], columns=headers)
-                # Clean up percentage column
-                if "Percentage" in zones_data.columns:
-                    zones_data["Percentage"] = (
-                        zones_data["Percentage"].astype(str).str.replace("%", "")
-                    )
-                # Convert HR column
-                if "HR (bpm)" in zones_data.columns:
-                    zones_data["HR (bpm)"] = pd.to_numeric(
-                        zones_data["HR (bpm)"], errors="coerce"
-                    )
-                    
-        except gspread.WorksheetNotFound:
-            st.info("📊 Zone data not available. Run Strava Sync to calculate zones.")
-        except Exception as e:
-            st.warning(f"Could not load zone data: {e}")
-        
-        # ------------------- DISPLAY ACTIVITY CARDS -----------------------#
-        st.markdown(f"""
-        <div style="margin: 8px 0 12px 0;">
-            <span style="font-size: 12px; color: #888; margin-left: 12px;">
-                {monday.strftime('%d %b')} – {sunday.strftime('%d %b %Y')}
-            </span>
-            <span style="font-size: 12px; color: #FC4C02; margin-left: 12px;">
-                {len(filtered_df)} activities
-            </span>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Display activity cards
-        acard.display_strava_style_feed_test(filtered_df, zones_data)
-        
-        
-    
-    
-    ##IMPLEMENTATION
-    quick_glance_section(df_prog)
-    st.divider()
-
-    def section_header(title, subtitle=None):
-        subtitle_html = f'<span style="font-size: 12px; color: #888; font-weight: 400; margin-left: 8px;">{subtitle}</span>' if subtitle else ''
-        st.markdown(f"""
-        <div style="margin: 16px 0 8px 0; border-left: 4px solid #FC4C02; padding-left: 12px;">
-            <span style="font-size: 16px; font-weight: 600; color: #1a1a2e;">{title}</span>
-            {subtitle_html}
-        </div>
-        """, unsafe_allow_html=True)
-
-    # Usage
-    section_header("This Week's Progress", selected_user)
-    display_current_week_program(df_prog, selected_user)
-
-    section_header("This Week's Stats")
-    weekly_stats(full_df, selected_user)
-
-    section_header("📅 Training Calendar")
-    weekly_calendar(full_df, selected_user)
-
-    section_header("🏃 Recent Runs")
-    weekly_recent_run(selected_user)
 
 if tabs == "🗓️ Program":
     from data import read_data_cached_for_recent
